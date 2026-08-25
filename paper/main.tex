@@ -29,85 +29,6 @@
 
 
 
-
-
-%\special{dvipdfmx:config z 0} %取消PDF压缩，加快速度，最终版本生成的时候最好把这句话注释掉
-\title{基于}
-\begin{document}
-\maketitle
-\thispagestyle{empty}
-\begin{abstract}\setlength{\parskip}{0.3\baselineskip}
-
-
-
-\textbf{问题1}
-
-\textbf{问题2}
-
-\textbf{问题3}
-
-\textbf{本文优点：}
-    \keywords{ \textbf{0-1规划模型}  \quad  \textbf{非标准指派模型 }  \quad \textbf{Lingo} \quad \textbf{不满意程度}\quad \textbf{最优分配方案}}
-\end{abstract}
-\thispagestyle{empty}
-\tableofcontents
-\thispagestyle{empty}
-\newpage
-\setcounter{page}{1} 
-
-
-
-
-\section{问题重述}
-\subsection{问题背景}
-
-
-
-\subsection{问题概述}
-
-
-\section{模型假设}
-
-
-
-
-
-\section{符号说明}
-\begin{table}[!h]
-    \centering
-    \begin{tabular}{p{2.5cm}<{\centering}p{12cm}<{\centering}p{2.5cm}<{\centering}}
-    \toprule[1.5pt]
-    符号 & 含义\\
-    \midrule[1pt]
-    $x_{ij}$ &  第$i$名员工是否参与完成第j项任务    \\
-    $d_{ij}$ &  表示第i名员工完成第$j$项任务的不满意程度   \\
-    $y_j $ & 第$j$项任务的不满意程度   \\
-    $n_{ik} $ & $i$和$k$组合执行任务的负面影响程度  \\
-    $w_1 $ &  不满意程度的权重    \\
-    $w_2 $ &    负面影响程度的权重   \\
-   
-    \bottomrule[1.5pt]
-    \end{tabular}
-\end{table}
-注：表中未说明的符号以首次出现处为准
-
-
-\section{问题一模型的建立与求解}
-
-\subsection{问题分析}
-
-%%
-
-
-\subsection{模型建立}
-
-\subsection {模型求解和结果分析}
-
-\subsection{模型检验}
-
-
-
-
 %此部分用于预留常用代码
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %          伪代码
@@ -143,6 +64,13 @@
     \includegraphics[width=\textwidth]{figures/问题一流程图.pdf}
     \caption{问题一建模与求解流程图}
     \label{fig:question1-flowchart}
+\end{figure}
+%         背景图
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/.png}
+    \caption{}
+    \label{}
 \end{figure}
 \fi
 \iffalse
@@ -224,6 +152,88 @@
 	\end{array}\right.
 	\end{aligned}
 \fi
+
+
+
+
+%\special{dvipdfmx:config z 0} %取消PDF压缩，加快速度，最终版本生成的时候最好把这句话注释掉
+\title{基于}
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\begin{abstract}\setlength{\parskip}{0.3\baselineskip}
+
+
+
+\textbf{问题1}
+
+\textbf{问题2}
+
+\textbf{问题3}
+
+\textbf{本文优点：}
+    \keywords{ \textbf{0-1规划模型}  \quad  \textbf{非标准指派模型 }  \quad \textbf{Lingo} \quad \textbf{不满意程度}\quad \textbf{最优分配方案}}
+\end{abstract}
+\thispagestyle{empty}
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+\setcounter{page}{1} 
+
+
+
+
+\section{问题重述}
+\subsection{问题背景}
+
+
+
+\subsection{问题概述}
+
+
+\section{模型假设}
+
+
+
+
+
+\section{符号说明}
+\begin{table}[!h]
+    \centering
+    \begin{tabular}{p{2.5cm}<{\centering}p{12cm}<{\centering}p{2.5cm}<{\centering}}
+    \toprule[1.5pt]
+    符号 & 含义\\
+    \midrule[1pt]
+    $x_{ij}$ &  第$i$名员工是否参与完成第j项任务    \\
+    $d_{ij}$ &  表示第i名员工完成第$j$项任务的不满意程度   \\
+    $y_j $ & 第$j$项任务的不满意程度   \\
+    $n_{ik} $ & $i$和$k$组合执行任务的负面影响程度  \\
+    $w_1 $ &  不满意程度的权重    \\
+    $w_2 $ &    负面影响程度的权重   \\
+   
+    \bottomrule[1.5pt]
+    \end{tabular}
+\end{table}
+注：表中未说明的符号以首次出现处为准
+
+
+\section{问题一模型的建立与求解}
+
+\subsection{问题分析}
+
+%%
+
+
+\subsection{模型建立}
+
+\subsection {模型求解和结果分析}
+
+\subsection{模型检验}
+
+
+
+
+
 
 
 
