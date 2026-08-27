@@ -1,0 +1,2 @@
+selection_rule,outer_layer_count,added_outer_layer_count,outer_thickness_mm,garment_mass_kg,added_cost_yuan,total_cost_yuan,maximum_total_cost_yuan,t15_s,t15_min,weight_penalty_s,weight_penalty_min,penalized_objective_s,penalized_objective_min
+maximize_t15_minus_time_equivalent_weight_penalty,4,3,1.2,1.500354615,167.275125,544.36695,565.6377375,44100.049727937905,735.0008287989651,30.0070923,0.500118205,44070.0426356379,734.500710593965
