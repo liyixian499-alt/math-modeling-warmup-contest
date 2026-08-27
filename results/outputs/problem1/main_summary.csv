@@ -1,0 +1,2 @@
+t15_s,t15_min,t10_s,t10_min,T_core_at_t15_C,T_core_at_t10_C,T_pcm_at_t15_C,T_pcm_at_t10_C,alpha_skin_at_t15,alpha_skin_at_t10,pcm_phase_fraction_at_t15,pcm_phase_fraction_at_t10,max_abs_energy_balance_residual_J,relative_energy_balance_error,M0_W_m2,T_skin_initial_C,beta_DSC_K_min,h_in_W_m2K,lambda_out,p_a_Torr
+40725.204964109864,678.7534160684977,59983.47063882691,999.7245106471152,26.511259026268934,21.041026191881233,-19.379406346004675,-21.02100382084787,0.6658214384134358,0.7283147252465181,1.0,1.0,20.051312128663994,3.79244506820623e-06,70.0,37.0,10.0,3.0,1.0,0.0
