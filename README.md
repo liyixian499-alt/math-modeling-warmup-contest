@@ -51,3 +51,13 @@
 python -m pip install -r requirements.txt
 ```
 
+## 问题一数值求解
+
+从仓库根目录运行：
+
+```bash
+python -m src.问题一
+```
+
+程序会从 `problem/attachments/附件1 放热能力数据.xlsx` 读取真实 DSC 数据，执行五节点主模型、严格容差复核和指定的单因素敏感性分析，最终 CSV 保存在 `results/outputs/problem1/`。
+
