@@ -216,25 +216,44 @@ $100\,\mathrm{kg}$，且每经过 $10\,\mathrm s$ 下降 $0.5\,\mathrm{kg}$；�
 \textbf{问题四：}沿用问题三的厚度与资金条件，通过提高中间功能层的放热能力延长
 户外活动时间。确定放热能力相对原材料至少需提高的比例，使坚持时间不低于问题三的结果。
 \section{模型假设}
-
-
-
-
-
+\begin{enumerate}
+    \item 将人体划分为温度均匀的核心节点和皮肤节点，将防护服三层材料分别简化为
+    温度均匀的集中参数节点；人体与服装之间仅沿垂直于衣层的方向传热。
+    \item 人体质量、等效比热与基础代谢率在计算时段内保持不变。实验者静止且不出汗，
+    忽略颤抖产热和汗液蒸发散热，保留呼吸显热与潜热损失。
+    \item 皮肤等效质量比例由皮肤血流量决定。当该比例随皮肤温度改变时，核心与皮肤
+    之间发生等效质量迁移，迁移部分按供体节点温度携带焓并在受体节点内立即混合。
+    \item 防护服各层材料均匀、各向同性，除相变层的表观比热随温度变化外，其余热物性
+    均视为常数；忽略层间接触热阻、服装含湿、结霜及长波辐射的影响。
+    \item 外界温度在实验开始时突变为 $-40\,^{\circ}\mathrm C$，且随后保持不变；无风
+    条件下，服装外表面与环境之间采用附件给出的自然对流经验关系。
+    \item 服装用料面积取人体有效传热面积的 $1.25$ 倍并用于计算各层质量，实际换热面积
+    仍取人体有效表面积，以区分材料用量与人体对外传热面积。
+    \item 附件中的 DSC 信号已经按试样质量归一化。取 $10\,\mathrm{K/min}$ 为扫描速率，
+    以首尾端点连线为显热基线，扣除基线后的放热峰等效为相变层的附加比热。
+    \item 基准工况下人体与三层防护服初温均为 $37\,^{\circ}\mathrm C$；题目给出的
+    $15\,^{\circ}\mathrm C$ 和 $10\,^{\circ}\mathrm C$ 阈值施加于平均皮肤温度。
+\end{enumerate}
 \section{符号说明}
 \begin{table}[!h]
     \centering
-    \begin{tabular}{p{2.5cm}<{\centering}p{12cm}<{\centering}p{2.5cm}<{\centering}}
+    \small
+    \caption{问题一主要符号说明}
+    \label{tab:q1-symbols}
+    \begin{tabular}{p{1.8cm}<{\centering}p{9cm}<{\centering}p{2.6cm}<{\centering}}
     \toprule[1.5pt]
-    符号 & 含义\\
+    符号 & 含义 & 单位\\
     \midrule[1pt]
-    $x_{ij}$ &  第$i$名员工是否参与完成第j项任务    \\
-    $d_{ij}$ &  表示第i名员工完成第$j$项任务的不满意程度   \\
-    $y_j $ & 第$j$项任务的不满意程度   \\
-    $n_{ik} $ & $i$和$k$组合执行任务的负面影响程度  \\
-    $w_1 $ &  不满意程度的权重    \\
-    $w_2 $ &    负面影响程度的权重   \\
-   
+    $T_c,T_s$ & 人体核心温度、平均皮肤温度 & $^{\circ}\mathrm C$\\
+    $T_1,T_2,T_3$ & 防护服内层、相变层和外层节点温度 & $^{\circ}\mathrm C$\\
+    $A_b,A_m$ & 人体有效传热面积、服装材料面积 & $\mathrm{m^2}$\\
+    $\alpha$ & 皮肤节点占人体总质量的等效比例 & 1\\
+    $\dot V_{bl}$ & 单位体表面积的皮肤血流量 & $\mathrm{L/(m^2h)}$\\
+    $G_{cs}$ & 核心与皮肤之间的等效传热系数 & $\mathrm{W/(m^2K)}$\\
+    $q_{ij}$ & 节点 $i$ 到节点 $j$ 的热流密度 & $\mathrm{W/m^2}$\\
+    $r_{ij}$ & 节点 $i$ 到节点 $j$ 的单位面积热阻 & $\mathrm{m^2K/W}$\\
+    $c_{\mathrm{eff}}$ & 相变层的温度相关表观比热 & $\mathrm{J/(kg\,K)}$\\
+    $t_{15},t_{10}$ & 皮肤温度首次下降至相应阈值的时刻 & $\mathrm s$\\
     \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
@@ -244,16 +263,248 @@ $100\,\mathrm{kg}$，且每经过 $10\,\mathrm s$ 下降 $0.5\,\mathrm{kg}$；�
 \section{问题一模型的建立与求解}
 
 \subsection{问题分析}
+问题一要求在 $-40\,^{\circ}\mathrm C$、静止无风条件下预测人体能够在室外坚持的时间。
+题目给出的两个温度阈值需要转化为可由传热模型定位的事件，因此本文以平均皮肤温度
+$T_s$ 为判定量，分别求其首次下降至 $15\,^{\circ}\mathrm C$ 和
+$10\,^{\circ}\mathrm C$ 的时刻。人体内部的代谢产热先由核心向皮肤传递，再依次经过
+内层织物、中间相变层和外层隔热材料散向环境；其中皮肤血流随冷刺激改变，相变材料在
+特定温区释放潜热，服装外表面的自然对流系数也随温差变化，因而整个过程属于非线性
+瞬态传热问题。
 
-%%
-
-
+为刻画上述过程，本文建立核心--皮肤双节点与三层服装热阻--热容网络耦合的五温度节点
+模型。人体部分根据皮肤温度恢复血流量和等效质量比例，并计入质量重新分配携带的焓；
+相变层则将附件 DSC 放热曲线转化为温度相关表观比热。求解五节点常微分方程后，通过
+下降方向事件定位得到 $t_{15}$ 和 $t_{10}$，再用能量审计、收敛复核和单因素敏感性分析
+检验结果的可信度。
 \subsection{模型建立}
+\subsubsection{人体核心--皮肤热调节模型}
 
+人体有效表面积采用 Stevenson 公式计算：
+\begin{equation}
+    A_b=0.0061h+0.0128w-0.1529=1.6521\ \mathrm{m^2}.
+    \label{eq:q1-area}
+\end{equation}
+设人体质量 $m_b=60\,\mathrm{kg}$，等效比热
+$c_b=3490\,\mathrm{J/(kg\,K)}$，静止代谢热流密度
+$M_0=70\,\mathrm{W/m^2}$。以 $33.7\,^{\circ}\mathrm C$ 为中性皮肤温度，
+定义冷信号 $\Phi_s=\max(0,33.7-T_s)$，则皮肤血流量及核心--皮肤传热系数为
+\begin{equation}
+    \dot V_{bl}=\operatorname{clip}\!\left(
+    \frac{6.3}{1+0.5\Phi_s},\,0.5,\,90\right),\qquad
+    G_{cs}=5.28+1.163\dot V_{bl}.
+    \label{eq:q1-blood-flow}
+\end{equation}
+核心向皮肤传递的热流密度为
+\begin{equation}
+    q_{cs}=G_{cs}(T_c-T_s).
+    \label{eq:q1-qcs}
+\end{equation}
+
+低温引起的血管调节还会改变人体外围组织的等效热容量。本文将皮肤等效质量比例写为
+\begin{equation}
+    \alpha(T_s)=0.0417737+
+    \frac{0.7451833}{\dot V_{bl}(T_s)+0.585417},
+    \label{eq:q1-alpha}
+\end{equation}
+从而核心和皮肤热容量分别为 $(1-\alpha)m_bc_b$ 与 $\alpha m_bc_b$。由于
+$\alpha$ 是 $T_s$ 的代数函数，其变化率满足
+$\dot\alpha=\alpha_T\dot T_s$，其中
+$\alpha_T=\mathrm d\alpha/\mathrm dT_s$。若只改变两个节点的热容量而不计质量迁移焓，
+人体总能量会随 $\alpha$ 产生虚假增减。为此，令
+\begin{equation*}
+    F_c=A_b(M_0-q_{\mathrm{res}}-q_{cs}),\qquad
+    F_s=A_b(q_{cs}-q_{s1}),
+\end{equation*}
+并按等效质量迁移方向建立守恒方程
+\begin{equation}
+\left\{
+\begin{aligned}
+    (1-\alpha)m_bc_b\dot T_c&=F_c,\\
+    \alpha m_bc_b\dot T_s&=F_s+m_bc_b(T_c-T_s)\dot\alpha,
+        &&\dot\alpha\geq0,\\[2mm]
+    (1-\alpha)m_bc_b\dot T_c&=F_c+m_bc_b(T_c-T_s)\dot\alpha,\\
+    \alpha m_bc_b\dot T_s&=F_s,
+        &&\dot\alpha<0.
+\end{aligned}
+\right.
+\label{eq:q1-human-balance}
+\end{equation}
+当 $\dot\alpha\geq0$ 时，等效质量由核心流向皮肤，较热质量进入皮肤后产生混合热；
+当 $\dot\alpha<0$ 时，较冷质量由皮肤回流核心。程序将
+$\dot\alpha=\alpha_T\dot T_s$ 代入式~\eqref{eq:q1-human-balance}，按迁移方向解析求出
+$\dot T_c$ 与 $\dot T_s$，从而保持方程组显式且避免重复计入血流携热。
+
+呼吸热损失由潜热和显热组成：
+\begin{equation}
+    q_{\mathrm{res}}
+    =0.0023M_0(44-p_a)+0.0014M_0(34-T_a),
+    \label{eq:q1-respiration}
+\end{equation}
+其中 $p_a$ 以 Torr 计。取 $p_a=0$、$T_a=-40\,^{\circ}\mathrm C$，得到
+$q_{\mathrm{res}}=14.336\,\mathrm{W/m^2}$。
+
+\subsubsection{三层防护服瞬态传热模型}
+
+设第 $i$ 层的厚度、导热系数、密度和比热分别为
+$\delta_i,k_i,\rho_i,c_i$。服装材料面积取
+$A_m=1.25A_b=2.065125\,\mathrm{m^2}$，各层质量为
+$m_i=\rho_i\delta_iA_m$；各界面热流密度统一按人体有效传热面积 $A_b$ 进入能量方程。
+皮肤至内层、相邻材料中面之间以及外层至环境的单位面积热阻分别为
+\begin{equation}
+\begin{aligned}
+    r_{s1}&=\frac{1}{h_{\mathrm{in}}}+\frac{\delta_1}{2k_1},\\
+    r_{12}&=\frac{\delta_1}{2k_1}+\frac{\delta_2}{2k_2},\\
+    r_{23}&=\frac{\delta_2}{2k_2}+\frac{\delta_3}{2k_3},\\
+    r_{3a}&=\frac{\delta_3}{2k_3}+\frac{1}{h_o},\qquad
+    h_o=2.38|T_3-T_a|^{0.25}.
+\end{aligned}
+\label{eq:q1-resistances}
+\end{equation}
+相应热流密度为
+\begin{equation}
+    q_{s1}=\frac{T_s-T_1}{r_{s1}},\quad
+    q_{12}=\frac{T_1-T_2}{r_{12}},\quad
+    q_{23}=\frac{T_2-T_3}{r_{23}},\quad
+    q_{3a}=\frac{T_3-T_a}{r_{3a}}.
+    \label{eq:q1-clothing-flux}
+\end{equation}
+
+\subsubsection{相变层表观比热模型}
+
+设附件 DSC 原始放热信号为 $q_{\mathrm{DSC}}(T)$。先取其幅值，并用数据区间
+$[T_L,T_U]=[14.05,26.018]\,^{\circ}\mathrm C$ 两端点建立线性基线 $b(T)$，得到纯相变峰
+\begin{equation*}
+    q_{\mathrm{ex}}(T)=\max\{|q_{\mathrm{DSC}}(T)|-b(T),0\}.
+\end{equation*}
+对离散数据采用 PCHIP 保形插值，并在数据区间外令 $q_{\mathrm{ex}}(T)=0$。当扫描速率
+$\beta$ 以 $\mathrm{K/min}$ 计时，相变层表观比热为
+\begin{equation}
+    c_{\mathrm{eff}}(T)=c_2+\frac{60000}{\beta}q_{\mathrm{ex}}(T).
+    \label{eq:q1-apparent-cp}
+\end{equation}
+取 $c_2=2400\,\mathrm{J/(kg\,K)}$、$\beta=10\,\mathrm{K/min}$，由当前 DSC 数据积分得
+\begin{equation}
+    L_{\mathrm{DSC}}=\frac{60000}{\beta}
+    \int_{T_L}^{T_U}q_{\mathrm{ex}}(T)\,\mathrm dT
+    =122.313\ \mathrm{kJ/kg}.
+    \label{eq:q1-latent-heat}
+\end{equation}
+相变潜热已经包含在式~\eqref{eq:q1-apparent-cp} 中，因此不再设置额外放热源。
+
+\subsubsection{耦合控制方程与初始条件}
+
+取状态向量
+$\bm y=[T_c,T_s,T_1,T_2,T_3]^{\mathsf T}$。人体两节点按
+式~\eqref{eq:q1-human-balance} 求解，三层服装满足
+\begin{equation}
+\left\{
+\begin{aligned}
+    m_1c_1\dot T_1&=A_b(q_{s1}-q_{12}),\\
+    m_2c_{\mathrm{eff}}(T_2)\dot T_2&=A_b(q_{12}-q_{23}),\\
+    m_3c_3\dot T_3&=A_b(q_{23}-q_{3a}).
+\end{aligned}
+\right.
+\label{eq:q1-clothing-balance}
+\end{equation}
+环境边界和基准初值为
+\begin{equation}
+    T_a(t)=-40\,^{\circ}\mathrm C,\qquad
+    \bm y(0)=[37,37,37,37,37]^{\mathsf T}\,^{\circ}\mathrm C.
+    \label{eq:q1-initial-state}
+\end{equation}
+由此得到皮肤质量比例初值 $\alpha(0)=0.15$。
 \subsection {模型求解和结果分析}
+\subsubsection{数值求解与阈值定位}
 
+采用自适应 RK45 方法求解式~\eqref{eq:q1-human-balance} 和
+式~\eqref{eq:q1-clothing-balance}，基准计算设置相对误差
+$10^{-7}$、绝对误差 $10^{-9}$，最大内部步长为 $5\,\mathrm s$，计算上限为
+$24\,\mathrm h$。定义下降方向事件函数
+\begin{equation*}
+    g_{15}(t,\bm y)=T_s-15,\qquad
+    g_{10}(t,\bm y)=T_s-10,
+\end{equation*}
+其首次过零时刻分别记为 $t_{15}$ 和 $t_{10}$；触发 $10\,^{\circ}\mathrm C$ 事件后终止
+积分。该处理直接利用求解器的连续延拓定位阈值，不受统一输出间隔的限制。
+
+\subsubsection{求解结果与分析}
+
+表~\ref{tab:q1-main-results} 给出基准工况的阈值事件结果。
+\begin{table}[H]
+    \centering
+    \caption{问题一基准工况阈值事件结果}
+    \label{tab:q1-main-results}
+    \begin{tabular}{ccccc}
+        \toprule[1.5pt]
+        皮肤温度阈值/$^{\circ}\mathrm C$ & 时刻/s & 时刻/min & 核心温度/$^{\circ}\mathrm C$
+        & 皮肤质量比例\\
+        \midrule[1pt]
+        15 & 40725.205 & 678.753 & 26.511 & 0.6658\\
+        10 & 59983.471 & 999.725 & 21.041 & 0.7283\\
+        \bottomrule[1.5pt]
+    \end{tabular}
+\end{table}
+
+因此，平均皮肤温度在约 $678.75\,\mathrm{min}$，即 $11.31\,\mathrm h$ 后下降至
+$15\,^{\circ}\mathrm C$，此后户外工作开始出现困难；约 $999.72\,\mathrm{min}$，即
+$16.66\,\mathrm h$ 后达到 $10\,^{\circ}\mathrm C$ 危险阈值。随着皮肤降温，血流量下降，
+式~\eqref{eq:q1-alpha} 给出的皮肤等效质量比例由 0.15 增至 0.7283，较大的外围热容量减缓了
+后期皮肤温度下降，同时核心温度也持续降低。
+
+相变层总质量为 $0.4562\,\mathrm{kg}$，由 DSC 曲线对应的可释放潜热约为
+$55.80\,\mathrm{kJ}$。由于服装外层在初始时刻直接承受 $77\,\mathrm K$ 温差，相变层约在
+$55\,\mathrm s$ 进入 DSC 有效温区，并在约 $235\,\mathrm s$ 完成潜热释放；到两个皮肤
+温度阈值时，相变层温度已分别降至 $-19.379\,^{\circ}\mathrm C$ 和
+$-21.021\,^{\circ}\mathrm C$。这说明当前厚度和初始条件下，相变材料主要缓冲进入低温环境
+后的早期热冲击，长期坚持时间更多地受人体产热和内、外侧换热条件控制。
+
+对主要参数作 $\pm10\%$ 单因素扰动，结果见表~\ref{tab:q1-sensitivity}。
+\begin{table}[H]
+    \centering
+    \small
+    \caption{问题一单因素敏感性结果}
+    \label{tab:q1-sensitivity}
+    \begin{tabular}{cccccc}
+        \toprule[1.5pt]
+        参数 & $-10\%$ 时 $\Delta t_{15}$ & $+10\%$ 时 $\Delta t_{15}$
+        & $-10\%$ 时 $\Delta t_{10}$ & $+10\%$ 时 $\Delta t_{10}$
+        & $|S_{t_{15}}|$\\
+        \midrule[1pt]
+        $h_{\mathrm{in}}$ & $+16.06\%$ & $-11.57\%$ & $+16.91\%$ & $-11.93\%$ & 1.381\\
+        $M_0$ & $-8.27\%$ & $+10.21\%$ & $-9.76\%$ & $+12.50\%$ & 0.924\\
+        $\lambda_{\mathrm{out}}$ & $+7.30\%$ & $-5.68\%$ & $+7.71\%$ & $-5.93\%$ & 0.649\\
+        $\beta$ & $+0.034\%$ & $-0.027\%$ & $+0.023\%$ & $-0.018\%$ & 0.003\\
+        \bottomrule[1.5pt]
+    \end{tabular}
+\end{table}
+
+内侧换热系数的归一化敏感度绝对值最大：$h_{\mathrm{in}}$ 增大使皮肤与服装之间的
+热阻减小，因而两个阈值均明显提前。基础代谢率通过净产热直接延长坚持时间，外侧自然
+对流强度则通过增大服装向环境的散热使坚持时间缩短。扫描速率扰动对阈值时刻的影响不足
+$0.04\%$，与相变过程仅占总暴露时长前几分钟的结果一致。另将初始皮肤温度改为
+$33.7\,^{\circ}\mathrm C$ 后，$t_{15}$ 与 $t_{10}$ 分别降低 $1.95\%$ 和 $1.32\%$，
+说明基准暖初值会带来一定程度的乐观估计，但不改变主要敏感参数的排序。
 \subsection{模型检验}
+\subsubsection{能量守恒检验}
 
+相变层以表观焓计算储能，并将人体及三层服装的总内能记为 $U_{\mathrm{all}}$。理论上应满足
+\begin{equation}
+    \frac{\mathrm dU_{\mathrm{all}}}{\mathrm dt}
+    =A_b\left(M_0-q_{\mathrm{res}}-q_{3a}\right).
+    \label{eq:q1-energy-audit}
+\end{equation}
+对式~\eqref{eq:q1-energy-audit} 采用累计积分审计，基准计算的最大绝对能量残差为
+$22.51\,\mathrm J$，相对误差为 $4.26\times10^{-6}$；在严格容差计算中，最大残差进一步
+降至 $0.284\,\mathrm J$，相对误差为 $5.38\times10^{-8}$。这表明各内部热流、相变焓及
+核心--皮肤质量迁移焓在数值上保持平衡。
+
+\subsubsection{数值收敛检验}
+
+将相对误差和绝对误差分别收紧至 $10^{-9}$ 与 $10^{-11}$，并把最大步长由
+$5\,\mathrm s$ 减小为 $1\,\mathrm s$。严格计算得到
+$t_{15}=40725.278\,\mathrm s$、$t_{10}=59983.514\,\mathrm s$，与基准结果的差值分别仅为
+$0.137\,\mathrm s$ 和 $0.234\,\mathrm s$，相对阈值时间均小于 $4\times10^{-6}$。因此，
+基准步长和误差容限已经能够稳定定位两个温度阈值。
 
 
 
