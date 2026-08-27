@@ -41,6 +41,8 @@ class ModelParameters:
     h_in_W_m2K: float = 3.0
     lambda_out: float = 1.0
     dsc_scan_rate_K_min: float = 10.0
+    blood_flow_time_constant_s: float = 173.0
+    initial_skin_blood_flow_L_m2_h: float = 6.3
     layer1: MaterialLayer = MaterialLayer(0.7e-3, 4803.8, 0.068, 208.0)
     pcm_layer: MaterialLayer = MaterialLayer(0.4e-3, 2400.0, 0.060, 552.3)
     layer3: MaterialLayer = MaterialLayer(0.3e-3, 5463.2, 0.0527, 300.0)
@@ -98,7 +100,11 @@ class ModelParameters:
             "h_in_W_m2K": self.h_in_W_m2K,
             "lambda_out": self.lambda_out,
             "dsc_scan_rate_K_min": self.dsc_scan_rate_K_min,
+            "blood_flow_time_constant_s": self.blood_flow_time_constant_s,
+            "initial_skin_blood_flow_L_m2_h": self.initial_skin_blood_flow_L_m2_h,
         }
         invalid = [name for name, value in positive.items() if not value > 0.0]
         if invalid:
             raise ValueError(f"Parameters must be positive: {invalid}")
+        if not 0.5 <= self.initial_skin_blood_flow_L_m2_h <= 90.0:
+            raise ValueError("Initial skin blood flow must be within [0.5, 90] L/(m2 h)")
