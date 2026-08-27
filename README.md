@@ -60,5 +60,5 @@ python -m pip install -r requirements.txt
 python -m src.问题一
 ```
 
-程序会从 `problem/attachments/附件1 放热能力数据.xlsx` 读取真实 DSC 数据，执行五节点主模型、严格容差复核和指定的单因素敏感性分析，最终 CSV 保存在 `results/outputs/problem1/`。
+程序会从 `problem/attachments/附件1 放热能力数据.xlsx` 读取真实 DSC 数据，执行六状态动态皮肤血流主模型、五状态准稳态极限对照、严格容差复核、指定的单因素敏感性分析以及血流响应时间结构敏感性分析，最终 CSV 保存在 `results/outputs/problem1/`。
 
