@@ -860,9 +860,218 @@ $$
 $$
 
 \subsection {模型求解与结果分析}
+\subsubsection{初始条件、数值方法与事件判定}
+初始时假设人体与服装已在室内达到相同温度，因此取
+\begin{equation}
+T_c(0)=T_s(0)=T_1(0)=T_2(0)=T_3(0)=37\,{}^\circ\mathrm C.
+\end{equation}
+初始实际皮肤血流量取静息基准值
+\begin{equation}
+\dot V_{bl}(0)=6.3\,\mathrm{L/(m^2h)}.
+\end{equation}
+
+本文采用 \texttt{solve\_ivp} 对六状态方程组进行数值积分，基准求解器选择
+RK45，相对误差限和绝对误差限分别设为 $10^{-7}$ 和 $10^{-9}$，最大积分步长
+取 $5\,\mathrm s$。为识别皮肤温度向下穿越两个阈值的时刻，分别定义事件函数
+\begin{equation}
+g_{15}(t,\bm{x})=T_s(t)-15,
+\end{equation}
+\begin{equation}
+g_{10}(t,\bm{x})=T_s(t)-10.
+\end{equation}
+两个事件函数的检测方向均设为 $-1$，只记录降温过程中的穿越。事件时间由求解器
+的连续插值确定，而非由每 $5\,\mathrm s$ 输出一次的离散采样点近似读取；若阈值在
+$24\,\mathrm h$ 的计算范围内未被触发，则将相应事件记为“未达到”。
+
 \subsubsection{返回时间与阈值状态}
+在环境温度为 $-40\,{}^\circ\mathrm C$、风速为 $3\,\mathrm{m/s}$ 且实验者进行轻微运动的条件下，皮肤温度首次下降至 $15\,{}^\circ\mathrm C$ 的时间为
 
+$$
+t_{15}=17565.379485\,\mathrm s=292.756325\,\mathrm{min}.
+$$
+因此，在本文模型与安全阈值定义下，实验者应在室外停留约 $293\,\mathrm{min}$ 时返回室内。
 
+皮肤温度继续下降至 $10\,{}^\circ\mathrm C$ 的时间为
+
+$$
+t_{10}=26317.359901\,\mathrm s=438.622665\,\mathrm{min}.
+$$
+
+除皮肤温度外，阈值时刻的人体核心、PCM 和皮肤血流状态如表
+\ref{tab:q2-threshold-state} 所示。
+\begin{table}[H]
+    \centering
+    \small
+    \caption{问题二主工况的阈值时间与关键状态}
+    \label{tab:q2-threshold-state}
+    \begin{tabular}{cccccc}
+        \toprule[1.5pt]
+        阈值 & 时刻/s & 时刻/min & $T_c/{}^\circ\mathrm C$
+        & $\dot V_{bl}/[\mathrm{L/(m^2h)}]$ & $\xi$\\
+        \midrule[1pt]
+        $T_s=15\,{}^\circ\mathrm C$ & 17565.379 & 292.756 & 31.732 & 0.612 & 1.000\\
+        $T_s=10\,{}^\circ\mathrm C$ & 26317.360 & 438.623 & 26.260 & 0.500 & 1.000\\
+        \bottomrule[1.5pt]
+    \end{tabular}
+\end{table}
+由表可见，达到 $15\,{}^\circ\mathrm C$ 阈值时核心温度已降至
+$31.732\,{}^\circ\mathrm C$，实际皮肤血流也已接近血管收缩状态下的低值；达到
+$10\,{}^\circ\mathrm C$ 时核心温度进一步降至 $26.260\,{}^\circ\mathrm C$。
+因此，$t_{10}$ 仅用于刻画更低温度风险边界，不能作为建议继续工作的时间。
+
+\subsubsection{温度演化、外侧对流与 PCM 放热结果}
+问题二完整工况下五个温度节点的演化如图~\ref{fig:q2-six-state-temperature} 所示。
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.84\textwidth]{../results/figures/fig4_q2_six_state_temperature.pdf}
+    \caption{问题二完整工况下人体与服装温度演化}
+    \label{fig:q2-six-state-temperature}
+\end{figure}
+
+外层隔热层、PCM 层和内层织物进入极寒环境后迅速降温，并在较短时间内接近各自
+的准稳态温度；皮肤和核心温度则在人体较大热容量及核心--皮肤换热的共同作用下缓慢下降。
+
+将 $v=3\,\mathrm{m/s}$ 代入强制对流经验式可得
+\begin{equation}
+h_{\rm forced}=12.1\sqrt{3}=20.957815\,\mathrm{W/(m^2K)}.
+\end{equation}
+时间序列中自然对流换热系数的最大值为
+$7.050171\,\mathrm{W/(m^2K)}$，始终小于强制对流换热系数，因此整个计算时段的
+外侧换热均由强制对流控制。与问题一相比，服装外表面的对流热阻显著减小，形成了
+问题二降温加快的主要外部原因。
+
+PCM 节点约在 $20\,\mathrm s$ 时进入相变区，并约在 $80\,\mathrm s$ 时完成相变。
+由 PCM 质量与单位质量潜热相乘，潜热释放上限为
+\begin{equation}
+Q_{\rm PCM,max}=m_2L=55802.490579\,\mathrm J.
+ \end{equation}
+两个阈值时刻的相变进度均为 $\xi=1$，说明 PCM 潜热在暴露早期已经全部释放。
+
+为直观比较两种工况，图~\ref{fig:q1-q2-skin-comparison} 给出了问题一与问题二的
+皮肤温度轨迹。问题二曲线在离开初始状态后始终低于问题一曲线，并更早到达两个阈值，
+说明运动代谢增加虽能补充热量，却未能抵消有风条件和衣内空气扰动造成的额外散热。
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.84\textwidth]{../results/figures/fig5_q1_q2_skin_temperature_comparison.pdf}
+    \caption{问题一与问题二的皮肤温度演化对比}
+    \label{fig:q1-q2-skin-comparison}
+\end{figure}
+
+\subsubsection{外界风、衣内换热与代谢的效应拆分}
+为识别问题二三项修正的独立作用，设置 Q1、W、I、M 和 Q2 五个工况。其中 Q1
+为问题一无风静止基线；W 仅加入外界风；I 仅将内侧对流换热系数提高至
+$4.0\,\mathrm{W/(m^2K)}$；M 仅将代谢率提高至 $93\,\mathrm{W/m^2}$；Q2
+同时引入全部问题二条件。以 Q1 为基准，第 $j$ 个工况的相对变化率定义为
+\begin{equation}
+\Delta t_{15}^{(j)}=
+\frac{t_{15}^{(j)}-t_{15}^{(\mathrm{Q1})}}{t_{15}^{(\mathrm{Q1})}}\times100\%.
+\end{equation}
+各工况结果见表~\ref{tab:q2-effect-decomposition} 和图
+\ref{fig:q2-effect-decomposition}。
+
+\begin{table}[H]
+    \centering
+    \small
+    \caption{问题二各修正因素对返回时间的效应拆分}
+    \label{tab:q2-effect-decomposition}
+    \begin{tabular}{clrr}
+        \toprule[1.5pt]
+        工况 & 条件变化 & $t_{15}$/min & 相对 Q1 变化\\
+        \midrule[1pt]
+        Q1 & 无风，$h_{\rm in}=3.0$，$M=70$ & 678.621 & $0$\\
+        W  & 仅令 $v=3\,\mathrm{m/s}$ & 379.387 & $-44.094\%$\\
+        I  & 仅令 $h_{\rm in}=4.0\,\mathrm{W/(m^2K)}$ & 481.040 & $-29.115\%$\\
+        M  & 仅令 $M=93\,\mathrm{W/m^2}$ & 991.325 & $+46.079\%$\\
+        Q2 & 同时引入全部问题二条件 & 292.756 & $-56.860\%$\\
+        \bottomrule[1.5pt]
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.96\textwidth]{../results/figures/fig6_q2_t15_effect_decomposition.pdf}
+    \caption{问题二各修正因素的 $t_{15}$ 效应拆分}
+    \label{fig:q2-effect-decomposition}
+\end{figure}
+
+单独加入外界风使 $t_{15}$ 缩短 $44.094\%$，单独提高内侧换热系数使其缩短
+$29.115\%$，而仅提高代谢率可使其延长 $46.079\%$。完整 Q2 工况相较 Q1
+缩短 $56.860\%$，表明运动代谢补热不足以抵消外界风致强制对流和衣内换热增强
+造成的综合热损失。三种单因素变化率不能直接线性相加，因为热流随节点温差变化，
+皮肤血流及人体热容量动态调整，PCM 有效热容也随温度变化，Q2 反映的是这些机制
+非线性耦合后的净效应。
+\subsubsection{参数敏感性与稳健性分析}
+为消除参数量纲差异，分别对风速 $v$、内侧换热系数 $h_{\rm in}$、代谢率 $M$
+和 DSC 扫描速率 $\beta$ 作 $\pm10\%$ 单因素扰动，并定义中心无量纲敏感度
+\begin{equation}
+S_{t_{15}}^{(p)}=
+\frac{t_{15}(1.1p)-t_{15}(0.9p)}{0.2\,t_{15}(p)}.
+\end{equation}
+计算结果见表~\ref{tab:q2-sensitivity}。
+\begin{table}[H]
+    \centering
+    \small
+    \caption{问题二返回时间的局部无量纲敏感度}
+    \label{tab:q2-sensitivity}
+    \begin{tabular}{ccccc}
+        \toprule[1.5pt]
+        参数 & $S_{t_{15}}$ & $|S_{t_{15}}|$ & $S_{t_{10}}$ & 影响方向\\
+        \midrule[1pt]
+        $h_{\rm in}$ & $-1.395080$ & $1.395080$ & $-1.408709$ & 增大则阈值提前\\
+        $M$           & $ 0.489214$ & $0.489214$ & $ 0.616572$ & 增大则阈值延后\\
+        $v$           & $-0.135420$ & $0.135420$ & $-0.135291$ & 增大则阈值提前\\
+        $\beta$       & $-0.002216$ & $0.002216$ & $-0.001501$ & 增大则阈值略提前\\
+        \bottomrule[1.5pt]
+    \end{tabular}
+\end{table}
+
+按 $|S_{t_{15}}|$ 排序，局部敏感性依次为内侧换热系数、代谢率、风速和 DSC
+扫描速率。效应拆分中风的全局影响大于内侧换热，而局部敏感性中
+$h_{\rm in}$ 最高，二者并不矛盾：前者比较从无风到 $3\,\mathrm{m/s}$ 的工况
+切换，后者只考察 Q2 基准点附近的 $\pm10\%$ 小扰动。由于基准工况中强制对流
+已占主导，风速的小幅改变只通过平方根关系作用于换热系数；相较之下，
+$h_{\rm in}$ 直接改变皮肤至内层织物的主要串联热阻，因此局部影响更强。
+
+对血流响应时间常数分别取 $60\,\mathrm s$、$173\,\mathrm s$ 和
+$200\,\mathrm s$，所得返回时间依次为
+\begin{equation}
+t_{15}=17572.533\,\mathrm s,\quad17565.379\,\mathrm s,\quad17563.797\,\mathrm s.
+\end{equation}
+三者的最大差异不足 $9\,\mathrm s$。
+这表明返回时间对血流响应时间尺度的合理变化较为稳健，而内侧换热和代谢率的标定
+更值得优先关注。
+
+\subsubsection{能量守恒与求解器收敛验证}
+为检验各节点方程的整体一致性，将人体核心、皮肤和三层服装的储能相加，定义系统
+总储能
+\begin{equation}
+U_{\rm tot}=U_c+U_s+U_1+U_2+U_3,
+\end{equation}
+其中 PCM 储能通过表观热容对应的焓积分计算。从初始时刻到 $t$ 的外部理论净输入
+为代谢产热减去呼吸散热和外层向环境的散热，由此定义能量残差
+\begin{equation}
+R_E(t)=U_{\rm tot}(t)-U_{\rm tot}(0)
+-\int_0^t A_h\left(M-q_{\rm res}-q_{3\infty}\right)\,\mathrm d\tau.
+\end{equation}
+基准计算的最大绝对能量残差为 $1.914783\,\mathrm J$，相对能量误差为
+$3.809929\times10^{-7}$。与全过程的能量交换规模相比，该误差可以忽略，说明
+节点热流、动态质量重分配和 PCM 焓值在数值实现中保持一致。
+
+进一步采用 DOP853 求解器，并将相对误差限、绝对误差限和最大步长分别加严至
+$10^{-9}$、$10^{-11}$ 和 $1\,\mathrm s$。严格解与基准 RK45 的事件时间差为
+\begin{equation}
+\left|t_{15}^{\rm DOP853}-t_{15}^{\rm RK45}\right|=0.001306\,\mathrm s,
+\end{equation}
+\begin{equation}
+\left|t_{10}^{\rm DOP853}-t_{10}^{\rm RK45}\right|=0.001332\,\mathrm s.
+\end{equation}
+该差异远小于论文采用的分钟级报告精度。能量守恒检查验证了方程实现的一致性，
+双求解器比较验证了事件时间的数值收敛性，两项结果共同支持问题二求解结果的可靠性。
+
+综上，在 $-40\,{}^\circ\mathrm C$、$3\,\mathrm{m/s}$ 风速和轻微运动条件下，
+实验者的预测返回时间为约 $293\,\mathrm{min}$，较问题一无风静止工况缩短
+$56.86\%$。该结论适用于本文给定参数和集总传热假设，不应外推为不考虑个体差异、
+局部风场及其他生理反应时的无条件医学安全时限。
 
 \section{问题三模型的建立与求解}
 
