@@ -764,10 +764,103 @@ $7.2\,\mathrm s$、$3.5\,\mathrm s$ 和 $2.8\,\mathrm s$。服装层厚度处于
 时间尺度要求。
 \section{问题二模型的建立与求解}
 
-\subsection {模型建立}
+\subsection {问题分析}
+问题二要求在问题一模型的基础上，进一步考虑空气流动和人体运动对传热过程的影响。我们需要修正人体表面—内层织物和外层隔热层—外部环境两个空气边界层的对流换热条件，同时，轻微运动还会提高人体代谢产热，并相应增加呼吸显热与潜热损失。最终得到该情况下的室外停留时间。在此基础上重新求解人体—防护服耦合传热过程，得到实验者在该工况下的室外安全停留时间。
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/问题二机制图.pdf}
+    \caption{问题二优化机制图}
+    \label{q2_flow}
+\end{figure}
+\subsection {有风轻微运动条件下低温防护服耦合传热模型的建立}
 
-\subsection {模型求解}
+\subsubsection{轻微运动下的内侧对流修正}
+轻微运动会使皮肤与内层织物之间的空气层发生扰动。根据附件给出的轻微运动换热参数，将内侧等效对流换热系数取为
 
+$$
+h_{\rm in}=4.0\,\mathrm{W/(m^2K)}.
+$$
+
+从皮肤表面到内层织物中心，热量首先经过衣内空气层对流，再经过内层织物的半层导热。由于两段传热过程串联，单位面积总热阻为
+
+\begin{equation}
+r_{s1}=\frac{1}{h_{\rm in}}+\frac{\delta_1}{2k_1}.
+\end{equation}
+
+根据热流密度等于温差除以热阻，可得皮肤向内层织物的热流密度：
+
+\begin{equation}
+q_{s1}=\frac{T_s-T_1}{r_{s1}}.
+\end{equation}
+
+\subsubsection{外界风作用下的外侧混合对流}
+由于长城站存在$v=3m/s$的外部风速，外层隔热层与环境之间的换热需要使用强制对流经验式进行定量表示。我们使用Fanger 热舒适模型，有：
+
+\begin{equation}
+h_{\rm forced}=12.1\sqrt v,
+\end{equation}
+
+该关系表征外部气流不断破坏服装表面的热边界层，使边界层厚度减小，从而增强服装表面与环境之间的对流换热。
+
+自然对流和强制对流可能同时存在。按照Fanger/ASHRAE 对流换热模型，当二者同时存在时，取其中较大的一个作为实际对流换热系数 ：
+\begin{equation}
+h_{\rm out}=\max\left\{h_{\rm nat},h_{\rm forced}\right\},
+\end{equation}
+意味着实际换热由占主导地位的对流机制控制。
+
+从外层隔热材料中心到环境，传热过程由外层材料半层导热和表面对流串联组成，故单位面积总热阻为
+
+\begin{equation}
+r_{3\infty}=\frac{\delta_3}{2k_3}+\frac{1}{h_{\rm out}}.
+\end{equation}
+最终，外层向环境的热流密度由外层—环境温差除以该总热阻得到：
+\begin{equation}
+q_{3\infty}=\frac{T_3-T_\infty}{r_{3\infty}}.
+\end{equation}
+
+\subsubsection{轻微运动下的代谢与呼吸散热模型}
+轻微运动会提高人体单位面积代谢率。ANSI/ASHRAE Standard 55 将“站立、轻度活动”列为约 $1.6\,\mathrm{met}$ 的典型活动水平[3]。按照 $1\,\mathrm{met}=58.2\,\mathrm{W/m^2}$ 的换算关系，该参数可由下式得到：
+
+$$
+M_{\rm act}=1.6\times58.2\approx93\,\mathrm{W/m^2}.
+$$
+
+因此本文令 $M=M_{\rm act}$。该取值用于将题目中的“轻微运动”转化为可计算的代谢强度，是标准活动表中的典型值，并非实验者的个体实测值。
+
+代谢率升高会增加人体内部产热，同时也会提高呼吸散热。本文沿用 Gagge/Pierce 两节点模型的呼吸热损失经验关系[4]。其中呼吸潜热损失由代谢率和空气水汽分压共同决定：
+
+$$
+q_{\rm res,lat}=0.0023M(44-p_a).
+$$
+
+呼吸显热损失由代谢率和环境温度共同决定：
+
+$$
+q_{\rm res,sens}=0.0014M(34-T_\infty).
+$$
+
+上述关系中的经验系数 $0.0023$ 和 $0.0014$ 均来自该两节点人体热平衡模型[4]；使用时 $M$ 以 $\mathrm{W/m^2}$ 计，$p_a$ 以 $\mathrm{Torr}$ 计，$T_\infty$ 以 $^\circ\mathrm C$ 计。由于两项均随 $M$ 变化，修改代谢率后必须同步重新计算呼吸潜热与显热损失。
+
+将两部分相加，得到单位面积呼吸总散热：
+
+$$
+q_{\rm res}=q_{\rm res,lat}+q_{\rm res,sens}.
+$$
+
+因此，人体核心节点接收的总代谢功率为
+
+$$
+\dot Q_{\rm met}=A_hM,
+$$
+
+扣除呼吸散热后的净热输入为
+
+$$
+\dot Q_{\rm net}=A_h(M-q_{\rm res}).
+$$
+
+\subsection {模型求解与结果分析}
+\subsubsection{返回时间与阈值状态}
 
 
 
