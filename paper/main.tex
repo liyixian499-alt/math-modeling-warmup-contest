@@ -222,11 +222,7 @@ $100\,\mathrm{kg}$，且每经过 $10\,\mathrm s$ 下降 $0.5\,\mathrm{kg}$；�
     \item 按题意忽略辐射换热。无风条件下仍保留外表面自然对流，忽略服装含湿和结霜
     对热物性的影响。
     \item 人体质量和等效比热保持不变；静止工况只计基础代谢产热与呼吸散热，忽略
-    颤抖产热、出汗及汗液蒸发。
-    \item 实际皮肤血流以一阶过程响应皮肤冷刺激；皮肤质量比例表示人体热学分区，
-    分区边界变化时按上游节点温度计入等效质量迁移焓。
-    \item PCM 只经历一次降温凝固过程，DSC 放热峰全部计入表观比热，不再设置独立
-    放热源，并忽略相变滞回。
+    颤抖产热、出汗及汗液蒸发；PCM 在本工况下只经历一次降温凝固过程，忽略相变滞回。
 \end{enumerate}
 \section{符号说明}
 \begin{table}[!h]
@@ -262,19 +258,37 @@ $100\,\mathrm{kg}$，且每经过 $10\,\mathrm s$ 下降 $0.5\,\mathrm{kg}$；�
 
 本问要求预测实验者在 $-40\,^{\circ}\mathrm C$、静止无风条件下的皮肤温度变化，
 并确定皮肤平均温度首次降至 $15\,^{\circ}\mathrm C$ 和
-$10\,^{\circ}\mathrm C$ 的时刻。人体代谢热由核心传向皮肤，再依次经过三层防护服
-散向环境；相变层在降温凝固时释放潜热，外表面自然对流系数随温差改变，因此需要
-建立人体热调节与服装非稳态传热相耦合的模型。
+$10\,^{\circ}\mathrm C$ 的时刻。人体代谢产生的热量由核心传至皮肤，再依次经过内层、
+PCM 层和外层散向环境。该过程同时受到皮肤温度引起的血流调节、PCM 凝固潜热以及
+温差相关自然对流的影响，因而需要建立人体热调节与服装非稳态传热相耦合的模型。
 
-原五状态模型把皮肤血流视为皮肤温度的瞬时代数函数，难以描述血管收缩的响应迟滞。
-为此，本文将实际皮肤血流量作为第六个状态，以一阶过程描述其向目标平衡血流的变化，
-再由实际血流确定核心--皮肤传热、人体热学分区及质量迁移焓。结合三层服装 RC 网络
-和 PCM 表观热容模型求解六状态常微分方程，两个皮肤温度阈值的首次下降穿越时刻即为
-本问所求的工作困难时刻与危险时刻。
+本文以人体核心、皮肤和三层服装温度描述热量传递，以实际皮肤血流描述人体动态调节，
+建立六状态常微分方程。求得皮肤温度轨迹后，将两个阈值的首次下降穿越时刻分别作为
+正常工作开始受到影响的时刻和危险时刻。
 
 \subsection{模型建立}
 
-\subsubsection{人体与服装的热学参数}
+\subsubsection{总体传热结构}
+
+建模始终沿人体内部到外界环境的径向传热路径推进：
+\[
+\boxed{
+T_c\longrightarrow T_s\longrightarrow T_1\longrightarrow T_2
+\longrightarrow T_3\longrightarrow T_\infty
+}.
+\]
+其中 $T_c,T_s$ 分别表示人体核心和平均皮肤温度，$T_1,T_2,T_3$ 分别表示内层织物、
+PCM 功能层和外层隔热层温度，$T_\infty$ 为环境边界温度。五个温度状态构成热量由内向
+外传递的主链；实际皮肤血流 $\dot V_{bl}$ 作为第六个状态，作用在核心--皮肤传热环节：
+\[
+T_s\longrightarrow \dot V_{bl,\mathrm{eq}}
+\longrightarrow \dot V_{bl}
+\longrightarrow (G_{cs},\alpha_s)
+\longrightarrow (q_{cs},C_c,C_s,\dot\alpha_s).
+\]
+因此，动态血流不是独立于传热链的另一套模型，而是核心热量向皮肤输送时的调节机制。
+
+\subsubsection{公共热学参数}
 
 采用 Stevenson 公式计算人体有效换热面积。身高 $h=170\,\mathrm{cm}$、体重
 $w=60\,\mathrm{kg}$ 时，有
@@ -284,16 +298,15 @@ A_h=0.0061h+0.0128w-0.1529=1.6521\,\mathrm{m^2}.
 服装实际用料面积取 $A_m=1.25A_h=2.0651\,\mathrm{m^2}$，只用于计算材料质量、
 热容量和潜热总量；各界面热流仍按 $A_h$ 计算。第 $i$ 层质量为
 \[
-m_i=\rho_iA_m\delta_i.
+m_i=\rho_iA_m\delta_i,
 \]
-代入附件参数得到
+由附件参数得到
 \[
 m_1=0.3007\,\mathrm{kg},\qquad
 m_2=0.4562\,\mathrm{kg},\qquad
 m_3=0.1859\,\mathrm{kg}.
 \]
-人体质量与等效比热分别取
-$m_b=60\,\mathrm{kg}$ 和
+人体质量和等效比热分别取 $m_b=60\,\mathrm{kg}$ 和
 $c_b=3490\,\mathrm{J/(kg\,K)}$，静止基础代谢率取
 $M_0=70\,\mathrm{W/m^2}$。极寒低湿条件下令水汽分压 $p_a=0$，呼吸热损失为
 \[
@@ -302,44 +315,127 @@ q_{\mathrm{res}}
 =14.336\,\mathrm{W/m^2}.
 \]
 
-\subsubsection{实际皮肤血流与人体热平衡}
+\subsubsection{核心节点热平衡}
 
-以 $33.7\,^{\circ}\mathrm C$ 为中性皮肤温度。当前皮肤温度对应的目标平衡血流为
+人体热量由核心节点产生。单位面积代谢产热扣除呼吸散热后，一部分改变核心储能，
+其余经核心--皮肤热流 $q_{cs}$ 输送至皮肤。核心节点的净输入功率记为
+\[
+F_c=A_h(M_0-q_{\mathrm{res}}-q_{cs}),\qquad
+q_{cs}=G_{cs}(T_c-T_s).
+\]
+其中 $G_{cs}$ 由实际皮肤血流决定。由于血流还会改变核心与皮肤的等效热学分区，
+核心温度方程需与下一节的动态血流和质量迁移焓共同确定。
+
+\subsubsection{皮肤节点与动态血流}
+
+以 $33.7\,^{\circ}\mathrm C$ 为中性皮肤温度，当前皮肤温度对应的目标平衡血流为
 \[
 \dot V_{bl,\mathrm{eq}}(T_s)
 =\operatorname{clip}\!\left(
 \frac{6.3}{1+0.5\max(0,33.7-T_s)},\,0.5,\,90
 \right).
 \]
-实际皮肤血流不能瞬时达到目标值，故用响应时间常数
-$\tau_{bl}=173\,\mathrm s$ 描述血管收缩的有限响应时间。实际血流进一步决定
-核心--皮肤传热系数和皮肤等效质量比例：
+实际血流以时间常数 $\tau_{bl}=173\,\mathrm s$ 向目标值变化：
 \[
-G_{cs}=5.28+1.163\dot V_{bl},\qquad
-\alpha_s=0.0417737+
-\frac{0.7451833}{\dot V_{bl}+0.585417}.
+\frac{\mathrm d\dot V_{bl}}{\mathrm dt}
+=\frac{\dot V_{bl,\mathrm{eq}}(T_s)-\dot V_{bl}}{\tau_{bl}}.
 \]
-于是
+实际血流进一步决定核心--皮肤传热系数和人体热学分区：
 \[
-q_{cs}=G_{cs}(T_c-T_s),\qquad
-C_c=(1-\alpha_s)m_bc_b,\qquad
-C_s=\alpha_sm_bc_b.
+\begin{aligned}
+G_{cs}&=5.28+1.163\dot V_{bl},\\
+\alpha_s&=0.0417737+
+\frac{0.7451833}{\dot V_{bl}+0.585417},\\
+C_c&=(1-\alpha_s)m_bc_b,\qquad C_s=\alpha_sm_bc_b.
+\end{aligned}
 \]
-这里 $\alpha_s$ 表示人体核心与外周组织的热学分区。由实际血流方程可直接得到
+这里 $\alpha_s$ 表示皮肤侧等效热学质量比例，并非真实组织发生宏观迁移。由血流方程可得
 \[
 \dot\alpha_s
 =-\frac{0.7451833}{(\dot V_{bl}+0.585417)^2}
 \frac{\dot V_{bl,\mathrm{eq}}-\dot V_{bl}}{\tau_{bl}}.
 \]
-当 $\dot\alpha_s>0$ 时，等效质量由核心划入皮肤，进入皮肤的质量按核心温度携带焓；
-当 $\dot\alpha_s<0$ 时，等效质量由皮肤划回核心，按皮肤温度携带焓。
-
-令
+皮肤一端接受核心热流 $q_{cs}$，另一端以 $q_{s1}$ 向内层织物传热，故其净输入功率为
 \[
-F_c=A_h(M_0-q_{\mathrm{res}}-q_{cs}),\qquad
-F_s=A_h(q_{cs}-q_{s1}),
+F_s=A_h(q_{cs}-q_{s1}).
 \]
-则动态皮肤血流与人体双节点的显式控制方程为
+当 $\dot\alpha_s>0$ 时，等效质量由核心划入皮肤，按核心温度携带焓；当
+$\dot\alpha_s<0$ 时，等效质量由皮肤划回核心，按皮肤温度携带焓。该修正保证热学分区
+变化时人体总内能守恒。
+
+\newpage
+\subsubsection{内层织物节点}
+
+热量由皮肤进入内层织物，再传向 PCM 功能层。皮肤--内层和内层--PCM 之间的单位面积
+热阻分别为
+\[
+r_{s1}=\frac{1}{h_{\mathrm{in}}}+\frac{\delta_1}{2k_1},\qquad
+r_{12}=\frac{\delta_1}{2k_1}+\frac{\delta_2}{2k_2},
+\]
+其中 $h_{\mathrm{in}}=3.0\,\mathrm{W/(m^2K)}$。相应热流密度为
+\[
+q_{s1}=\frac{T_s-T_1}{r_{s1}},\qquad
+q_{12}=\frac{T_1-T_2}{r_{12}}.
+\]
+由流入内层的热量减去流向 PCM 的热量，得到内层节点方程
+\[
+m_1c_1\dot T_1=A_h(q_{s1}-q_{12}).
+\]
+
+\subsubsection{PCM 功能层节点}
+
+PCM 功能层从内层吸收热量，并向外层传热。PCM--外层的单位面积热阻及热流密度为
+\[
+r_{23}=\frac{\delta_2}{2k_2}+\frac{\delta_3}{2k_3},\qquad
+q_{23}=\frac{T_2-T_3}{r_{23}}.
+\]
+为描述凝固放热，由附件 1 的 DSC 信号构造温度相关表观比热。将原始放热信号记为
+$q(T)$，以数据区间 $[14.05,26.018]\,^{\circ}\mathrm C$ 的首尾点连线 $b(T)$ 为
+显热基线，定义
+\[
+q_L(T)=\max(|q(T)|-b(T),0).
+\]
+离散峰形采用 PCHIP 保形插值。由无相变区基线信号和基础比热
+$c_2=2400\,\mathrm{J/(kg\,K)}$ 反演得到扫描速率
+$\beta=10\,\mathrm{K/min}$，从而
+\[
+c_{\mathrm{eff}}(T)=2400+\frac{60000}{\beta}q_L(T).
+\]
+在数据温区外令 $c_{\mathrm{eff}}=2400\,\mathrm{J/(kg\,K)}$。峰面积对应的潜热为
+\[
+L=\frac{60}{\beta}\int q_L(T)\,\mathrm dT=122.3\,\mathrm{kJ/kg},
+\]
+因此功能层最多可释放约 $m_2L=55.8\,\mathrm{kJ}$ 潜热。潜热已包含在
+$c_{\mathrm{eff}}(T)$ 中，不再叠加独立热源。PCM 节点方程为
+\[
+m_2c_{\mathrm{eff}}(T_2)\dot T_2=A_h(q_{12}-q_{23}).
+\]
+
+\subsubsection{外层隔热层及环境边界}
+
+热量由 PCM 功能层进入外层隔热层，最终通过自然对流散向环境。无风时外表面自然对流
+系数随温差变化：
+\[
+h_{\mathrm{out}}=2.38|T_3-T_\infty|^{0.25}.
+\]
+外层节点至环境的单位面积热阻和热流密度为
+\[
+r_{3\infty}=\frac{\delta_3}{2k_3}+\frac{1}{h_{\mathrm{out}}},\qquad
+q_{3\infty}=\frac{T_3-T_\infty}{r_{3\infty}}.
+\]
+外层节点方程为
+\[
+m_3c_3\dot T_3=A_h(q_{23}-q_{3\infty}).
+\]
+至此，核心产生的热量已沿皮肤、内层、PCM 和外层完整传递至环境。
+
+\subsubsection{六状态模型汇总}
+
+取状态向量
+\[
+\bm x(t)=[T_c,T_s,T_1,T_2,T_3,\dot V_{bl}]^{\mathsf T}.
+\]
+将前述各节点热平衡和动态血流方程联立，得到六状态主模型
 \begin{equation}
 \left\{
 \begin{aligned}
@@ -352,85 +448,28 @@ F_s=A_h(q_{cs}-q_{s1}),
 \dfrac{F_c}{C_c},
 \dfrac{F_s+m_bc_b(T_c-T_s)\dot\alpha_s}{C_s}
 \right),
-& \dot\alpha_s\geq0,\\[12pt]
+& \dot\alpha_s\geq0,\\[10pt]
 \left(
 \dfrac{F_c+m_bc_b(T_c-T_s)\dot\alpha_s}{C_c},
 \dfrac{F_s}{C_s}
 \right),
-& \dot\alpha_s<0.
-\end{cases}
-\end{aligned}
-\right.
-\label{eq:q1-human-system}
-\end{equation}
-式~\eqref{eq:q1-human-system} 中的质量迁移项使核心与皮肤之间重新划分热学质量时，
-人体总内能仍只受代谢、呼吸和皮肤向服装传热影响。
-
-\subsubsection{三层防护服传热与相变蓄热}
-
-皮肤至内层节点之间包括内侧换热热阻和半层织物热阻，相邻服装节点之间取两侧
-半层材料热阻。各段单位面积热阻为
-\[
-\begin{aligned}
-r_{s1}&=\frac{1}{h_{\mathrm{in}}}+\frac{\delta_1}{2k_1},&
-r_{12}&=\frac{\delta_1}{2k_1}+\frac{\delta_2}{2k_2},\\
-r_{23}&=\frac{\delta_2}{2k_2}+\frac{\delta_3}{2k_3},&
-r_{3\infty}&=\frac{\delta_3}{2k_3}+\frac{1}{h_{\mathrm{out}}},
-\end{aligned}
-\]
-其中 $h_{\mathrm{in}}=3.0\,\mathrm{W/(m^2K)}$，无风自然对流系数为
-\[
-h_{\mathrm{out}}=2.38|T_3-T_\infty|^{0.25}.
-\]
-相应热流密度写为
-\[
-q_{s1}=\frac{T_s-T_1}{r_{s1}},\quad
-q_{12}=\frac{T_1-T_2}{r_{12}},\quad
-q_{23}=\frac{T_2-T_3}{r_{23}},\quad
-q_{3\infty}=\frac{T_3-T_\infty}{r_{3\infty}}.
-\]
-
-附件 1 的 DSC 放热信号记为 $q(T)$。取信号绝对值，以数据区间
-$[14.05,26.018]\,^{\circ}\mathrm C$ 的首尾点连线 $b(T)$ 为显热基线，并定义
-\[
-q_L(T)=\max(|q(T)|-b(T),0).
-\]
-离散峰形采用 PCHIP 保形插值。由无相变区基线信号与基础比热
-$c_2=2400\,\mathrm{J/(kg\,K)}$ 反演得到扫描速率
-$\beta=10\,\mathrm{K/min}$，PCM 表观比热为
-\[
-c_{\mathrm{eff}}(T)
-=2400+\frac{60000}{\beta}q_L(T).
-\]
-在数据温区外令 $c_{\mathrm{eff}}=2400\,\mathrm{J/(kg\,K)}$。峰面积对应的潜热为
-\[
-L=\frac{60}{\beta}\int q_L(T)\,\mathrm dT
-=122.3\,\mathrm{kJ/kg},
-\]
-因此中间层最多可释放约 $m_2L=55.8\,\mathrm{kJ}$ 潜热。潜热已包含在
-$c_{\mathrm{eff}}(T)$ 中，控制方程中不再叠加独立热源。
-
-三层服装节点满足
-\begin{equation}
-\left\{
-\begin{aligned}
+& \dot\alpha_s<0,
+\end{cases}\\
 m_1c_1\dot T_1&=A_h(q_{s1}-q_{12}),\\
 m_2c_{\mathrm{eff}}(T_2)\dot T_2&=A_h(q_{12}-q_{23}),\\
 m_3c_3\dot T_3&=A_h(q_{23}-q_{3\infty}).
 \end{aligned}
 \right.
-\label{eq:q1-clothing-system}
+\label{eq:q1-six-state-system}
 \end{equation}
+式~\eqref{eq:q1-six-state-system} 中的质量迁移焓使核心与皮肤重新划分热学质量时，
+人体总内能仍只受代谢、呼吸和皮肤向服装传热影响。
 
-\subsubsection{完整状态与初边界条件}
+\subsubsection{初始与边界条件}
 
-综合式~\eqref{eq:q1-human-system} 和式~\eqref{eq:q1-clothing-system}，取六状态向量
-\[
-\bm x(t)
-=[T_c,T_s,T_1,T_2,T_3,\dot V_{bl}]^{\mathsf T}.
-\]
 环境温度在 $t=0$ 时阶跃至 $T_\infty=-40\,^{\circ}\mathrm C$。根据附件中
-“测试时人体温度为 $37\,^{\circ}\mathrm C$”的条件，基准初值取
+“测试时人体温度为 $37\,^{\circ}\mathrm C$”的条件，并认为进入室外前人体与服装
+已经充分接触，基准初值取
 \[
 \bm x(0)=[37,37,37,37,37,6.3]^{\mathsf T},
 \]
@@ -438,29 +477,29 @@ m_3c_3\dot T_3&=A_h(q_{23}-q_{3\infty}).
 $\mathrm{L/(m^2h)}$。初始皮肤血流等于当前温度下的目标值，对应
 $\alpha_s(0)=0.15$。
 
-\subsection{模型求解与参数确定}
+\subsection{模型求解}
 
-\textbf{Step 1：DSC 数据处理与参数反演。}
-对附件 1 的温度和放热信号进行数值化、排序与重复温度合并，扣除首尾点确定的
-线性基线，再对非负相变峰建立 PCHIP 插值。由基线信号反演
-$\beta=10\,\mathrm{K/min}$，积分得到 $L=122.3\,\mathrm{kJ/kg}$，并据此构造
-$c_{\mathrm{eff}}(T_2)$。
+\textbf{Step 1：输入模型参数与初始状态。}
+将人体和服装参数、四段热阻关系、PCM 表观比热函数以及初始状态
+$\bm x(0)$ 传入六状态模型，设置环境温度在 $t=0$ 时降至
+$-40\,^{\circ}\mathrm C$。
 
-\textbf{Step 2：六状态方程数值积分。}
-在每次右端计算中，先由 $T_s$ 求目标血流，再更新实际血流、
-$\alpha_s$ 与 $\dot\alpha_s$，随后计算人体两节点和服装三节点的温度导数。
-基准计算采用自适应 RK45 方法，设置
+\textbf{Step 2：计算六状态方程右端。}
+每次计算先由当前 $T_s$ 得到目标血流和实际血流变化率，再由实际血流更新
+$G_{cs}$、$\alpha_s$ 与 $\dot\alpha_s$。随后依次计算核心--皮肤热流、四段服装热流及
+当前 $T_2$ 对应的 $c_{\mathrm{eff}}(T_2)$，最终得到人体两节点、服装三节点和实际血流
+共六个状态的导数。基准计算采用自适应 RK45 方法，设置
 $\mathrm{rtol}=10^{-7}$、$\mathrm{atol}=10^{-9}$、
 最大步长 $5\,\mathrm s$，计算上限为 $24\,\mathrm h$。
 
-\textbf{Step 3：阈值事件定位。}
+\textbf{Step 3：定位阈值事件并复核精度。}
 定义下降方向事件
 \[
 g_{15}(t,\bm x)=T_s-15,\qquad
 g_{10}(t,\bm x)=T_s-10.
 \]
 由求解器连续延拓得到两个事件的首次过零时刻；检测到 $10\,^{\circ}\mathrm C$
-事件后终止积分。加严计算采用 Radau 方法，
+事件后终止积分。加严计算仍采用 RK45 方法，
 $\mathrm{rtol}=10^{-9}$、$\mathrm{atol}=10^{-11}$，
 最大步长减小为 $1\,\mathrm s$，用于复核事件定位精度。
 
@@ -501,12 +540,6 @@ $-19.379\,^{\circ}\mathrm C$ 和 $-21.021\,^{\circ}\mathrm C$，均已低于 DSC
 温区，说明 $55.8\,\mathrm{kJ}$ 潜热主要用于缓冲暴露初期的热冲击，长期耐寒时间
 主要受人体产热和内、外侧换热控制。
 
-与五状态准稳态模型相比，六状态模型的 $t_{15}$ 提前 $7.97\,\mathrm s$，
-$t_{10}$ 延后 $26.80\,\mathrm s$，相对变化分别为 $-0.020\%$ 和 $0.045\%$。
-动态血流使早期实际血流高于目标值，同时减小皮肤等效热容量的增长速度；
-两种作用在整个暴露过程中部分抵消，因此加入血流迟滞改善了生理过程描述，
-但没有改变本问的小时量级结论。
-
 \subsection{模型检验}
 
 \subsubsection{能量守恒与数值收敛}
@@ -521,10 +554,10 @@ R_E(t)
 \label{eq:q1-energy-audit}
 \end{equation}
 基准计算中式~\eqref{eq:q1-energy-audit} 的最大绝对残差为
-$0.795\,\mathrm J$，相对误差为 $1.50\times10^{-7}$。加严 Radau 计算的最大残差
-降至 $5.81\times10^{-4}\,\mathrm J$，相对误差为 $1.10\times10^{-10}$。
+$0.795\,\mathrm J$，相对误差为 $1.50\times10^{-7}$。加严 RK45 计算的最大残差
+降至 $7.71\times10^{-3}\,\mathrm J$，相对误差为 $1.46\times10^{-9}$。
 加严前后 $t_{15}$ 与 $t_{10}$ 均只变化约
-$3.1\times10^{-4}\,\mathrm s$，表明质量迁移焓、相变焓与各段热流在数值上保持平衡，
+$2.94\times10^{-4}\,\mathrm s$，表明质量迁移焓、相变焓与各段热流在数值上保持平衡，
 阈值时刻也已收敛。
 
 \subsubsection{血流迟滞的结构检验}
@@ -541,13 +574,19 @@ $\tau_{bl}\to0$ 时恢复准稳态血流的退化关系。
         \toprule[1.5pt]
         $\tau_{bl}$/s & $t_{15}$/s & $t_{10}$/s\\
         \midrule[1pt]
-        1   & 40725.228 & 59984.728\\
+        1   & 40725.231 & 59983.661\\
         60  & 40722.456 & 59992.676\\
         173 & 40717.233 & 60010.271\\
         200 & 40716.006 & 60014.542\\
         \bottomrule[1.5pt]
     \end{tabular}
 \end{table}
+
+与五状态准稳态模型相比，六状态主模型的 $t_{15}$ 提前 $7.91\,\mathrm s$，
+$t_{10}$ 延后 $26.99\,\mathrm s$，相对变化分别为 $-0.019\%$ 和 $0.045\%$。
+动态血流使早期实际血流高于目标值，同时减小皮肤等效热容量的增长速度；
+两种作用在整个暴露过程中部分抵消，因此加入血流迟滞改善了生理过程描述，
+但没有改变本问的小时量级结论。
 
 在 $60\sim200\,\mathrm s$ 范围内，$t_{15}$ 和 $t_{10}$ 相对主模型的变化均不超过
 $0.03\%$。响应变慢时，实际血流在降温初期维持较高水平，核心向皮肤输热增强；
