@@ -1166,6 +1166,7 @@ PCM 层中心与第一个外层节点之间的单位面积热阻为
     r_{3_j,3_{j+1}}=\frac{\delta_3}{k_3},
     \qquad j=1,2,\ldots,N-1.
 \end{equation*}
+
 因此，相邻外层节点之间的热流密度为
 \begin{equation*}
     q_{3_j,3_{j+1}}
@@ -1190,7 +1191,6 @@ PCM 层中心与第一个外层节点之间的单位面积热阻为
     =\frac{T_{3,N}-T_{\infty}}
     {\delta_3/(2k_3)+1/h_{\mathrm{out}}}.
 \end{equation*}
-
 \subsection{质量、成本与承重约束}
 
 服装材料面积为 $A_m=1.25A_h=2.065125\,\mathrm{m^2}$。由外层密度
@@ -1198,6 +1198,7 @@ $\rho_3=300\,\mathrm{kg/m^3}$ 和单层厚度 $\delta_3=0.3\,\mathrm{mm}$，得�
 \begin{equation*}
     m_3=\rho_3A_m\delta_3=0.18586125\,\mathrm{kg}.
 \end{equation*}
+
 外层材料单价为 $300$ 元/kg，因此每新增一层的直接材料费为
 \begin{equation*}
     \Delta C_3=300m_3=55.758375\,\text{元}.
@@ -1207,6 +1208,7 @@ $\rho_3=300\,\mathrm{kg/m^3}$ 和单层厚度 $\delta_3=0.3\,\mathrm{mm}$，得�
 \begin{equation*}
     C_{\max}=1.5C_0=565.6377375\,\text{元}.
 \end{equation*}
+
 层数为 $N$ 时，总质量和总成本分别为
 \begin{equation}
     m(N)=m_1+m_2+Nm_3,
@@ -1221,6 +1223,7 @@ $\rho_3=300\,\mathrm{kg/m^3}$ 和单层厚度 $\delta_3=0.3\,\mathrm{mm}$，得�
 \begin{equation*}
     m(N)\leq 100\,\mathrm{kg}.
 \end{equation*}
+
 将式\eqref{eq:q3-cost}代入成本约束，可得预算可行的整数集合为
 \begin{equation*}
     N\in\{1,2,3,4\}.
@@ -1235,6 +1238,7 @@ $t_0=t_{15}(1)$，增厚带来的纯传热时长增益为 $t_{15}(N)-t_0$。
 \begin{equation*}
     \lambda_m=\frac{10}{0.5}=20\,\mathrm{s/kg}.
 \end{equation*}
+
 时间惩罚以问题一为基准，只计入新增质量
 \begin{equation*}
     \Delta m(N)=m(N)-m(1),
@@ -1268,7 +1272,7 @@ $t_0=t_{15}(1)$，增厚带来的纯传热时长增益为 $t_{15}(N)-t_0$。
 由式\eqref{eq:q3-thickness}、式\eqref{eq:q3-mass}和式\eqref{eq:q3-cost}
 得到候选集合 $N\in\{1,2,3,4\}$，逐一计算总厚度、总质量与总成本，
 筛除不满足预算或承重约束的方案。各方案的核心、皮肤和全部服装节点初温均设为
-$37\,^{\circ}\mathrm C$，实际皮肤血流初值沿用问题一的
+$37\,^{\circ}\mathrm C$，实际皮肤血流初值为
 $6.3\,\mathrm{L/(m^2h)}$。
 
 \par\noindent\textbf{Step 2：建立并积分变维状态方程。}
@@ -1348,7 +1352,7 @@ $56.194\,\mathrm{min}$。
 \subsubsection{核心温度安全修正}
 
 按问题一皮肤阈值外推至 $t_{15}$ 时，四层方案的核心温度已降至
-$26.34\,^{\circ}\mathrm C$，因此 $t_{15}$ 应解释为与问题一一致的数学比较指标，不宜直接称为医学安全时间。
+$26.34\,^{\circ}\mathrm C$，因此 $t_{15}$ 应解释为与问题一一致的数学比较指标。
 参考意外低体温指南\cite{wms2019}，本文另设核心温度 $35\,^{\circ}\mathrm C$ 事件，定义
 \begin{equation}
     t_{\mathrm{safe}}(N)=\min\left\{t_{15}(N),t_{c,35}(N)\right\},\qquad
