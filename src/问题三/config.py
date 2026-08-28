@@ -1,4 +1,4 @@
-"""Configuration, cost, mass and load constraints for Problem 3."""
+"""Configuration, cost, mass and added-load constraints for Problem 3."""
 
 from __future__ import annotations
 
@@ -13,8 +13,9 @@ class Problem3Parameters:
 
     thermal: ModelParameters = field(default_factory=ModelParameters)
     baseline_outer_layer_count: int = 1
-    maximum_load_initial_kg: float = 100.0
-    load_loss_kg_per_10s: float = 0.5
+    maximum_external_load_kg: float = 100.0
+    penalty_mass_increment_kg: float = 0.5
+    penalty_time_increment_s: float = 10.0
     maximum_budget_increase_fraction: float = 0.5
     inner_price_yuan_per_kg: float = 1000.0
     outer_price_yuan_per_kg: float = 300.0
@@ -27,8 +28,9 @@ class Problem3Parameters:
         if self.baseline_outer_layer_count != 1:
             raise ValueError("The supplied garment must start with exactly one outer coating")
         positive = {
-            "maximum_load_initial_kg": self.maximum_load_initial_kg,
-            "load_loss_kg_per_10s": self.load_loss_kg_per_10s,
+            "maximum_external_load_kg": self.maximum_external_load_kg,
+            "penalty_mass_increment_kg": self.penalty_mass_increment_kg,
+            "penalty_time_increment_s": self.penalty_time_increment_s,
             "inner_price_yuan_per_kg": self.inner_price_yuan_per_kg,
             "outer_price_yuan_per_kg": self.outer_price_yuan_per_kg,
             "pcm_price_yuan_per_m2": self.pcm_price_yuan_per_m2,
@@ -40,10 +42,10 @@ class Problem3Parameters:
             raise ValueError("Budget increase fraction cannot be negative")
 
     @property
-    def load_loss_rate_kg_s(self) -> float:
-        """Continuous decline rate of allowable external load in kg/s."""
+    def weight_penalty_s_per_kg(self) -> float:
+        """Time penalty per kilogram added relative to the Problem 1 garment."""
 
-        return self.load_loss_kg_per_10s / 10.0
+        return self.penalty_time_increment_s / self.penalty_mass_increment_kg
 
     @property
     def outer_coating_mass_kg(self) -> float:
@@ -56,6 +58,12 @@ class Problem3Parameters:
         """Heat capacity of one outer coating."""
 
         return self.thermal.layer3_capacity_J_K
+
+    @property
+    def baseline_garment_mass_kg(self) -> float:
+        """Mass of the supplied Problem 1 garment."""
+
+        return self.garment_mass_kg(self.baseline_outer_layer_count)
 
     @property
     def baseline_cost_yuan(self) -> float:
@@ -71,6 +79,12 @@ class Problem3Parameters:
         """Original cost plus the permitted fractional increase."""
 
         return self.baseline_cost_yuan * (1.0 + self.maximum_budget_increase_fraction)
+
+    @property
+    def available_added_budget_yuan(self) -> float:
+        """Maximum amount that may be added to the baseline material cost."""
+
+        return self.maximum_total_cost_yuan - self.baseline_cost_yuan
 
     def garment_mass_kg(self, outer_layer_count: int) -> float:
         """Return garment mass, excluding the wearer's body mass."""
@@ -91,6 +105,17 @@ class Problem3Parameters:
             additional * self.outer_price_yuan_per_kg * self.outer_coating_mass_kg
         )
 
+    def outer_thickness_mm(self, outer_layer_count: int) -> float:
+        """Return total outer-coating thickness in millimetres."""
+
+        self._validate_layer_count(outer_layer_count)
+        return 1000.0 * outer_layer_count * self.thermal.layer3.thickness_m
+
+    def added_garment_mass_kg(self, outer_layer_count: int) -> float:
+        """Return mass added relative to the supplied Problem 1 garment."""
+
+        return self.garment_mass_kg(outer_layer_count) - self.baseline_garment_mass_kg
+
     def added_cost_yuan(self, outer_layer_count: int) -> float:
         """Return cost added relative to the supplied one-coating garment."""
 
@@ -101,31 +126,39 @@ class Problem3Parameters:
 
         return self.total_cost_yuan(outer_layer_count) <= self.maximum_total_cost_yuan + 1.0e-12
 
+    def is_load_feasible(self, outer_layer_count: int) -> bool:
+        """Return whether total garment mass stays within the external-load limit."""
+
+        return self.garment_mass_kg(outer_layer_count) <= (
+            self.maximum_external_load_kg + 1.0e-12
+        )
+
+    def is_feasible(self, outer_layer_count: int) -> bool:
+        """Return whether both material budget and added-load limits hold."""
+
+        return self.is_budget_feasible(outer_layer_count) and self.is_load_feasible(
+            outer_layer_count
+        )
+
     def feasible_outer_layer_counts(self) -> tuple[int, ...]:
-        """Return all consecutive coating counts allowed by the budget."""
+        """Return all consecutive coating counts allowed by every hard constraint."""
 
         counts: list[int] = []
         count = self.baseline_outer_layer_count
-        while self.is_budget_feasible(count):
+        while self.is_feasible(count):
             counts.append(count)
             count += 1
             if count > 10000:
                 raise RuntimeError("Unbounded coating enumeration; check price parameters")
         return tuple(counts)
 
-    def load_capacity_time_s(self, outer_layer_count: int) -> float:
-        """Return when declining allowable load first equals garment mass."""
-
-        mass = self.garment_mass_kg(outer_layer_count)
-        return max(
-            0.0,
-            (self.maximum_load_initial_kg - mass) / self.load_loss_rate_kg_s,
-        )
-
     def weight_penalty_s(self, outer_layer_count: int) -> float:
-        """Return the time-equivalent penalty due to garment mass."""
+        """Return penalty for mass added relative to the Problem 1 garment."""
 
-        return self.garment_mass_kg(outer_layer_count) / self.load_loss_rate_kg_s
+        return (
+            self.weight_penalty_s_per_kg
+            * self.added_garment_mass_kg(outer_layer_count)
+        )
 
     def _validate_layer_count(self, outer_layer_count: int) -> None:
         if not isinstance(outer_layer_count, int) or outer_layer_count < 1:
