@@ -1,0 +1,3 @@
+solver_case,solver,rtol,atol,max_step_s,t15_s,t10_s,delta_t15_vs_baseline_s,delta_t15_vs_baseline_pct,delta_t10_vs_baseline_s,delta_t10_vs_baseline_pct,max_abs_energy_balance_residual_J,relative_energy_balance_error
+baseline,RK45,1e-07,1e-09,5,17565.3794852,26317.3599012,0,0,0,0,1.91478269565,3.80992897612e-07
+strict,DOP853,1e-09,1e-11,1,17565.3807916,26317.3612336,0.00130637645998,7.43722309602e-06,0.00133240344076,5.06283094413e-06,0.00861019779404,1.71320965789e-09
