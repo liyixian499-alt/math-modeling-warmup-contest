@@ -62,6 +62,16 @@ python -m src.问题一
 
 程序会从 `problem/attachments/附件1 放热能力数据.xlsx` 读取真实 DSC 数据，执行六状态动态皮肤血流主模型、五状态准稳态极限对照、严格容差复核、指定的单因素敏感性分析以及血流响应时间结构敏感性分析，最终 CSV 保存在 `results/outputs/problem1/`。
 
+## 问题一论文图
+
+在问题一数值结果已经生成后，从仓库根目录运行：
+
+```bash
+python src/可视化/plot_problem1_figures.py
+```
+
+程序直接读取附件 1 及 `results/outputs/problem1/` 中经过核验的 CSV，生成 PCM 相变特性、五节点温度响应、皮肤血流动态调节和参数敏感性四张论文图；PNG 与矢量 PDF 默认保存在 `paper/figures/`。
+
 ## 问题二数值求解
 ## 问题三厚度优化
 
