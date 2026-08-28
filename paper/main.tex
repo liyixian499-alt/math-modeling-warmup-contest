@@ -249,7 +249,7 @@ $100\,\mathrm{kg}$，且每经过 $10\,\mathrm s$ 下降 $0.5\,\mathrm{kg}$；�
     $G_{cs}$ & 核心与皮肤之间的等效传热系数 & $\mathrm{W/(m^2K)}$\\
     $q_{ij}$ & 节点 $i$ 到节点 $j$ 的热流密度 & $\mathrm{W/m^2}$\\
     $r_{ij}$ & 节点 $i$ 到节点 $j$ 的单位面积热阻 & $\mathrm{m^2K/W}$\\
-    $c_{\mathrm{eff}}$ & 相变层的温度相关表观比热 & $\mathrm{J/(kg\,K)}$\\
+    $c_{\mathrm{app}}$ & 相变层的温度相关表观比热 & $\mathrm{J/(kg\,K)}$\\
     $t_{15},t_{10}$ & 皮肤温度首次下降至相应阈值的时刻 & $\mathrm s$\\
     \bottomrule[1.5pt]
     \end{tabular}
@@ -509,7 +509,8 @@ q_{3\infty}&=\frac{T_3-T_\infty}{r_{3\infty}}.
 PCM 在相变温区内凝固放热，需要将潜热并入温度相关的表观比热。处理过程概括为
 \[
 \text{原始 DSC}\longrightarrow\text{扣除显热基线}
-\longrightarrow q_L(T)\longrightarrow c_{\mathrm{eff}}(T).
+\longrightarrow q_L(T)\longrightarrow \phi(T),\xi(T)
+\longrightarrow c_{\mathrm{app}}(T).
 \]
 将原始质量归一化热流记为 $q(T)$，以数据温区首尾点连线作为显热基线 $b(T)$，则
 纯相变峰为
@@ -521,16 +522,56 @@ $|q_{\mathrm{base}}|=c_2\beta/60000$ 反演扫描速率，得到
 \[
 \beta=\frac{60000|q_{\mathrm{base}}|}{c_2}\simeq10\,\mathrm{K/min}.
 \]
-因此 PCM 的表观比热为
+设 DSC 数据温区为 $[T_a,T_b]$。为描述潜热在温度区间内的释放位置，将纯相变峰
+归一化为潜热分布函数
 \[
-c_{\mathrm{eff}}(T)=c_2+\frac{60000}{\beta}q_L(T),
+\phi(T)=
+\frac{q_L(T)}
+{\displaystyle\int_{T_a}^{T_b}q_L(\theta)\,\mathrm d\theta},
+\qquad
+\int_{T_a}^{T_b}\phi(T)\,\mathrm dT=1.
 \]
-数据温区外取 $c_{\mathrm{eff}}(T)=c_2=2400\,\mathrm{J/(kg\,K)}$。对相变峰积分得到
-潜热校核值
+降温凝固时，将温度由 $T_b$ 降至当前温度 $T$ 所完成的相变比例记为
 \[
-L=\frac{60}{\beta}\int q_L(T)\,\mathrm dT
+\xi(T)=\int_T^{T_b}\phi(\theta)\,\mathrm d\theta,\qquad
+\frac{\mathrm d\xi}{\mathrm dt}
+=-\phi(T)\frac{\mathrm dT}{\mathrm dt}.
+\]
+其中，$T\geq T_b$ 时取 $\xi=0$，$T\leq T_a$ 时取 $\xi=1$。对相变峰积分得到单位
+质量潜热
+\[
+L=\frac{60}{\beta}\int_{T_a}^{T_b}q_L(T)\,\mathrm dT
 \approx122.3\,\mathrm{kJ/kg}.
 \]
+
+为避免与 DSC 峰 $q_L(T)$ 混淆，将 PCM 层累计释放的潜热记为
+$Q_{\mathrm{lat}}=m_2L\xi(T_2)$。在相变温区内，其释放功率为
+\[
+\dot Q_{\mathrm{lat}}
+=m_2L\frac{\mathrm d\xi}{\mathrm dt}
+=-m_2L\phi(T_2)\dot T_2.
+\]
+PCM 节点的显热平衡为
+\[
+m_2c_2\dot T_2
+=A_h(q_{12}-q_{23})+\dot Q_{\mathrm{lat}}.
+\]
+将潜热释放功率移至储能项，得到
+\[
+m_2\bigl[c_2+L\phi(T_2)\bigr]\dot T_2
+=A_h(q_{12}-q_{23}).
+\]
+因此定义表观比热
+\[
+c_{\mathrm{app}}(T)=c_2+L\phi(T).
+\]
+将 $L$ 换算为 $\mathrm{J/kg}$，并代入其 DSC 积分式，可进一步写成
+\[
+c_{\mathrm{app}}(T)
+=c_2+\frac{60000}{\beta}q_L(T).
+\]
+数据温区外 $\phi(T)=0$，故取
+$c_{\mathrm{app}}(T)=c_2=2400\,\mathrm{J/(kg\,K)}$。
 DSC 基线分离、潜热峰及由此得到的 PCM 表观比热曲线见图~\ref{fig:q1-pcm-characteristics}。
 
 \begin{figure}[H]
@@ -540,7 +581,7 @@ DSC 基线分离、潜热峰及由此得到的 PCM 表观比热曲线见图~\ref
     \label{fig:q1-pcm-characteristics}
 \end{figure}
 
-\textbf{由于相变潜热已包含在 $c_{\mathrm{eff}}(T)$ 中，后续能量方程不再重复设置
+\textbf{由于相变潜热已包含在 $c_{\mathrm{app}}(T)$ 中，后续能量方程不再重复设置
 PCM 放热源项。}
 
 \subsubsection{三层材料能量平衡}
@@ -549,7 +590,7 @@ PCM 放热源项。}
 \[
 \begin{aligned}
 m_1c_1\dot T_1&=A_h(q_{s1}-q_{12}),\\
-m_2c_{\mathrm{eff}}(T_2)\dot T_2&=A_h(q_{12}-q_{23}),\\
+m_2c_{\mathrm{app}}(T_2)\dot T_2&=A_h(q_{12}-q_{23}),\\
 m_3c_3\dot T_3&=A_h(q_{23}-q_{3\infty}).
 \end{aligned}
 \]
@@ -578,7 +619,7 @@ m_3c_3\dot T_3&=A_h(q_{23}-q_{3\infty}).
 \end{cases}\\
 \dot T_1&=\dfrac{A_h(q_{s1}-q_{12})}{m_1c_1},\\
 \dot T_2&=\dfrac{A_h(q_{12}-q_{23})}
-{m_2c_{\mathrm{eff}}(T_2)},\\
+{m_2c_{\mathrm{app}}(T_2)},\\
 \dot T_3&=\dfrac{A_h(q_{23}-q_{3\infty})}{m_3c_3},\\
 \frac{\mathrm d\dot V_{bl}}{\mathrm dt}
 &=\dfrac{\dot V_{bl,\mathrm{eq}}(T_s)-\dot V_{bl}}{\tau_{bl}}.
@@ -619,7 +660,7 @@ $-40\,^{\circ}\mathrm C$。
 \textbf{Step 2：计算六状态方程右端。}
 每次计算先由当前 $T_s$ 得到目标血流和实际血流变化率，再由实际血流更新
 $G_{cs}$、$\alpha_s$ 与 $\dot\alpha_s$。随后依次计算核心--皮肤热流、四段服装热流及
-当前 $T_2$ 对应的 $c_{\mathrm{eff}}(T_2)$，最终得到人体两节点、服装三节点和实际血流
+当前 $T_2$ 对应的 $c_{\mathrm{app}}(T_2)$，最终得到人体两节点、服装三节点和实际血流
 共六个状态的导数。基准计算采用自适应 RK45 方法，设置
 $\mathrm{rtol}=10^{-7}$、$\mathrm{atol}=10^{-9}$、
 最大步长 $5\,\mathrm s$，计算上限为 $24\,\mathrm h$。
@@ -775,7 +816,7 @@ $7.2\,\mathrm s$、$3.5\,\mathrm s$ 和 $2.8\,\mathrm s$。服装层厚度处于
 \subsection {有风轻微运动条件下低温防护服耦合传热模型的建立}
 
 \subsubsection{轻微运动下的内侧对流修正}
-轻微运动会使皮肤与内层织物之间的空气层发生扰动。根据附件给出的轻微运动换热参数，将内侧等效对流换热系数取为
+轻微运动会使皮肤与内层织物之间的空气层发生扰动。轻微运动工况下，将内侧等效对流换热系数取为
 
 $$
 h_{\rm in}=4.0\,\mathrm{W/(m^2K)}.
