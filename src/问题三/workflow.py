@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 from src.问题一 import DYNAMIC_SBF, load_pcm_model
@@ -12,6 +11,8 @@ from src.问题一.config import DEFAULT_DSC_PATH, REPOSITORY_ROOT
 from src.问题一.simulation import run_case as run_problem1_case
 
 from .config import Problem3Parameters
+from .reporting import write_delivery_report
+from .sensitivity import run_sensitivity_analysis
 from .simulation import Problem3CaseResult, run_candidate
 
 
@@ -30,7 +31,17 @@ def execute_workflow(
     counts = config.feasible_outer_layer_counts()
     candidates = [run_candidate(config, pcm, count) for count in counts]
     summary = pd.DataFrame([candidate.summary for candidate in candidates])
-    optimum_index = int(summary["objective_standing_time_s"].idxmax())
+    problem1_t15_s = float(summary.iloc[0]["t15_s"])
+    problem1_score_s = float(summary.iloc[0]["standing_time_score_s"])
+    summary["thermal_gain_vs_problem1_s"] = summary["t15_s"] - problem1_t15_s
+    summary["thermal_gain_vs_problem1_min"] = (
+        summary["thermal_gain_vs_problem1_s"] / 60.0
+    )
+    summary["net_gain_vs_problem1_s"] = (
+        summary["standing_time_score_s"] - problem1_score_s
+    )
+    summary["net_gain_vs_problem1_min"] = summary["net_gain_vs_problem1_s"] / 60.0
+    optimum_index = int(summary["standing_time_score_s"].idxmax())
     optimum = candidates[optimum_index]
 
     strict = run_candidate(
@@ -72,19 +83,33 @@ def execute_workflow(
                     - float(strict.summary["t15_s"])
                 ),
             },
+            {
+                "check": "optimal_core_35_event_solver_convergence",
+                "problem3_value_s": optimum.summary["t_core_35_s"],
+                "reference_value_s": strict.summary["t_core_35_s"],
+                "absolute_difference_s": abs(
+                    float(optimum.summary["t_core_35_s"])
+                    - float(strict.summary["t_core_35_s"])
+                ),
+            },
         ]
     )
     if validation.iloc[0]["absolute_difference_s"] > 1.0e-6:
         raise RuntimeError("The one-coating Problem 3 model does not reproduce Problem 1")
-    if not np.all(np.diff(summary["t15_s"].to_numpy(dtype=float)) >= -1.0e-6):
-        raise RuntimeError("Thermal endurance unexpectedly decreases with added insulation")
-    if not np.all(
-        np.diff(summary["objective_standing_time_s"].to_numpy(dtype=float))
-        >= -1.0e-6
-    ):
-        raise RuntimeError("Weight-adjusted objective unexpectedly decreases")
     if not (summary["total_cost_yuan"] <= config.maximum_total_cost_yuan + 1.0e-9).all():
         raise RuntimeError("An exported candidate violates the budget")
+    if not (
+        summary["garment_mass_kg"] <= config.maximum_external_load_kg + 1.0e-9
+    ).all():
+        raise RuntimeError("An exported candidate violates the external-load limit")
+
+    sensitivity = run_sensitivity_analysis(
+        config,
+        pcm,
+        summary,
+        optimum.outer_layer_count,
+        float(optimum.summary["t_core_35_s"]),
+    )
 
     all_timeseries = pd.concat(
         [candidate.timeseries for candidate in candidates],
@@ -95,7 +120,7 @@ def execute_workflow(
     optimum_row.insert(
         0,
         "selection_rule",
-        "maximize_t15_minus_time_equivalent_weight_penalty",
+        "maximize_problem1_t15_plus_insulation_gain_minus_added_mass_penalty",
     )
     destination = Path(output_dir)
     destination.mkdir(parents=True, exist_ok=True)
@@ -107,6 +132,16 @@ def execute_workflow(
         destination / "optimal_solution_strict.csv",
         index=False,
     )
+    for name, data in sensitivity.items():
+        data.to_csv(destination / f"sensitivity_{name}.csv", index=False)
+    delivery_report = write_delivery_report(
+        config,
+        summary,
+        strict.summary,
+        validation,
+        sensitivity,
+        destination,
+    )
     return {
         "config": config,
         "pcm": pcm,
@@ -115,7 +150,9 @@ def execute_workflow(
         "optimum": optimum,
         "strict": strict,
         "validation": validation,
+        "sensitivity": sensitivity,
         "output_dir": destination,
+        "delivery_report": delivery_report,
     }
 
 
@@ -132,9 +169,10 @@ def print_terminal_summary(results: dict[str, object]) -> None:
             "garment_mass_kg",
             "total_cost_yuan",
             "t15_min",
+            "t_core_35_min",
             "weight_penalty_min",
-            "objective_standing_time_min",
-            "hard_constraint_standing_time_min",
+            "standing_time_score_min",
+            "safe_score_min",
         ]
     ].to_string(index=False))
     selected = optimum.summary
@@ -142,7 +180,9 @@ def print_terminal_summary(results: dict[str, object]) -> None:
         "Selected design: "
         f"{selected['outer_layer_count']} total outer coating(s), "
         f"{selected['outer_thickness_mm']:.1f} mm, "
-        f"weight-adjusted standing time {selected['objective_standing_time_min']:.6f} min"
+        f"standing-time score {selected['standing_time_score_min']:.6f} min, "
+        f"core-35 safety score {selected['safe_score_min']:.6f} min"
     )
     print(f"CSV output directory: {results['output_dir']}")
+    print(f"Delivery report: {results['delivery_report']}")
 

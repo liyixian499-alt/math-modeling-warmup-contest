@@ -33,10 +33,16 @@ def _event_10(_time_s: float, state: np.ndarray) -> float:
     return float(state[1] - 10.0)
 
 
+def _event_core_35(_time_s: float, state: np.ndarray) -> float:
+    return float(state[0] - 35.0)
+
+
 _event_15.direction = -1.0
 _event_15.terminal = False
 _event_10.direction = -1.0
 _event_10.terminal = True
+_event_core_35.direction = -1.0
+_event_core_35.terminal = False
 
 
 def _sample_times(end_time_s: float, step_s: float) -> np.ndarray:
@@ -144,8 +150,8 @@ def run_candidate(
     """Solve one budget-feasible coating design and evaluate its objective."""
 
     config.validate()
-    if not config.is_budget_feasible(outer_layer_count):
-        raise ValueError("Candidate exceeds the permitted material budget")
+    if not config.is_feasible(outer_layer_count):
+        raise ValueError("Candidate violates the material budget or external-load limit")
     y0 = initial_state(config, outer_layer_count)
     solution = solve_ivp(
         fun=lambda time, state: rhs(
@@ -161,7 +167,7 @@ def run_candidate(
         rtol=rtol,
         atol=atol,
         max_step=max_step_s,
-        events=(_event_15, _event_10),
+        events=(_event_15, _event_10, _event_core_35),
         dense_output=True,
     )
     if not solution.success or solution.sol is None:
@@ -172,13 +178,14 @@ def run_candidate(
     output_times = _sample_times(float(solution.t[-1]), output_step_s)
     states = solution.sol(output_times)
     garment_mass = config.garment_mass_kg(outer_layer_count)
-    load_time = config.load_capacity_time_s(outer_layer_count)
+    added_mass = config.added_garment_mass_kg(outer_layer_count)
+    external_load_margin = config.maximum_external_load_kg - garment_mass
     rows: list[dict[str, float | str]] = []
     for time_s, state in zip(output_times, states.T, strict=True):
         diagnostics = state_diagnostics(state, config, pcm, outer_layer_count)
         row: dict[str, float | str] = {
             "outer_layer_count": outer_layer_count,
-            "outer_thickness_mm": 0.3 * outer_layer_count,
+            "outer_thickness_mm": config.outer_thickness_mm(outer_layer_count),
             "time_s": float(time_s),
             "T_core_C": float(state[0]),
             "T_skin_C": float(state[1]),
@@ -197,16 +204,9 @@ def run_candidate(
             "c_eff_pcm_J_kgK": float(diagnostics["c_eff_pcm_J_kgK"]),
             "pcm_phase_fraction": float(diagnostics["pcm_phase_fraction"]),
             "garment_mass_kg": garment_mass,
-            "allowable_load_kg": max(
-                0.0,
-                config.maximum_load_initial_kg
-                - config.load_loss_rate_kg_s * float(time_s),
-            ),
-            "load_margin_kg": (
-                config.maximum_load_initial_kg
-                - config.load_loss_rate_kg_s * float(time_s)
-                - garment_mass
-            ),
+            "added_garment_mass_kg": added_mass,
+            "maximum_external_load_kg": config.maximum_external_load_kg,
+            "external_load_margin_kg": external_load_margin,
         }
         for index, temperature in enumerate(
             state[4 : 4 + outer_layer_count],
@@ -227,54 +227,72 @@ def run_candidate(
 
     t15 = _event_time(solution, 0)
     t10 = _event_time(solution, 1)
-    thermal_limit = t15 if np.isfinite(t15) else float("inf")
+    t_core_35 = _event_time(solution, 2)
+    required_events = {"skin_15C": t15, "core_35C": t_core_35}
+    missing_events = [name for name, value in required_events.items() if not np.isfinite(value)]
+    if missing_events:
+        raise RuntimeError(
+            f"Simulation horizon ended before required events: {missing_events}"
+        )
     weight_penalty = config.weight_penalty_s(outer_layer_count)
-    objective_time = max(0.0, thermal_limit - weight_penalty)
-    hard_constraint_time = min(thermal_limit, load_time)
-    hard_constraint_active = (
-        "thermal_15C" if thermal_limit <= load_time else "declining_load"
-    )
-    objective_state = np.asarray(solution.sol(objective_time), dtype=float)
-    objective_diagnostics = state_diagnostics(
-        objective_state,
+    standing_time_score = max(0.0, t15 - weight_penalty)
+    safe_time = min(t15, t_core_35)
+    safe_active = "skin_15C" if t15 <= t_core_35 else "core_35C"
+    safe_score = max(0.0, safe_time - weight_penalty)
+    t15_state = np.asarray(solution.sol(t15), dtype=float)
+    safe_state = np.asarray(solution.sol(safe_time), dtype=float)
+    safe_diagnostics = state_diagnostics(
+        safe_state,
         config,
         pcm,
         outer_layer_count,
     )
+    added_budget = config.available_added_budget_yuan
+    budget_utilization = (
+        0.0
+        if added_budget <= 0.0
+        else config.added_cost_yuan(outer_layer_count) / added_budget * 100.0
+    )
     summary: dict[str, float | str] = {
         "outer_layer_count": outer_layer_count,
         "added_outer_layer_count": outer_layer_count - 1,
-        "outer_thickness_mm": 0.3 * outer_layer_count,
+        "outer_thickness_mm": config.outer_thickness_mm(outer_layer_count),
         "state_dimension": len(y0),
         "garment_mass_kg": garment_mass,
+        "baseline_garment_mass_kg": config.baseline_garment_mass_kg,
+        "added_garment_mass_kg": added_mass,
+        "maximum_external_load_kg": config.maximum_external_load_kg,
+        "external_load_margin_kg": external_load_margin,
         "baseline_cost_yuan": config.baseline_cost_yuan,
         "added_cost_yuan": config.added_cost_yuan(outer_layer_count),
         "total_cost_yuan": config.total_cost_yuan(outer_layer_count),
         "maximum_total_cost_yuan": config.maximum_total_cost_yuan,
-        "budget_utilization_pct": (
-            config.added_cost_yuan(outer_layer_count)
-            / (config.maximum_total_cost_yuan - config.baseline_cost_yuan)
-            * 100.0
-        ),
+        "budget_utilization_pct": budget_utilization,
+        "weight_penalty_s_per_kg": config.weight_penalty_s_per_kg,
         "weight_penalty_s": weight_penalty,
         "weight_penalty_min": weight_penalty / 60.0,
-        "load_capacity_time_s": load_time,
-        "load_capacity_time_min": load_time / 60.0,
         "t15_s": t15,
         "t15_min": t15 / 60.0,
         "t10_s": t10,
         "t10_min": t10 / 60.0,
-        "objective_mode": "soft_weight_penalty",
-        "objective_standing_time_s": objective_time,
-        "objective_standing_time_min": objective_time / 60.0,
-        "hard_constraint_standing_time_s": hard_constraint_time,
-        "hard_constraint_standing_time_min": hard_constraint_time / 60.0,
-        "hard_constraint_active": hard_constraint_active,
-        "T_skin_at_objective_time_C": float(objective_state[1]),
-        "T_core_at_objective_time_C": float(objective_state[0]),
-        "T_pcm_at_objective_time_C": float(objective_state[3]),
-        "pcm_phase_fraction_at_objective_time": float(
-            objective_diagnostics["pcm_phase_fraction"]
+        "t_core_35_s": t_core_35,
+        "t_core_35_min": t_core_35 / 60.0,
+        "objective_mode": "problem1_t15_plus_insulation_gain_minus_added_mass_penalty",
+        "standing_time_score_s": standing_time_score,
+        "standing_time_score_min": standing_time_score / 60.0,
+        "safe_limit_active": safe_active,
+        "safe_standing_time_s": safe_time,
+        "safe_standing_time_min": safe_time / 60.0,
+        "safe_score_s": safe_score,
+        "safe_score_min": safe_score / 60.0,
+        "T_skin_at_t15_C": float(t15_state[1]),
+        "T_core_at_t15_C": float(t15_state[0]),
+        "T_pcm_at_t15_C": float(t15_state[3]),
+        "T_skin_at_safe_limit_C": float(safe_state[1]),
+        "T_core_at_safe_limit_C": float(safe_state[0]),
+        "T_pcm_at_safe_limit_C": float(safe_state[3]),
+        "pcm_phase_fraction_at_safe_limit": float(
+            safe_diagnostics["pcm_phase_fraction"]
         ),
         "max_abs_energy_balance_residual_J": maximum_residual,
         "relative_energy_balance_error": relative_error,
