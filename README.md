@@ -62,3 +62,13 @@ python -m src.问题一
 
 程序会从 `problem/attachments/附件1 放热能力数据.xlsx` 读取真实 DSC 数据，执行六状态动态皮肤血流主模型、五状态准稳态极限对照、严格容差复核、指定的单因素敏感性分析以及血流响应时间结构敏感性分析，最终 CSV 保存在 `results/outputs/problem1/`。
 
+## 问题二数值求解
+
+从仓库根目录运行：
+
+```bash
+python -m src.问题二
+```
+
+问题二在问题一六状态母模型上加入风速边界和轻微运动参数，执行 Q1/W/I/M/Q2 效应拆分、OAT 敏感性分析、能量守恒及严格求解器复核。正式 CSV 保存在 `results/outputs/problem2/`，交付说明写入 `docs/problem2_delivery.md`；该入口不调用绘图库。
+
