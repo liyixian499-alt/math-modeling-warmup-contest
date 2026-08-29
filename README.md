@@ -107,3 +107,13 @@ python -m src.问题一.problem4
 ```
 
 问题四直接复用问题一六状态母模型和原始三层结构，只缩放 DSC 基线扣除后的 PCM 纯相变项。程序读取问题三主评分目标，完成粗搜索、Brent 反演、DOP853 严格复核、能量守恒、反演敏感性、固定设计稳健性及目标时间敏感性。CSV 保存在 `results/outputs/problem4/`，并自动生成 `docs/问题四_代码说明与结果交付.md`；该入口不调用绘图库。
+
+## 问题四论文图
+
+在问题四正式结果已经生成后，从仓库根目录运行：
+
+```bash
+python src/可视化/plot_problem4_figures.py
+```
+
+程序读取 `results/outputs/problem4/` 中的正式最优解与敏感度结果。首次运行会通过已有问题四事件求解接口补充倍率—阈值时间绘图采样，并写入 `problem4_plot_lambda_t15.csv`；随后生成反演曲线与最优倍率归一化敏感性两张论文图，PNG 与矢量 PDF 默认保存在 `paper/figures/problem4/`。
