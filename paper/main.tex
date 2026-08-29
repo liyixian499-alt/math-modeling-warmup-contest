@@ -177,14 +177,10 @@
  $1.500355\,\mathrm{kg}$，总成本为 $544.366950$ 元，
  重量修正后的主指标为 $734.815\,\mathrm{min}$，
  比问题一净增加 $56.194\,\mathrm{min}$。
- 加入核心温度 $35\,^{\circ}\mathrm C$ 安全修正后，
- 四层方案仍为最优，修正评分为 $271.037\,\mathrm{min}$。
 
 
     \keywords{\textbf{人体热调节} \quad \textbf{相变材料} \quad \textbf{动态皮肤血流} \quad \textbf{多层传热} \quad \textbf{整数优化} \quad \textbf{敏感性分析}}
 \end{abstract}
-\thispagestyle{empty}
-\tableofcontents
 \thispagestyle{empty}
 \newpage
 \setcounter{page}{1} 
@@ -272,7 +268,7 @@ $50\%$。在负重与资金约束下优化外层涂层厚度，使室外站立�
     $q_{ij}$ & 节点 $i$ 到节点 $j$ 的热流密度 & $\mathrm{W/m^2}$\\
     $c_{\mathrm{app}}(T)$ & PCM 温度相关表观比热 & $\mathrm{J/(kg\,K)}$\\
     $v$ & 外界风速 & $\mathrm{m/s}$\\
-    $t_{15},t_{10},t_{c,35}$ & 三个温度阈值的首次到达时刻 & $\mathrm s$\\
+    $t_{15},t_{10}$ & 两个皮肤温度阈值的首次到达时刻 & $\mathrm s$\\
     $N$ & 外层涂层总层数 & --\\
     $\delta_{\mathrm{out}}(N)$ & 层数为 $N$ 时的外层总厚度 & $\mathrm m$\\
     $J(N)$ & 综合站立时间 & $\mathrm s$\\
@@ -886,8 +882,7 @@ $\pm10\%$ 扰动，得到表~\ref{tab:q1-six-sensitivity}。
 初始工况下内层和外层 Biot 数分别约为 0.031 和 0.040，均小于集中参数法常用判据
 $Bi<0.1$；三层材料的非相变热扩散特征时间约为
 $7.2\,\mathrm s$、$3.5\,\mathrm s$ 和 $2.8\,\mathrm s$。服装层厚度处于亚毫米量级，
-层内温度调整远快于人体降温过程，因此每层采用一个平均温度节点能够满足问题一的
-时间尺度要求。
+层内温度调整远快于人体降温过程，因此每层可以采用一个平均温度节点。
 \section{问题二模型的建立与求解}
 
 \subsection {问题分析}
@@ -1199,7 +1194,6 @@ $10^{-9}$、$10^{-11}$ 和 $1\,\mathrm s$。严格解与基准 RK45 的事件时
 $56.86\%$。该结论适用于本文给定参数和集总传热假设，不应外推为不考虑个体差异、
 局部风场及其他生理反应时的无条件医学安全时限。
 
-\clearpage
 \section{问题三模型的建立与求解}
 
 \subsection{问题三分析}
@@ -1211,6 +1205,14 @@ $56.86\%$。该结论适用于本文给定参数和集总传热假设，不应�
 $100\,\mathrm{kg}$ 承重上限和原支出 $1.5$ 倍的成本上限筛选可行层数。最后求解各可行
 方案的传热过程，确定皮肤温度首次降至 $15\,^{\circ}\mathrm C$ 的时刻，
 同时将新增质量按题目给出的承重关系折算为等效时间代价，并与传热时长综合评价，以确定最优涂层厚度。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/问题三流程图.pdf}
+    \caption{问题三建模与求解流程图}
+    \label{fig:question3-flowchart}
+\end{figure}
+
 
 \subsection{多外层涂层传热模型}
 
@@ -1364,21 +1366,18 @@ $\mathrm{rtol}=10^{-7}$、$\mathrm{atol}=10^{-9}$、最大步长 $5\,\mathrm s$�
 \par\noindent\textbf{Step 3：定位温度阈值事件。}
 定义下降方向事件函数
 \begin{equation}
-g_{15}(t,\bm x_N)=T_s-15,\qquad
-g_{10}(t,\bm x_N)=T_s-10,\qquad
-g_{c,35}(t,\bm x_N)=T_c-35.
+    g_{15}(t,\bm x_N)=T_s-15,\qquad
+    g_{10}(t,\bm x_N)=T_s-10.
 \label{eq:q3-events}
 \end{equation}
-求解器利用连续延拓定位式\eqref{eq:q3-events}中三个事件的首次过零时刻，得到
-$t_{15}$、$t_{10}$ 和
-$t_{c,35}$，不从离散输出点插值反推。为检验数值精度，另以
+求解器利用连续延拓定位式\eqref{eq:q3-events}中两个事件的首次过零时刻，得到
+$t_{15}$ 和 $t_{10}$，不从离散输出点插值反推。为检验数值精度，另以
 $\mathrm{rtol}=10^{-9}$、$\mathrm{atol}=10^{-11}$ 和最大步长 $1\,\mathrm s$
 对最优候选方案加严复算。
 
 \par\noindent\textbf{Step 4：计算评分并选择最优方案。}
 在式\eqref{eq:q3-optimization}给出的可行域内，由式\eqref{eq:q3-objective}计算
-题意主指标 $J(N)$，并同步计算核心温度安全修正指标 $J_{\mathrm{safe}}(N)$。
-比较四个候选方案的评分，取
+$J(N)$。比较四个候选方案的评分，取
 $J(N)$ 最大者作为问题三的最优外层厚度。
 
 \subsection{结果分析}
@@ -1404,18 +1403,7 @@ $J(N)$ 最大者作为问题三的最优外层厚度。
     \end{tabular}
 \end{table}
 
-图\ref{fig:q3-candidate-overview}把表中结果转化为三组直观比较：左、中央子图分别显示
-题意主指标与安全修正指标，右侧子图显示成本和承重约束的利用率。两个时间指标均随
-层数单调增加；当 $N=4$ 时，成本已使用预算上限的 $96.24\%$，服装质量却只占承重
-上限的 $1.50\%$。因此，继续增厚首先受到预算限制，而不是承重限制。
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.98\textwidth]{figures/problem3_candidate_overview.pdf}
-    \caption{候选外层层数的评分与约束利用率}
-    \label{fig:q3-candidate-overview}
-\end{figure}
-
-由表\ref{tab:q3-candidates}和图\ref{fig:q3-candidate-overview}可知，外层每增加一层，
+由表\ref{tab:q3-candidates}可知，外层每增加一层，
 $t_{15}$ 增加约 $18$--$19\,\mathrm{min}$，而重量惩罚仅增加 $3.717\,\mathrm{s}$。
 保温收益明显大于新增重量代价，因此预算可行域内的最优解为
 \begin{equation*}
@@ -1426,111 +1414,13 @@ $735.001\,\mathrm{min}$，新增重量惩罚为 $11.152\,\mathrm{s}$，所以重
 $734.815\,\mathrm{min}$。相对问题一基准值 $678.621\,\mathrm{min}$，净增益为
 $56.194\,\mathrm{min}$。
 
-\subsubsection{核心温度安全修正}
-
-按问题一皮肤阈值外推至 $t_{15}$ 时，四层方案的核心温度已降至
-$26.34\,^{\circ}\mathrm C$，因此 $t_{15}$ 应解释为与问题一一致的数学比较指标。
-参考意外低体温指南\cite{wms2019}，本文另设核心温度 $35\,^{\circ}\mathrm C$ 事件，定义
-\begin{equation}
-    t_{\mathrm{safe}}(N)=\min\left\{t_{15}(N),t_{c,35}(N)\right\},\qquad
-    J_{\mathrm{safe}}(N)=t_{\mathrm{safe}}(N)-20\Delta m(N).
-    \label{eq:q3-safe-objective}
-\end{equation}
-按式\eqref{eq:q3-safe-objective}得到的安全修正结果见表\ref{tab:q3-safe}。
-\begin{table}[H]
-    \centering
-    \small
-    \caption{核心温度安全修正结果}
-    \label{tab:q3-safe}
-    \begin{tabular}{cccc}
-        \toprule[1.5pt]
-        $N$ & $t_{c,35}$/min & 新增重量惩罚/s & $J_{\mathrm{safe}}$/min\\
-        \midrule[1pt]
-        1 & 252.246 & 0     & 252.246\\
-        2 & 258.417 & 3.717 & 258.355\\
-        3 & 264.741 & 7.434 & 264.617\\
-        4 & 271.223 & 11.152& \textbf{271.037}\\
-        \bottomrule[1.5pt]
-    \end{tabular}
-\end{table}
-图\ref{fig:q3-temperature-comparison}比较了四个候选方案的核心与皮肤温度轨迹。
-左图中曲线与 $35\,^{\circ}\mathrm C$ 虚线的交点表示核心温度安全事件，右图中曲线与
-$15\,^{\circ}\mathrm C$ 虚线的交点表示题意规定的皮肤温度事件。层数越多，曲线整体
-越靠上、交点越靠右，说明增厚在整个暴露阶段都减缓降温，而不是只改善某一瞬间的温度。
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.98\textwidth]{figures/problem3_temperature_comparison.pdf}
-    \caption{不同外层总层数下的人体温度响应}
-    \label{fig:q3-temperature-comparison}
-\end{figure}
-
-可见，安全修正使时间指标从约 $12.25\,\mathrm h$ 降为约 $4.52\,\mathrm h$，
-但四层方案仍为最优，说明最优厚度结论不依赖于单一温度截止口径。
-
-四层最优方案在安全截止前的节点温度场如图\ref{fig:q3-optimal-temperature-field}所示。
-横轴为暴露时间，纵轴按人体核心、皮肤、内层、PCM 层和四个外层节点排列；橙色表示
-较高温度，蓝绿色表示较低温度。图中外层和 PCM 节点在开始暴露后迅速降温，人体核心
-与皮肤则缓慢降温，并在各层之间形成持续的温度梯度。这说明逐层设置温度节点保留了
-外层热惯性和层间温差，不能把四层涂层简单视为没有热容的一段等效热阻。
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.88\textwidth]{figures/problem3_optimal_temperature_field.pdf}
-    \caption{四层最优方案的节点温度场}
-    \label{fig:q3-optimal-temperature-field}
-\end{figure}
-
 \subsection{模型检验与敏感性分析}
 
-\subsubsection{退化一致性、能量守恒与数值收敛}
-
-当 $N=1$ 时，问题三变维模型严格退化为问题一六状态模型，二者的 $t_{15}$
-均为 $40717.233313\,\mathrm s$，差值为 0，验证了模型结构的一致性。
-四个候选方案基准计算的相对能量守恒误差均不超过
-$1.47\times10^{-7}$；四层最优方案在加严容差下的相对误差进一步降至
-$1.34\times10^{-9}$。
-
-将相对容差由 $10^{-7}$ 收紧至 $10^{-9}$、绝对容差由 $10^{-9}$ 收紧至
-$10^{-11}$，并把最大步长由 $5\,\mathrm s$ 减小为 $1\,\mathrm s$ 后，
-四层方案的 $t_{15}$ 仅变化 $5.11\times10^{-4}\,\mathrm s$，
-核心 $35\,^{\circ}\mathrm C$ 事件仅变化 $5.61\times10^{-4}\,\mathrm s$。
-因此，候选方案排序和最优层数结论不依赖于离散误差或事件定位精度。
-
-\subsubsection{敏感性分析}
-
-以四层方案的 $t_{c,35}$ 为输出，对主要热学参数进行单因素扰动，结果见
-表\ref{tab:q3-sensitivity}。
-\begin{table}[H]
-    \centering
-    \small
-    \caption{问题三最优方案的热学敏感性}
-    \label{tab:q3-sensitivity}
-    \begin{tabular}{ccccc}
-        \toprule[1.5pt]
-        参数 & 扰动幅度 & 低水平 $t_{c,35}$/min
-        & 高水平 $t_{c,35}$/min & 相对变化\\
-        \midrule[1pt]
-        $M_0$ & $\pm10\%$ & 231.813 & 320.457 & $-14.53\%/ +18.15\%$\\
-        $h_{\mathrm{in}}$ & $\pm10\%$ & 297.989 & 251.040 & $+9.87\%/ -7.44\%$\\
-        $\lambda_{\mathrm{out}}$ & $\pm10\%$ & 284.222 & 260.869 & $+4.79\%/ -3.82\%$\\
-        $k_3$ & $\pm10\%$ & 273.085 & 269.707 & $+0.69\%/ -0.56\%$\\
-        $\tau_{bl}$ & $\pm20\%$ & 271.498 & 270.944 & $+0.10\%/ -0.10\%$\\
-        \bottomrule[1.5pt]
-    \end{tabular}
-\end{table}
-
-图\ref{fig:q3-sensitivity-robustness}从四个角度检验结论是否稳定。子图（a）中条形越长，
-表示安全修正时长对该参数越敏感，代谢率 $M_0$ 和内侧换热系数 $h_{\mathrm{in}}$ 的影响
-最明显；子图（b）表明服装初温从 $37\,^{\circ}\mathrm C$ 降至 $20\,^{\circ}\mathrm C$
-时，$t_{c,35}$ 仅下降 $2.32\%$。子图（c）显示只有把重量惩罚系数提高到题设值的约
-$303$ 倍，四层方案才失去优势；子图（d）显示制造附加率达到约 $12.72\%$ 时，四层
-方案首先触及预算上限。由此可见，最优层数对热学参数和重量惩罚较稳健，但对额外制造
-费用更敏感。
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.98\textwidth]{figures/problem3_sensitivity_robustness.pdf}
-    \caption{问题三的敏感性与稳健性分析}
-    \label{fig:q3-sensitivity-robustness}
-\end{figure}
+当 $N=1$ 时，问题三变维模型退化为问题一六状态模型，两者所得
+$t_{15}=40717.233\,\mathrm s$ 完全一致。对四层最优方案加严积分容差并将最大步长
+由 $5\,\mathrm s$ 减小至 $1\,\mathrm s$ 后，$t_{15}$ 仅改变
+$5.11\times10^{-4}\,\mathrm s$；基准求解的相对能量守恒误差为
+$1.05\times10^{-7}$，说明层数扩展和事件定位具有良好的数值一致性。
 
 对目标函数的重量惩罚系数扩展分析表明，四层与一层方案发生优劣切换的临界系数约为
 \begin{equation*}
@@ -1542,18 +1432,42 @@ $303$ 倍，四层方案才失去优势；子图（d）显示制造附加率达�
 
 \section{模型评价}
 \subsection {模型优点}
-
+\begin{enumerate}
+    \item 人体核心、皮肤与多层服装之间的传热路径由统一能量方程连接，动态皮肤血流
+    同时调节核心--皮肤传热系数和等效热容量分区，并通过质量交换焓流补偿分区变化。
+    问题一至问题三基准计算的相对能量守恒误差均处于 $10^{-7}$ 量级。
+    \item PCM 的显热与潜热由 DSC 数据构造的温度相关表观比热统一描述，服装外侧采用
+    温差相关的自然对流或风速相关的强制对流边界，使相变放热、环境散热和人体产热能够
+    在同一非线性状态方程中耦合计算。
+    \item 三个问题沿用同一人体--服装模型并逐步增加风速、运动和外层厚度变量。
+    问题三在 $N=1$ 时与问题一结果完全一致，严格积分与基准积分所得阈值时间仅相差
+    $10^{-3}\,\mathrm s$ 以内，说明模型扩展和数值求解具有良好一致性。
+\end{enumerate}
 
 \subsection {模型缺点}
+\begin{enumerate}
+    \item 人体和各层服装均采用温度均匀的集中参数节点，只描述沿服装厚度方向的平均
+    传热，未区分头部、躯干和四肢，也未考虑服装褶皱、局部接触热阻及空气层厚度差异，
+    因而难以刻画局部低温区域的温度响应。
+    \item 人体热调节仅保留基础代谢、呼吸散热和皮肤血流收缩，未计入颤抖产热、个体
+    体脂差异及长时间暴露下的代谢调整。这些简化会影响核心与皮肤之间的热量分配及阈值
+    时间估计。
+    \item 内侧换热系数、基础代谢率和外侧换热强度对阈值时间较敏感，而现有参数主要
+    来自经验公式和典型取值；服装初温及 DSC 扫描速率也缺少针对本实验条件的直接测量，
+    因此参数不确定性仍会传递至最终结果。
+\end{enumerate}
 
-
-\subsection{模型评价}
-
-
-
-
-
-
+\subsection{模型改进与推广}
+\begin{enumerate}
+    \item 可将人体划分为躯干与四肢等多个热学分区，并对每层服装增加有限体积节点，
+    进一步加入局部接触热阻、含湿和结霜过程，以获得人体不同部位及材料内部的温度分布。
+    \item 可开展低温舱实验，连续测量核心温度、皮肤温度、服装各层温度和热流密度，
+    据此联合标定 $h_{\mathrm{in}}$、$h_{\mathrm{out}}$、$\tau_{bl}$ 与代谢率，并通过多名
+    实验者的数据建立个体参数分布和结果区间。
+    \item 现有状态方程和变层数结构可继续用于时变风速、交替活动强度及不同环境温度，
+    重新标定边界换热和人体产热参数后，还可将保温时间、服装质量、成本与活动灵活性
+    纳入多目标优化，比较不同材料组合和穿着方案。
+\end{enumerate}
 \newpage
 \begin{thebibliography}{99}
     \bibitem{ashrae55addendumg}
@@ -1580,12 +1494,6 @@ $303$ 倍，四层方案才失去优势；子图（d）显示制造附加率达�
     Wu Y, Nieuwenhoff M D, Huygen F J P M, et al. Characterizing human skin blood
     flow regulation in response to different local skin temperature perturbations[J].
     Microvascular Research, 2017, 111: 96--102.
-
-    \bibitem{wms2019}
-    Dow J, Giesbrecht G G, Danzl D F, et al. Wilderness Medical Society clinical
-    practice guidelines for the out-of-hospital evaluation and treatment of accidental
-    hypothermia: 2019 update[J]. Wilderness \& Environmental Medicine, 2019,
-    30(4S): S47--S69.
 
     \bibitem{pandolf1977}
     Pandolf K B, Givoni B, Goldman R F. Predicting energy expenditure with loads while
