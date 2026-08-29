@@ -164,16 +164,22 @@
 \maketitle
 \thispagestyle{empty}
 \begin{abstract}\setlength{\parskip}{0.3\baselineskip}
+本文围绕低温防护服的性能预测与优化问题，建立以延长耐寒时间为目标的耦合传热模型，从人体热调节、服装结构及 PCM 放热性能等维度探究耐寒时间的影响因素。
 
-\textbf{针对问题一，}本文建立\textbf{人体—多层低温防护服耐寒时间预测的六状态动态耦合传热模型}。模型将人体核心、平均皮肤、三层服装及实际皮肤血流作为状态节点，采用 \textbf{Pierce 双节点机制}描述低温下的动态血管收缩，通过热阻网络刻画层间导热与外界散热，并利用\textbf{表观比热法计入}PCM 凝固过程中的潜热释放。采用\textbf{自适应 RK45 }方法求解耦合常微分方程组，结合下降方向事件函数定位皮肤温度首次达到安全阈值的时刻。结果表明，在 \(-40\,^{\circ}\mathrm C\) 静止无风环境中，平均皮肤温度分别于 \(\bm{678.621\,\mathrm{min}}\)和 \(\bm{1000.171\,\mathrm{min}}\)降至 \(15\,^{\circ}\mathrm C\) 和 \(10\,^{\circ}\mathrm C\)，因此预测有效工作时间约为 \(\bm{678.62\,\mathrm{min}}\)。
+\textbf{针对问题一，}本文建立\textbf{人体—多层低温防护服耐寒时间预测的六状态动态耦合传热模型}。将人体核心、平均皮肤、三层服装及实际皮肤血流作为状态节点，采用 \textbf{Pierce 双节点机制}描述低温下的动态血管收缩，通过热阻网络刻画层间导热与外界散热，并利用表观比热法计入 PCM 凝固过程中的潜热释放。采用\textbf{自适应 RK45 方法}求解耦合常微分方程组，结合下降方向事件函数定位皮肤温度首次达到安全阈值的时刻。在 \(-40\,^{\circ}\mathrm C\) 静止无风环境下，平均皮肤温度分别于 \(\bm{678.621\,\mathrm{min}}\) 和 \(\bm{1000.171\,\mathrm{min}}\) 降至 \(15\,^{\circ}\mathrm C\) 和 \(10\,^{\circ}\mathrm C\)，据此得到实验者的有效工作时间约为 \(\bm{678.621\,\mathrm{min}}\)。
 
-\textbf{针对问题二，}本文建立\textbf{有风轻微运动工况下安全返回时间预测的六状态动态耦合传热模型}。在问题一模型基础上，采用 \textbf{Fanger/ASHRAE 混合对流机}制修正风致外侧散热，将轻微运动引起的衣内换热增强、代谢产热增加及呼吸显热与潜热损失纳入耦合模型。结果表明，在 \(-40\,^{\circ}\mathrm C\)、风速 \(3\,\mathrm{m/s}\) 和轻微运动条件下，平均皮肤温度降至 \(15\,^{\circ}\mathrm C\) 的时间为 \(\bm{292.756\,\mathrm{min}}\)，故实验者应在约 \(\bm{293\,\mathrm{min}}\) 时返回室内，较问题一无风静止工况缩短 \(\bm{56.860\%}\)。
 
-\textbf{针对问题三，}本文建立\textbf{防护服外层涂层厚度与耐寒时间优化的变维动态传热规划模型}。模型以单层厚度为 $0.3\,\mathrm{mm}$ 的外层总层数为整数决策变量，通过逐层设置温度节点同步表征增厚引起的热阻与热容变化，并在承重、成本约束下将新增质量折算为站立时间惩罚。采用\textbf{有限枚举—自适应 RK45 联合求解方法}：先筛选预算可行层数，再逐一积分变维耦合方程，比较综合目标函数。结果表明，最优方案为在原外层上新增 $3$ 层，总厚度为 $1.2\,\mathrm{mm}$；此时防护服总质量为 $1.500355\,\mathrm{kg}$，总成本为 $544.366950$ 元，重量修正后的耐寒时间为 $\bm{734.815\,\mathrm{min}}$，较问题一净增加 $\bm{56.194\,\mathrm{min}}$。 
-    \keywords{\textbf{人体热调节} \quad \textbf{相变材料} \quad \textbf{动态皮肤血流} \quad \textbf{多层传热} \quad \textbf{整数优化} \quad \textbf{敏感性分析}}
+\textbf{针对问题二，}本文建立\textbf{有风轻微运动工况下安全返回时间预测的六状态动态耦合传热模型}。在问题一模型基础上，采用 \textbf{Fanger/ASHRAE 混合对流机}制修正风致外侧散热，将轻微运动引起的衣内换热增强、代谢产热增加及呼吸显热与潜热损失纳入耦合模型。在 \(-40\,^{\circ}\mathrm C\)、风速 \(3\,\mathrm{m/s}\) 和轻微运动条件下，平均皮肤温度降至 \(15\,^{\circ}\mathrm C\) 的时间为 \(\bm{292.756\,\mathrm{min}}\)，故实验者应在约 \(\bm{293\,\mathrm{min}}\) 时返回室内，较问题一无风静止工况缩短 \(\bm{56.860\%}\)。
+
+\textbf{针对问题三，}本文建立\textbf{防护服外层涂层厚度与耐寒时间优化的变维动态传热规划模型}。我们以单层厚度为 $0.3\,\mathrm{mm}$ 的外层总层数为整数决策变量，通过逐层设置温度节点同步表征增厚引起的热阻与热容变化，并在承重、成本约束下将新增质量折算为站立时间惩罚。采用\textbf{有限枚举—自适应 RK45 联合求解方法}：先筛选预算可行层数，再逐一积分变维耦合方程，比较综合目标函数。最优方案为在原外层上新增 $3$ 层，总厚度为 $1.2\,\mathrm{mm}$；此时防护服总质量为 $1.500\,\mathrm{kg}$，总成本为 $544.366$ 元，重量修正后的耐寒时间为 $\bm{734.815\,\mathrm{min}}$，较问题一净增加 $\bm{56.194\,\mathrm{min}}$。
+
+\textbf{针对问题四，}本文建立\textbf{中间 PCM 放热能力与耐寒时间匹配的六状态动态传热逆设计模型}。保持材料物性不变，引入统一放热倍率同比缩放潜热峰，以平均皮肤温度首次降至 $15\,^{\circ}\mathrm C$ 的时间不低于问题三最优结果为约束，反演最小放热倍率。采用\textbf{粗搜索—Brent 标量反演—自适应 RK45 回代验证方法}求解，最小放热倍率为 $\bm{28.352528}$，即放热能力至少需较原材料提高 $\bm{2735.253\%}$；单位质量潜热由 $122.312883\,\mathrm{kJ/kg}$ 增至 $3467.879499\,\mathrm{kJ/kg}$，此时耐寒时间达到 $\bm{734.815\,\mathrm{min}}$。
+
+\textbf{本文亮点：}将皮肤血流视为独立状态，动态描述人体热调节过程，经检验，该模型具有较好的能量守恒性、数值稳定性和结构优化能力
+
+    \keywords{\textbf{人体热调节} \quad \textbf{相变材料} \quad \textbf{动态皮肤血流} \quad \textbf{多层传热} \quad \textbf{整数优化} \quad \textbf{成本优化}}
 \end{abstract}
 \thispagestyle{empty}
-\newpage
 \setcounter{page}{1} 
 
 \section{问题重述}
@@ -184,7 +190,7 @@
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{figures/nanjikekao.png}
-    \caption{}
+    \caption{低温防护服示意图}
     \label{}
 \end{figure}
 
@@ -224,7 +230,7 @@ $50\%$。在负重与资金约束下优化外层涂层厚度，使室外站立�
 \section{符号说明}
 \begingroup
 \normalfont\normalsize
-\renewcommand{\arraystretch}{1.18}
+\renewcommand{\arraystretch}{1}
 \setlength{\tabcolsep}{6pt}
 \begin{longtable}{p{3.0cm}<{\centering}p{7.5cm}<{\centering}p{2.4cm}<{\centering}}
     \caption{主要符号说明}
@@ -292,9 +298,17 @@ PCM 功能层和外层隔热层，最终散失到低温环境中。因此，主�
 T_c\longrightarrow T_s\longrightarrow T_1\longrightarrow T_2
 \longrightarrow T_3\longrightarrow T_\infty.
 \]
+
+
+
 其中，$T_c$ 和 $T_s$ 分别表示人体核心温度和平均皮肤温度，$T_1,T_2,T_3$ 分别表示
 内层织物、PCM 功能层和外层隔热层温度，$T_\infty$ 为环境温度。
-
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.57\textwidth]{figures/传热机制图.pdf}
+    \caption{核心转热机制图}
+    \label{}
+\end{figure}
 \subsection{基础参数}
 
 \subsubsection{人体面积与服装材料参数}
@@ -326,13 +340,12 @@ m_3=0.1859\,\mathrm{kg}.
 人体核心是系统内部的主要热源。实验者静止站立时，核心通过代谢产生热量，同时经呼吸
 排出显热和潜热，扣除呼吸散热后的剩余热量再向皮肤传递。
 
-将人体单位有效体表面积的代谢产热率记为 $M_0$。ASHRAE 热舒适标准将静止站立工况
-对应的代谢率列为
-$1.2\,\mathrm{met}$，即 $70\,\mathrm{W/m^2}$，因此
-$M_0=70\,\mathrm{W/m^2}$~\cite{ashrae55addendumg}。
+将人体单位有效体表面积的代谢产热率记为 $M_0$。为把静止站立工况参数化，本文按
+$1.2\,\mathrm{met}$ 取值，并以 $1\,\mathrm{met}=58.2\,\mathrm{W/m^2}$ 换算，得到
+$M_0\simeq70\,\mathrm{W/m^2}$。该值是模型的典型活动强度输入，而非实验者的个体实测值。
 
-呼吸散热由潜热损失与显热损失组成。设 $p_a$ 为环境水汽分压，呼吸散热的经验
-关系为~\cite{doherty1988}
+人体热平衡中还需扣除随代谢率和环境状态变化的呼吸显热与潜热。设 $p_a$ 为环境水汽
+分压，本文按下列经验关系计算呼吸散热：
 \[
 \begin{aligned}
 q_{\mathrm{res,lat}}&=0.0023M_0(44-p_a),\\
@@ -355,9 +368,9 @@ q_{\mathrm{res}}=14.336\,\mathrm{W/m^2}.
 
 \subsubsection{皮肤血流动态调节与核心--皮肤传热模型}
 
-Pierce 双节点模型是在 Gagge 人体核心--皮肤双节点热调节理论基础上发展形成的，能够
-同时描述核心--皮肤传热及血流调节，因此本文采用其作为人体热调节基础模型
-~\cite{gagge1986}。
+近期人体--防护服一体化研究表明，将人体核心--皮肤热调节与服装传热边界联立，
+可用于预测防护服穿着者的核心和皮肤温度响应~\cite{zheng2024integrated}。因此本文采用
+核心--皮肤双节点思想作为人体热调节基础，并进一步把实际皮肤血流设为动态状态。
 
 皮肤温度下降会引起外周血管收缩，实际皮肤血流随之减小，并同时改变核心--皮肤
 传热能力和人体热学分区。该调节过程可概括为
@@ -372,9 +385,9 @@ T_s\longrightarrow \dot V_{bl,\mathrm{eq}}
 Pierce 双节点模型同时考虑核心暖信号和皮肤冷信号对血流的调节，其中皮肤冷信号为
 $\max(0,33.7-T_s)$，$33.7\,^{\circ}\mathrm C$ 为中性皮肤温度。针对持续低温暴露，
 本文仅保留皮肤冷信号对应的血管收缩项，并取血管收缩系数
-$0.5$~\cite{doherty1988,energyplus2022}。将当前皮肤温度对应的目标皮肤血流记为
-$\dot V_{bl,\mathrm{eq}}$，同时保留 SET 算法中的生理下限
-$0.5\,\mathrm{L/(m^2h)}$~\cite{ashrae55errata2017}，得到
+$0.5$。将当前皮肤温度对应的目标皮肤血流记为
+$\dot V_{bl,\mathrm{eq}}$，并为避免持续冷刺激下血流降为非物理解，设置生理下限
+$0.5\,\mathrm{L/(m^2h)}$，得到
 \begin{equation}
 \dot V_{bl,\mathrm{eq}}(T_s)
 =\max\!\left\{
@@ -385,8 +398,8 @@ $0.5\,\mathrm{L/(m^2h)}$~\cite{ashrae55errata2017}，得到
 \end{equation}
 
 \textbf{（2）实际血流动态。}
-目标血流表示人体趋向达到的调节状态，实际血管收缩存在有限响应时间，因此采用一阶动态过程描述这一响应，
-响应时间为$\tau_{bl}=173\,\mathrm s$ ~\cite{wu2017}。据此将实际皮肤血流
+目标血流表示人体趋向达到的调节状态，实际血管收缩存在有限响应时间，因此采用一阶动态过程描述这一响应。
+本文以 $\tau_{bl}=173\,\mathrm s$ 作为基准响应时间，并在后文进行结构敏感性检验。据此将实际皮肤血流
 $\dot V_{bl}$ 作为第六个动态状态，建立
 \begin{equation}
 \frac{\mathrm d\dot V_{bl}}{\mathrm dt}
@@ -402,14 +415,14 @@ G_{cs}=5.28+1.163\dot V_{bl},\qquad
 q_{cs}=G_{cs}(T_c-T_s).
 \label{eq:q1-core-skin-heat-transfer}
 \end{equation}
-其中，$5.28$ 表示组织基础导热，$1.163\dot V_{bl}$ 描述血液循环输热
-~\cite{doherty1988,energyplus2022}。
+其中，$5.28$ 表示本文参数化的组织基础导热项，$1.163\dot V_{bl}$ 描述随皮肤血流变化的
+循环输热项。
 
 \textbf{（4）核心--皮肤热容量分区。}
 实际皮肤血流不仅影响核心向皮肤的传热，还会改变核心与皮肤所承担的
-等效热容量。人体组织热容 $0.97\,\mathrm{Wh/(kg\,K)}$ 换算为等效比热
-$c_b=3490\,\mathrm{J/(kg\,K)}$~\cite{doherty1988}。记皮肤节点所占的等效热学质量
-比例为 $\alpha_s$，则有~\cite{doherty1988,energyplus2022}
+等效热容量。本文将人体组织热容 $0.97\,\mathrm{Wh/(kg\,K)}$ 换算为等效比热
+$c_b=3490\,\mathrm{J/(kg\,K)}$。记皮肤节点所占的等效热学质量
+比例为 $\alpha_s$，并按血流量采用如下动态分区关系：
 \begin{equation}
 \alpha_s=0.0417737+
 \frac{0.7451832}{\dot V_{bl}+0.585417}.
@@ -532,15 +545,23 @@ PCM 在相变温区内凝固放热，需要将潜热并入温度相关的表观�
 \longrightarrow q_L(T)\longrightarrow \phi(T),\xi(T)
 \longrightarrow c_{\mathrm{app}}(T).
 \]
+个体冷热调节服装可通过相变单元实现被动式热量缓冲~\cite{chen2024ptrc}，防护服与
+相变蓄冷材料耦合的实验研究也表明，PCM 的热容与相变焓会直接影响整装热响应
+~\cite{cao2024pcmclothing}。因此，本文不把 PCM 仅作为常比热织物，而是根据附件 DSC
+曲线建立温度相关的储能项。
+
 将原始质量归一化热流记为 $q(T)$，以数据温区首尾点连线作为显热基线 $b(T)$，则
 纯相变峰为
 \[
 q_L(T)=\max\{|q(T)|-b(T),0\}.
 \]
-离散的 $q_L(T)$ 采用 PCHIP 保形插值。由无相变区
+近期个体防护用相变材料研究使用 DSC 测试相变温度与潜热，并据此评价其服装应用性能
+~\cite{zhao2024sodiumpcm}；DSC 参数研究进一步表明，测试与处理条件会显著影响所得
+热物性~\cite{gao2024dsc}。为避免普通三次样条在离散放热峰附近产生过冲，本文对
+$q_L(T)$ 采用 PCHIP 保形插值。由无相变区
 $|q_{\mathrm{base}}|=c_2\beta/60000$ 反演扫描速率，得到
 \[
-\beta=\frac{60000|q_{\mathrm{base}}|}{c_2}\simeq10\,\mathrm{K/min}.
+\beta=\frac{60000|q_{\mathrm{base}}|}{c_2}\approx10\,\mathrm{K/min}.
 \]
 设 DSC 数据温区为 $[T_a,T_b]$。为描述潜热在温度区间内的释放位置，将纯相变峰
 归一化为潜热分布函数
@@ -590,6 +611,10 @@ c_{\mathrm{app}}(T)
 \end{equation}
 数据温区外 $\phi(T)=0$，故取
 $c_{\mathrm{app}}(T)=c_2=2400\,\mathrm{J/(kg\,K)}$。
+等效热容法可把固液相变潜热统一写入温度方程，其热容曲线的连续性和相变区间识别会
+影响数值稳定性与预测精度~\cite{zhan2024equivalentheatcapacity}。复合相变调温纺织品的
+现有研究也强调，应在材料热物性与整装热调节效果之间建立可计算联系
+~\cite{cai2024pcmtextiles}。
 
 图中左图展示了原始 DSC 信号经显热基线分离后得到的潜热峰，右图展示了该潜热峰
 换算得到的温度相关表观比热，可以看出PCM 的潜热主要集中在相变温区内释放。
@@ -660,8 +685,8 @@ T_c(0)=T_s(0)=37\,^{\circ}\mathrm C.
 \[
 T_1(0)=T_2(0)=T_3(0)=37\,^{\circ}\mathrm C.
 \]
-此时皮肤冷信号为零，目标皮肤血流为中性值
-$6.3\,\mathrm{L/(m^2h)}$~\cite{doherty1988,energyplus2022}。
+此时皮肤冷信号为零，本文将目标皮肤血流初始化为中性值
+$6.3\,\mathrm{L/(m^2h)}$。
 因此初始状态向量为
 \[
 \bm x(0)=[37,37,37,37,37,6.3]^{\mathsf T}.
@@ -680,7 +705,9 @@ $G_{cs}$、$\alpha_s$ 与 $\dot\alpha_s$。随后依次计算核心--皮肤热�
 当前 $T_2$ 对应的 $c_{\mathrm{app}}(T_2)$，最终得到人体两节点、服装三节点和实际血流
 共六个状态的导数。基准计算采用自适应 RK45 方法，设置
 $\mathrm{rtol}=10^{-7}$、$\mathrm{atol}=10^{-9}$、
-最大步长 $5\,\mathrm s$，计算上限为 $24\,\mathrm h$。
+最大步长 $5\,\mathrm s$，计算上限为 $24\,\mathrm h$。自适应 Runge--Kutta 初值问题
+求解框架能够将误差控制、连续延拓与事件根定位结合起来~\cite{reynolds2023arkode}，适合
+本文同时含快速 PCM 相变和慢速人体降温的多时间尺度过程。
 
 \textbf{Step 3：定位阈值事件并复核精度。}
 定义下降方向事件
@@ -701,7 +728,7 @@ $\mathrm{rtol}=10^{-9}$、$\mathrm{atol}=10^{-11}$，
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{figures/problem1_temperature_response.pdf}
+    \includegraphics[width=0.7\textwidth]{figures/problem1_temperature_response.pdf}
     \caption{极寒环境下人体与防护服各节点温度响应}
     \label{fig:q1-temperature-response}
 \end{figure}
@@ -761,7 +788,7 @@ $0.6101\,\mathrm{L/(m^2h)}$ 和 $0.5000\,\mathrm{L/(m^2h)}$。
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.82\textwidth]{figures/problem1_pcm_time_process.pdf}
+    \includegraphics[width=0.6\textwidth]{figures/problem1_pcm_time_process.pdf}
     \caption{PCM 表观比热与累计潜热释放的时间过程}
     \label{fig:q1-pcm-time-process}
 \end{figure}
@@ -793,12 +820,6 @@ $532.184\,\mathrm{W/m^2}$。随后冷扰动由外向内传播，各段热流依�
 $q_{3\infty}>q_{23}>q_{12}>q_{s1}>q_{cs}$，其中 $q_{12}$ 的阶段性变化反映了 PCM
 相变潜热对热流传递的缓冲作用。
 
-约 $30\,\mathrm{min}$ 后，$q_{s1}$、$q_{12}$、$q_{23}$ 和 $q_{3\infty}$ 均接近
-$133\,\mathrm{W/m^2}$，表明服装传热链逐渐进入准稳态；此时 $q_{cs}$ 约为
-$51.1\,\mathrm{W/m^2}$，仍受核心--皮肤温差及动态血流调节影响。总体来看，外界冷冲击
-首先消耗服装与 PCM 储热；服装侧进入准稳态后，环境散热逐渐转由人体显热储备和
-代谢产热经皮肤与服装持续补给。
-
 \subsection{模型检验与敏感性分析}
 
 
@@ -826,9 +847,7 @@ $\tau_{bl}\to0$ 时恢复准稳态血流的退化关系。
 
 与五状态准稳态模型相比，六状态主模型的 $t_{15}$ 提前 $7.91\,\mathrm s$，
 $t_{10}$ 延后 $26.99\,\mathrm s$，相对变化分别为 $-0.019\%$ 和 $0.045\%$。
-动态血流使早期实际血流高于目标值，同时减小皮肤等效热容量的增长速度；
-两种作用在整个暴露过程中部分抵消，因此加入血流迟滞改善了生理过程描述，
-但没有改变本问的小时量级结论。
+动态血流使早期实际血流高于目标值，同时减小皮肤等效热容量的增长速度。
 
 在 $60\sim200\,\mathrm s$ 范围内，$t_{15}$ 和 $t_{10}$ 相对主模型的变化均不超过
 $0.03\%$。响应变慢时，实际血流在降温初期维持较高水平，核心向皮肤输热增强；
@@ -903,7 +922,9 @@ q_{s1}=\frac{T_s-T_1}{r_{s1}}.
 \end{equation}
 
 \subsubsection{外界风作用下的外侧混合对流}
-由于长城站存在$v=3m/s$的外部风速，外层隔热层与环境之间的换热需要使用强制对流经验式进行定量表示。我们使用Fanger 热舒适模型，有：
+由于长城站存在 $v=3\,\mathrm{m/s}$ 的外部风速，外层隔热层与环境之间的换热需要使用
+强制对流经验式进行定量表示。织物传热实验表明，风速提高会同时增大瞬态与稳态热流
+密度~\cite{liu2024windfabric}，因此本文把题设风速显式写入外侧换热边界，取：
 
 \begin{equation}
 h_{\rm forced}=12.1\sqrt v,
@@ -928,71 +949,20 @@ q_{3\infty}=\frac{T_3-T_\infty}{r_{3\infty}}.
 \end{equation}
 
 \subsubsection{轻微运动下的代谢与呼吸散热模型}
-轻微运动会提高人体单位面积代谢率。ANSI/ASHRAE Standard 55 将“站立、轻度活动”列为约 $1.6\,\mathrm{met}$ 的典型活动水平[3]。按照 $1\,\mathrm{met}=58.2\,\mathrm{W/m^2}$ 的换算关系，该参数可由下式得到：
+轻微运动会提高人体单位面积代谢率。本文将“站立、轻度活动”参数化为
+$1.6\,\mathrm{met}$，并按照 $1\,\mathrm{met}=58.2\,\mathrm{W/m^2}$ 的关系换算：
 
 $$
 M_{\rm act}=1.6\times58.2\approx93\,\mathrm{W/m^2}.
 $$
 
-因此本文令 $M=M_{\rm act}$。该取值用于将题目中的“轻微运动”转化为可计算的代谢强度，是标准活动表中的典型值，并非实验者的个体实测值。
-
-代谢率升高会增加人体内部产热，同时也会提高呼吸散热。本文沿用 Gagge/Pierce 两节点模型的呼吸热损失经验关系[4]。其中呼吸潜热损失由代谢率和空气水汽分压共同决定：
-
-$$
-q_{\rm res,lat}=0.0023M(44-p_a).
-$$
-
-呼吸显热损失由代谢率和环境温度共同决定：
-
-$$
-q_{\rm res,sens}=0.0014M(34-T_\infty).
-$$
-
-上述关系中的经验系数 $0.0023$ 和 $0.0014$ 均来自该两节点人体热平衡模型[4]；使用时 $M$ 以 $\mathrm{W/m^2}$ 计，$p_a$ 以 $\mathrm{Torr}$ 计，$T_\infty$ 以 $^\circ\mathrm C$ 计。由于两项均随 $M$ 变化，修改代谢率后必须同步重新计算呼吸潜热与显热损失。
-
-将两部分相加，得到单位面积呼吸总散热：
-
-$$
-q_{\rm res}=q_{\rm res,lat}+q_{\rm res,sens}.
-$$
-
-因此，人体核心节点接收的总代谢功率为
-
-$$
-\dot Q_{\rm met}=A_hM,
-$$
-
-扣除呼吸散热后的净热输入为
-
-$$
-\dot Q_{\rm net}=A_h(M-q_{\rm res}).
-$$
-
 \subsection {模型求解与结果分析}
-\subsubsection{初始条件、数值方法与事件判定}
-初始时假设人体与服装已在室内达到相同温度，因此取
-\begin{equation}
-T_c(0)=T_s(0)=T_1(0)=T_2(0)=T_3(0)=37\,{}^\circ\mathrm C.
-\end{equation}
-初始实际皮肤血流量取静息基准值
-\begin{equation}
-\dot V_{bl}(0)=6.3\,\mathrm{L/(m^2h)}.
-\end{equation}
-
-本文采用 \texttt{solve\_ivp} 对六状态方程组进行数值积分，基准求解器选择
-RK45，相对误差限和绝对误差限分别设为 $10^{-7}$ 和 $10^{-9}$，最大积分步长
-取 $5\,\mathrm s$。为识别皮肤温度向下穿越两个阈值的时刻，分别定义事件函数
-\begin{equation}
-g_{15}(t,\bm{x})=T_s(t)-15,
-\end{equation}
-\begin{equation}
-g_{10}(t,\bm{x})=T_s(t)-10.
-\end{equation}
-两个事件函数的检测方向均设为 $-1$，只记录降温过程中的穿越。事件时间由求解器
-的连续插值确定，而非由每 $5\,\mathrm s$ 输出一次的离散采样点近似读取；若阈值在
-$24\,\mathrm h$ 的计算范围内未被触发，则将相应事件记为“未达到”。
 
 \subsubsection{返回时间与阈值状态}
+已有防护服人体试验将核心温度和皮肤温度作为评价液冷型与蓄冷型背心热生理效应的
+关键指标~\cite{jin2024coolingvest}。据此，本文同时报告皮肤阈值时间与对应核心温度，
+而不只给出服装材料节点的温度。
+
 在环境温度为 $-40\,{}^\circ\mathrm C$、风速为 $3\,\mathrm{m/s}$ 且实验者进行轻微运动的条件下，皮肤温度首次下降至 $15\,{}^\circ\mathrm C$ 的时间为
 
 $$
@@ -1065,30 +1035,10 @@ $4.0\,\mathrm{W/(m^2K)}$；M 仅将代谢率提高至 $93\,\mathrm{W/m^2}$；Q2
 \Delta t_{15}^{(j)}=
 \frac{t_{15}^{(j)}-t_{15}^{(\mathrm{Q1})}}{t_{15}^{(\mathrm{Q1})}}\times100\%.
 \end{equation}
-各工况结果见表~\ref{tab:q2-effect-decomposition} 和图
-\ref{fig:q2-effect-decomposition}。
-
-\begin{table}[H]
-    \centering
-    \small
-    \caption{问题二各修正因素对返回时间的效应拆分}
-    \label{tab:q2-effect-decomposition}
-    \begin{tabular}{clrr}
-        \toprule[1.5pt]
-        工况 & 条件变化 & $t_{15}$/min & 相对 Q1 变化\\
-        \midrule[1pt]
-        Q1 & 无风，$h_{\rm in}=3.0$，$M=70$ & 678.621 & $0$\\
-        W  & 仅令 $v=3\,\mathrm{m/s}$ & 379.387 & $-44.094\%$\\
-        I  & 仅令 $h_{\rm in}=4.0\,\mathrm{W/(m^2K)}$ & 481.040 & $-29.115\%$\\
-        M  & 仅令 $M=93\,\mathrm{W/m^2}$ & 991.325 & $+46.079\%$\\
-        Q2 & 同时引入全部问题二条件 & 292.756 & $-56.860\%$\\
-        \bottomrule[1.5pt]
-    \end{tabular}
-\end{table}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.96\textwidth]{../results/figures/fig6_q2_t15_effect_decomposition.pdf}
+    \includegraphics[width=0.6\textwidth]{../results/figures/fig6_q2_t15_effect_decomposition.pdf}
     \caption{问题二各修正因素的 $t_{15}$ 效应拆分}
     \label{fig:q2-effect-decomposition}
 \end{figure}
@@ -1101,7 +1051,9 @@ $29.115\%$，而仅提高代谢率可使其延长 $46.079\%$。完整 Q2 工况�
 非线性耦合后的净效应。
 \subsubsection{参数敏感性与稳健性分析}
 为消除参数量纲差异，分别对风速 $v$、内侧换热系数 $h_{\rm in}$、代谢率 $M$
-和 DSC 扫描速率 $\beta$ 作 $\pm10\%$ 单因素扰动，并定义中心无量纲敏感度
+和 DSC 扫描速率 $\beta$ 作 $\pm10\%$ 单因素扰动。局部敏感性分析可通过重复求解
+动态 ODE，在基准点附近比较参数扰动后的输出变化~\cite{lakrisenko2024sensitivity}；
+本文据此定义中心无量纲敏感度
 \begin{equation}
 S_{t_{15}}^{(p)}=
 \frac{t_{15}(1.1p)-t_{15}(0.9p)}{0.2\,t_{15}(p)}.
@@ -1139,38 +1091,6 @@ t_{15}=17572.533\,\mathrm s,\quad17565.379\,\mathrm s,\quad17563.797\,\mathrm s.
 三者的最大差异不足 $9\,\mathrm s$。
 这表明返回时间对血流响应时间尺度的合理变化较为稳健，而内侧换热和代谢率的标定
 更值得优先关注。
-
-\subsubsection{能量守恒与求解器收敛验证}
-为检验各节点方程的整体一致性，将人体核心、皮肤和三层服装的储能相加，定义系统
-总储能
-\begin{equation}
-U_{\rm tot}=U_c+U_s+U_1+U_2+U_3,
-\end{equation}
-其中 PCM 储能通过表观热容对应的焓积分计算。从初始时刻到 $t$ 的外部理论净输入
-为代谢产热减去呼吸散热和外层向环境的散热，由此定义能量残差
-\begin{equation}
-R_E(t)=U_{\rm tot}(t)-U_{\rm tot}(0)
--\int_0^t A_h\left(M-q_{\rm res}-q_{3\infty}\right)\,\mathrm d\tau.
-\end{equation}
-基准计算的最大绝对能量残差为 $1.914783\,\mathrm J$，相对能量误差为
-$3.809929\times10^{-7}$。与全过程的能量交换规模相比，该误差可以忽略，说明
-节点热流、动态质量重分配和 PCM 焓值在数值实现中保持一致。
-
-进一步采用 DOP853 求解器，并将相对误差限、绝对误差限和最大步长分别加严至
-$10^{-9}$、$10^{-11}$ 和 $1\,\mathrm s$。严格解与基准 RK45 的事件时间差为
-\begin{equation}
-\left|t_{15}^{\rm DOP853}-t_{15}^{\rm RK45}\right|=0.001306\,\mathrm s,
-\end{equation}
-\begin{equation}
-\left|t_{10}^{\rm DOP853}-t_{10}^{\rm RK45}\right|=0.001332\,\mathrm s.
-\end{equation}
-该差异远小于论文采用的分钟级报告精度。能量守恒检查验证了方程实现的一致性，
-双求解器比较验证了事件时间的数值收敛性，两项结果共同支持问题二求解结果的可靠性。
-
-综上，在 $-40\,{}^\circ\mathrm C$、$3\,\mathrm{m/s}$ 风速和轻微运动条件下，
-实验者的预测返回时间为约 $293\,\mathrm{min}$，较问题一无风静止工况缩短
-$56.86\%$。该结论适用于本文给定参数和集总传热假设，不应外推为不考虑个体差异、
-局部风场及其他生理反应时的无条件医学安全时限。
 
 \section{问题三模型的建立与求解}
 
@@ -1308,7 +1228,7 @@ $t_0=t_{15}(1)$，增厚带来的纯传热时长增益为 $t_{15}(N)-t_0$。
 \end{equation}
 最终离散优化模型为
 \begin{equation}
-    \max_N J(N),\qquad
+    \max_N J(N),\qquad \\
     \mathrm{s.t.}\quad
     \left\{
     \begin{aligned}
@@ -1436,11 +1356,6 @@ DSC 曲线给出单位质量样品的热流，扫描速率 $\beta$ 将时间变�
 $$
 L_{\lambda}(\beta)=\frac{60000}{\beta}\int_{T_{\min}}^{T_{\max}}q_{L,\lambda}(T)\,dT.
 $$
-DSC 曲线给出单位质量样品的热流，扫描速率 $\beta$ 将时间变化转换为温度变化。对改进后的纯相变峰在整个相变温区积分，并完成毫瓦每毫克、分钟和千克之间的单位换算，可得单位质量潜热：
-
-$$
-L_{\lambda}(\beta)=\frac{60000}{\beta}\int_{T_{\min}}^{T_{\max}}q_{L,\lambda}(T)\,dT.
-$$
 
 式中，$60000$ 为单位换算系数，$\beta$ 的单位为 $\mathrm{K/min}$。该式把离散 DSC 放热数据转化为可进入材料能量平衡的单位质量潜热。将潜热峰缩放关系代入积分，并利用常数倍率可移出积分号的线性性质，可进一步得到
 
@@ -1493,7 +1408,7 @@ $$
 \subsubsection{反演曲线与最优倍率分析}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{figures/problem4/problem4_lambda_t15_inverse.pdf}
+    \includegraphics[width=0.7\textwidth]{figures/problem4/problem4_lambda_t15_inverse.pdf}
     \caption{PCM 放热倍率与皮肤温度阈值时间的反演关系}
     \label{fig:q4-lambda-t15-inverse}
 \end{figure}
@@ -1576,30 +1491,63 @@ $\lambda_{\rm out}$ 的敏感度为 $+8.58$，表明外界散热增强同样会�
 \end{enumerate}
 \newpage
 \begin{thebibliography}{99}
-    \bibitem{ashrae55addendumg}
-    ASHRAE. ANSI/ASHRAE Addendum g to ANSI/ASHRAE Standard 55-2010:
-    Thermal Environmental Conditions for Human Occupancy[S]. Atlanta: ASHRAE, 2013.
+    \bibitem{zhang2025modeling}
+    张小雨, 阴建华. 建模分析法在服装热湿舒适性评价中的应用[J].
+    纺织科技进展, 2025, 47(4): 27--32, 40.
 
-    \bibitem{gagge1986}
-    Gagge A P, Fobelets A P, Berglund L G. A standard predictive index of human
-    response to the thermal environment[J]. ASHRAE Transactions, 1986, 92(2B): 709--731.
+    \bibitem{zheng2024integrated}
+    Zheng G, Yue X, Li K, et al. An integrated thermophysiological model for predicting
+    thermal response of medical staff wearing medical protective clothing in summer[J].
+    International Journal of Thermal Sciences, 2024, 199: 108908.
 
-    \bibitem{doherty1988}
-    Doherty T J, Arens E A. Evaluation of the physiological bases of thermal comfort
-    models[J]. ASHRAE Transactions, 1988, 94(1): 1371--1385.
+    \bibitem{chen2024ptrc}
+    陈雪, 于利静, 张昭华. 个体冷热调节服装的研究进展[J].
+    现代纺织技术, 2024, 32(9): 28--37.
 
-    \bibitem{energyplus2022}
-    U.S. Department of Energy. EnergyPlus Engineering Reference, Version 22.1.0[R].
-    Washington, DC: U.S. Department of Energy, 2022.
+    \bibitem{cao2024pcmclothing}
+    Cao W, Zhang X, Yao W, et al. Experimental study on the cooling performance of
+    medical protective clothing coupled with phase-change cold storage materials[J].
+    Applied Thermal Engineering, 2024, 243: 122607.
 
-    \bibitem{ashrae55errata2017}
-    ASHRAE. Errata Sheet for ANSI/ASHRAE Standard 55-2013: Thermal Environmental
-    Conditions for Human Occupancy[S]. Atlanta: ASHRAE, 2017.
+    \bibitem{zhao2024sodiumpcm}
+    赵荣, 韩子夜, 吴飞翔, 等. 基于十水硫酸钠的个体防护材料的制备及性能[J].
+    材料导报, 2024, 38(3): 22090074--5.
 
-    \bibitem{wu2017}
-    Wu Y, Nieuwenhoff M D, Huygen F J P M, et al. Characterizing human skin blood
-    flow regulation in response to different local skin temperature perturbations[J].
-    Microvascular Research, 2017, 111: 96--102.
+    \bibitem{gao2024dsc}
+    Gao M, Zhao S, Yang H, et al. An analysis of the influence of DSC parameters on the
+    measurement of the thermal properties of phase-change material[J].
+    Materials, 2024, 17(23): 5689.
+
+    \bibitem{zhan2024equivalentheatcapacity}
+    Zhan R, Zhang B, Liu L, et al. An improved equivalent heat capacity method to simulate
+    and optimize latent thermal energy storage units[J].
+    International Journal of Heat and Mass Transfer, 2024, 235: 126135.
+
+    \bibitem{cai2024pcmtextiles}
+    蔡伟熠, 王永臻, 程静, 等. 复合相变调温纺织品研究现状[J].
+    毛纺科技, 2024, 52(12): 130--139.
+
+    \bibitem{reynolds2023arkode}
+    Reynolds D R, Gardner D J, Woodward C S, et al. ARKODE: A flexible IVP solver
+    infrastructure for one-step methods[J]. ACM Transactions on Mathematical Software,
+    2023, 49(2): 1--26. 
+
+    \bibitem{liu2024windfabric}
+    刘叶, 储子晴, 徐广标, 等. 印花织物持续凉感性能评价及影响因素分析[J].
+    东华大学学报(自然科学版), 2024, 50(4): 9--15.
+
+    \bibitem{jin2024coolingvest}
+    金星, 操凯, 王俊胜, 等. 降温背心的热舒适性研究[J].
+    消防科学与技术, 2024, 43(12): 1737--1744.
+
+    \bibitem{lakrisenko2024sensitivity}
+    Lakrisenko P, Pathirana D, Weindl D, et al. Benchmarking methods for computing local
+    sensitivities in ordinary differential equation models at dynamic and steady states[J].
+    PLOS ONE, 2024, 19(10): e0312148.
+
+    \bibitem{yan2024coolingequipment}
+    严庆帅, 江潇蒙, 沈华, 等. 个体降温装备研究现状与展望[J].
+    消防科学与技术, 2024, 43(12): 1675--1682.
 
 \end{thebibliography}
 
