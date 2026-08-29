@@ -19,9 +19,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib import font_manager
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
-from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -49,6 +49,33 @@ PALETTE = {
     "dark": "#272727",
     "teal": "#42949E",
     "violet": "#9A4D8E",
+}
+
+REQUIRED_PAPER_FONT = "STZhongsong"
+TEMPERATURE_RESPONSE_RCPARAMS = {
+    "font.family": REQUIRED_PAPER_FONT,
+    "font.size": 18.0,
+    "mathtext.fontset": "custom",
+    "mathtext.rm": REQUIRED_PAPER_FONT,
+    "mathtext.it": REQUIRED_PAPER_FONT,
+    "mathtext.bf": REQUIRED_PAPER_FONT,
+    "text.usetex": False,
+    "axes.labelsize": 18.0,
+    "axes.linewidth": 2.0,
+    "axes.spines.right": False,
+    "axes.spines.top": False,
+    "xtick.labelsize": 16.0,
+    "ytick.labelsize": 16.0,
+    "legend.fontsize": 15.5,
+    "legend.frameon": False,
+}
+TEMPERATURE_RESPONSE_COLORS = {
+    "skin": "#51999F",
+    "core": "#ED8D5A",
+    "layer1": "#7BC0CD",
+    "pcm": "#EA9E58",
+    "layer3": "#4198AC",
+    "threshold": "#ECB66C",
 }
 
 
@@ -364,7 +391,31 @@ def _load_problem1_results(result_dir: Path) -> tuple[pd.DataFrame, pd.Series, p
     return timeseries, summary_frame.iloc[0], sensitivity
 
 
+def _verify_temperature_response_font() -> None:
+    """Fail clearly if the paper's required STZhongsong font is unavailable."""
+
+    try:
+        font_manager.findfont(REQUIRED_PAPER_FONT, fallback_to_default=False)
+    except ValueError as exc:
+        raise RuntimeError(
+            "未检测到华文中宋（STZhongsong），请安装该字体后再生成温度响应图。"
+        ) from exc
+
+
 def plot_temperature_response(
+    timeseries: pd.DataFrame,
+    summary: pd.Series,
+    output_dir: Path,
+    formats: Iterable[str],
+) -> list[Path]:
+    """Plot the five temperature nodes using the current paper house style."""
+
+    _verify_temperature_response_font()
+    with matplotlib.rc_context(TEMPERATURE_RESPONSE_RCPARAMS):
+        return _plot_temperature_response_styled(timeseries, summary, output_dir, formats)
+
+
+def _plot_temperature_response_styled(
     timeseries: pd.DataFrame,
     summary: pd.Series,
     output_dir: Path,
@@ -376,13 +427,13 @@ def plot_temperature_response(
     t15_h = float(summary["t15_s"]) / 3600.0
     t10_h = float(summary["t10_s"]) / 3600.0
 
-    fig, ax = plt.subplots(figsize=(8.8, 5.7), layout="constrained")
+    fig, ax = plt.subplots(figsize=(10.8, 6.8), layout="constrained")
     curves = [
-        ("T_core_C", r"核心 $T_c$", PALETTE["red_strong"], 2.6, "-", 1.0, 5),
-        ("T_skin_C", r"皮肤 $T_s$", PALETTE["blue_main"], 3.2, "-", 1.0, 6),
-        ("T_layer1_C", r"内层 $T_1$", PALETTE["green_3"], 1.7, "-", 0.88, 3),
-        ("T_pcm_C", r"PCM 层 $T_2$", PALETTE["teal"], 1.7, "-.", 0.88, 3),
-        ("T_layer3_C", r"外层 $T_3$", PALETTE["violet"], 1.7, "--", 0.88, 3),
+        ("T_core_C", r"核心 $T_c$", TEMPERATURE_RESPONSE_COLORS["core"], 2.8, "-", 1.0, 5),
+        ("T_skin_C", r"皮肤 $T_s$", TEMPERATURE_RESPONSE_COLORS["skin"], 3.2, "-", 1.0, 6),
+        ("T_layer1_C", r"内层 $T_1$", TEMPERATURE_RESPONSE_COLORS["layer1"], 2.0, "-", 0.95, 3),
+        ("T_pcm_C", r"PCM 层 $T_2$", TEMPERATURE_RESPONSE_COLORS["pcm"], 2.0, "-.", 0.95, 3),
+        ("T_layer3_C", r"外层 $T_3$", TEMPERATURE_RESPONSE_COLORS["layer3"], 2.0, "--", 0.95, 3),
     ]
     for column, label, color, width, linestyle, alpha, zorder in curves:
         ax.plot(
@@ -399,18 +450,18 @@ def plot_temperature_response(
     for threshold in (15.0, 10.0):
         ax.axhline(
             threshold,
-            color=PALETTE["gray"],
-            linewidth=1.35,
+            color=TEMPERATURE_RESPONSE_COLORS["threshold"],
+            linewidth=1.8,
             linestyle=(0, (5, 4)),
             zorder=1,
         )
-    ax.text(0.25, 15.8, r"$T_s=15\,^\circ$C", color=PALETTE["gray"], fontsize=10.5)
-    ax.text(0.25, 10.8, r"$T_s=10\,^\circ$C", color=PALETTE["gray"], fontsize=10.5)
+    ax.text(0.25, 15.8, r"$T_s=15\,^\circ\mathrm{C}$", color="black", fontsize=15.0)
+    ax.text(0.25, 10.8, r"$T_s=10\,^\circ\mathrm{C}$", color="black", fontsize=15.0)
     ax.scatter(
         [t15_h, t10_h],
         [15.0, 10.0],
         s=55,
-        color=PALETTE["blue_main"],
+        color=TEMPERATURE_RESPONSE_COLORS["skin"],
         edgecolor="white",
         linewidth=1.0,
         zorder=8,
@@ -420,27 +471,32 @@ def plot_temperature_response(
         xy=(t15_h, 15.0),
         xytext=(t15_h + 0.55, 20.0),
         ha="left",
-        fontsize=11,
-        fontweight="bold",
-        color=PALETTE["blue_main"],
-        arrowprops={"arrowstyle": "->", "color": PALETTE["blue_main"], "lw": 1.25},
+        fontsize=15.0,
+        color=TEMPERATURE_RESPONSE_COLORS["skin"],
+        arrowprops={
+            "arrowstyle": "->",
+            "color": TEMPERATURE_RESPONSE_COLORS["skin"],
+            "lw": 1.5,
+        },
     )
     ax.annotate(
         rf"$t_{{10}}={t10_h:.2f}\,\mathrm{{h}}$",
         xy=(t10_h, 10.0),
         xytext=(t10_h - 0.7, 3.5),
         ha="right",
-        fontsize=11,
-        fontweight="bold",
-        color=PALETTE["blue_main"],
-        arrowprops={"arrowstyle": "->", "color": PALETTE["blue_main"], "lw": 1.25},
+        fontsize=15.0,
+        color=TEMPERATURE_RESPONSE_COLORS["skin"],
+        arrowprops={
+            "arrowstyle": "->",
+            "color": TEMPERATURE_RESPONSE_COLORS["skin"],
+            "lw": 1.5,
+        },
     )
-    ax.set_title("极寒环境下人体—防护服各节点温度响应", loc="left", fontweight="bold")
-    ax.set_xlabel(r"时间 $t$ / h")
-    ax.set_ylabel(r"温度 $T$ / $^\circ$C")
+    ax.set_xlabel(r"时间 $t$ / $\mathrm{h}$")
+    ax.set_ylabel(r"温度 $T$ / $^\circ\mathrm{C}$")
     ax.set_xlim(0.0, max(float(time_h.max()) * 1.03, t10_h * 1.03))
     ax.set_ylim(-25.0, 41.0)
-    ax.grid(axis="y", color=PALETTE["neutral"], linewidth=0.7, alpha=0.42)
+    ax.grid(False)
     handles, labels = ax.get_legend_handles_labels()
     fig.legend(
         handles,
@@ -535,39 +591,6 @@ def plot_blood_flow_regulation(
     ax_flow.set_ylim(0.25, 6.75)
     ax_flow.legend(loc="upper right")
     ax_flow.grid(axis="y", color=PALETTE["neutral"], linewidth=0.7, alpha=0.42)
-
-    lag = actual - equilibrium
-    lag_peak_index = int(np.argmax(lag))
-    lag_peak_h = float(time_h[lag_peak_index])
-    inset = inset_axes(ax_flow, width="40%", height="47%", loc="upper center", borderpad=1.35)
-    inset.plot(time_h, equilibrium, color=PALETTE["red_strong"], linestyle="--", linewidth=1.8)
-    inset.plot(time_h, actual, color=PALETTE["blue_main"], linewidth=2.2)
-    inset.fill_between(
-        time_h,
-        equilibrium,
-        actual,
-        where=actual >= equilibrium,
-        color=PALETTE["green_2"],
-        alpha=0.50,
-        linewidth=0,
-    )
-    inset.scatter(
-        [lag_peak_h],
-        [actual[lag_peak_index]],
-        color=PALETTE["blue_main"],
-        s=28,
-        edgecolor="white",
-        linewidth=0.7,
-        zorder=5,
-    )
-    inset.set_xlim(0.20, 0.82)
-    local = (time_h >= 0.20) & (time_h <= 0.82)
-    inset.set_ylim(float(equilibrium[local].min()) - 0.25, float(actual[local].max()) + 0.25)
-    inset.set_title(r"早期迟滞：$\dot V_{bl}>\dot V_{bl,\mathrm{eq}}$", fontsize=10.5)
-    inset.set_xlabel("t / h", fontsize=10)
-    inset.tick_params(labelsize=10, width=1.0, length=3.5)
-    inset.spines["left"].set_linewidth(1.2)
-    inset.spines["bottom"].set_linewidth(1.2)
 
     ax_alpha.plot(time_h, alpha, color=PALETTE["green_3"], linewidth=3.0, zorder=4)
     ax_alpha.scatter(

@@ -72,6 +72,12 @@ python src/可视化/plot_problem1_figures.py
 
 程序直接读取附件 1 及 `results/outputs/problem1/` 中经过核验的 CSV，生成 PCM 相变特性、五节点温度响应、皮肤血流动态调节和参数敏感性四张论文图；PNG 与矢量 PDF 默认保存在 `paper/figures/`。
 
+若需生成皮肤温度、核心温度与实际皮肤血流的联合演化图，运行：
+
+```bash
+python src/可视化/plot_problem1_thermoregulation.py
+```
+
 ## 问题二数值求解
 
 从仓库根目录运行：

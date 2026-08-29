@@ -224,60 +224,81 @@ $0.5\,\mathrm{kg}$ 使站立时间减少 $10\,\mathrm s$。新增材料费用不
 $50\%$。在负重与资金约束下优化外层涂层厚度，使室外站立时间最长。
 
 \textbf{问题四：}沿用问题三的厚度与资金条件，通过提高中间功能层的放热能力延长
-户外活动时间。确定放热能力相对原材料至少需提高的比例，使坚持时间不低于问题三的结果。
+户外活动时间。确定放热能力相对原材料至少提高的比例，使坚持时间不低于问题三结果。
 \section{模型假设}
 \begin{enumerate}
     \item 人体核心、皮肤及三层服装分别视为温度均匀的集中参数节点，热量只沿服装
-    厚度方向传递；各层接触良好，除 PCM 表观比热外，其余材料物性保持不变。
-    \item 按题意忽略辐射换热。无风条件下仍保留外表面自然对流，忽略服装含湿和结霜
-    对热物性的影响。
-    \item 题目未提供环境湿度。针对 $-40\,^{\circ}\mathrm C$ 极寒低湿环境，基准模型
+    厚度方向传递。
+    \item 实验者进入低温环境前已经穿着防护服，人体与三层服装达到近似热平衡。
+
+    \item 针对 $-40\,^{\circ}\mathrm C$ 极寒低湿环境，
     假设环境水汽分压 $p_a=0\,\mathrm{Torr}$。
     \item 人体质量和等效比热保持不变；静止工况只计基础代谢产热与呼吸散热，忽略
-    颤抖产热、出汗及汗液蒸发；PCM 在本工况下只经历一次降温凝固过程，忽略相变滞回。
+    颤抖产热、出汗及汗液蒸发。
 \end{enumerate}
 
 \section{符号说明}
-\begin{table}[!h]
-    \centering
-    \small
-    \caption{问题一主要符号说明}
-    \label{tab:q1-symbols}
-    \begin{tabular}{p{1.8cm}<{\centering}p{9cm}<{\centering}p{2.6cm}<{\centering}}
+\begingroup
+\normalfont\normalsize
+\renewcommand{\arraystretch}{1.18}
+\setlength{\tabcolsep}{6pt}
+\begin{longtable}{p{3.0cm}<{\centering}p{7.5cm}<{\centering}p{2.4cm}<{\centering}}
+    \caption{主要符号说明}
+    \label{tab:q1-symbols}\\
     \toprule[1.5pt]
     符号 & 含义 & 单位\\
     \midrule[1pt]
-    $T_c,T_s$ & 人体核心温度、平均皮肤温度 & $^{\circ}\mathrm C$\\
-    $T_1,T_2,T_3$ & 防护服内层、相变层和外层节点温度 & $^{\circ}\mathrm C$\\
-    $A_h,A_m$ & 人体有效传热面积、服装材料面积 & $\mathrm{m^2}$\\
-    $\alpha_s$ & 皮肤节点占人体总质量的等效比例 & 1\\
-    $\dot V_{bl},\dot V_{bl,\mathrm{eq}}$ & 实际皮肤血流量、目标平衡皮肤血流量
-    & $\mathrm{L/(m^2h)}$\\
-    $\tau_{bl}$ & 实际皮肤血流的响应时间常数 & $\mathrm s$\\
-    $G_{cs}$ & 核心与皮肤之间的等效传热系数 & $\mathrm{W/(m^2K)}$\\
-    $q_{ij}$ & 节点 $i$ 到节点 $j$ 的热流密度 & $\mathrm{W/m^2}$\\
-    $r_{ij}$ & 节点 $i$ 到节点 $j$ 的单位面积热阻 & $\mathrm{m^2K/W}$\\
-    $c_{\mathrm{app}}$ & 相变层的温度相关表观比热 & $\mathrm{J/(kg\,K)}$\\
-    $t_{15},t_{10}$ & 皮肤温度首次下降至相应阈值的时刻 & $\mathrm s$\\
+    \endfirsthead
+    \multicolumn{3}{c}{表~\thetable\quad 主要符号说明（续）}\\
+    \toprule[1.5pt]
+    符号 & 含义 & 单位\\
+    \midrule[1pt]
+    \endhead
+    \midrule[1pt]
+    \multicolumn{3}{r}{续下页}\\
+    \endfoot
     \bottomrule[1.5pt]
-    \end{tabular}
-\end{table}
-注：表中未说明的符号以首次出现处为准
+    \endlastfoot
+    $T_c,T_s$ & 人体核心温度、平均皮肤温度 & $^{\circ}\mathrm C$\\
+    $T_1,T_2,T_3$ & 防护服内层、PCM 层和外层节点温度 & $^{\circ}\mathrm C$\\
+    $T_{3,j}$ & 第 $j$ 个外层涂层节点温度 & $^{\circ}\mathrm C$\\
+    $T_\infty$ & 环境温度 & $^{\circ}\mathrm C$\\
+    $\alpha_s$ & 皮肤节点占人体总质量的等效比例 & --\\
+    $\dot V_{bl},\dot V_{bl,\mathrm{eq}}$ & 实际皮肤血流量、目标皮肤血流量
+    & $\mathrm{L/(m^2h)}$\\
+    $M_0,M$ & 静止工况、当前活动工况的单位面积代谢产热率 & $\mathrm{W/m^2}$\\
+    $h_{\mathrm{in}},h_{\mathrm{out}}$ & 服装内侧、外侧的对流换热系数
+    & $\mathrm{W/(m^2K)}$\\
+    $q_{ij}$ & 节点 $i$ 到节点 $j$ 的热流密度 & $\mathrm{W/m^2}$\\
+    $c_{\mathrm{app}}(T)$ & PCM 温度相关表观比热 & $\mathrm{J/(kg\,K)}$\\
+    $v$ & 外界风速 & $\mathrm{m/s}$\\
+    $t_{15},t_{10},t_{c,35}$ & 三个温度阈值的首次到达时刻 & $\mathrm s$\\
+    $N$ & 外层涂层总层数 & --\\
+    $\delta_{\mathrm{out}}(N)$ & 层数为 $N$ 时的外层总厚度 & $\mathrm m$\\
+    $J(N)$ & 综合站立时间 & $\mathrm s$\\
+\end{longtable}
+\endgroup
 
 
 \section{问题一模型的建立与求解}
 
 \subsection{问题一分析}
 
-本问要求预测实验者在 $-40\,^{\circ}\mathrm C$、静止无风环境下的皮肤温度变化，
-并确定皮肤平均温度首次降至 $15\,^{\circ}\mathrm C$ 和 $10\,^{\circ}\mathrm C$ 的
-时刻。人体产生的热量经核心、皮肤及三层防护服逐级向低温环境传递，其中皮肤血流
-调节会改变核心与皮肤之间的传热能力，PCM 凝固过程释放潜热，服装外表面的自然对流
-又随温差变化，因此整个过程具有非稳态与非线性特征。为此，本文建立
-\textbf{六状态人体热调节和三层防护服耦合传热模型}，以核心温度、皮肤温度、三层
-服装温度及实际皮肤血流为状态变量，通过数值求解得到皮肤温度轨迹，并以其首次下降至
-$15\,^{\circ}\mathrm C$ 和 $10\,^{\circ}\mathrm C$ 的时刻分别衡量有效工作时间和
-危险阈值时间。
+问题一旨在预测实验者在 $-40\,^{\circ}\mathrm C$ 静止无风环境中的平均皮肤温度演化，
+并确定其首次降至 $15\,^{\circ}\mathrm C$ 和 $10\,^{\circ}\mathrm C$ 的时刻。首先，我们将
+人体核心、皮肤与三层防护服抽象为集中参数节点，沿核心产热、血流输热、服装导热至
+环境散热的路径建立能量平衡；其中，引入动态皮肤血流描述人体低温下的热调节过程，
+并采用 PCM 表观比热分析相变过程中的潜热释放，之后，将核心温度、皮肤温度、三层服装温度和实际皮肤血流
+组成六状态耦合方程，结合初始温度与自然对流边界进行数值积分。最后，输出平均皮肤温度
+首次下降 $15\,^{\circ}\mathrm C$ 和 $10\,^{\circ}\mathrm C$ 的事件时刻，为有效工作时间和危险阈值时间。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/问题一流程图.pdf}
+    \caption{问题一建模与求解流程图}
+    \label{fig:question1-flowchart}
+\end{figure}
+
 
 \subsection{总体传热结构}
 
@@ -370,30 +391,33 @@ $\max(0,33.7-T_s)$，$33.7\,^{\circ}\mathrm C$ 为中性皮肤温度。针对持
 $0.5$~\cite{doherty1988,energyplus2022}。将当前皮肤温度对应的目标皮肤血流记为
 $\dot V_{bl,\mathrm{eq}}$，同时保留 SET 算法中的生理下限
 $0.5\,\mathrm{L/(m^2h)}$~\cite{ashrae55errata2017}，得到
-\[
+\begin{equation}
 \dot V_{bl,\mathrm{eq}}(T_s)
 =\max\!\left\{
 0.5,\,
 \frac{6.3}{1+0.5\max(0,33.7-T_s)}
 \right\}.
-\]
+\label{eq:q1-blood-flow-equilibrium}
+\end{equation}
 
 \textbf{（2）实际血流动态。}
 目标血流表示人体趋向达到的调节状态，实际血管收缩存在有限响应时间，因此采用一阶动态过程描述这一响应，
 响应时间为$\tau_{bl}=173\,\mathrm s$ ~\cite{wu2017}。据此将实际皮肤血流
 $\dot V_{bl}$ 作为第六个动态状态，建立
-\[
+\begin{equation}
 \frac{\mathrm d\dot V_{bl}}{\mathrm dt}
 =\frac{\dot V_{bl,\mathrm{eq}}(T_s)-\dot V_{bl}}{\tau_{bl}}.
-\]
+\label{eq:q1-blood-flow-dynamics}
+\end{equation}
 
 
 \textbf{（3）核心--皮肤传热。}
 核心向皮肤传热包括组织导热和血液循环输热，其等效传热系数与相应热流密度为
-\[
+\begin{equation}
 G_{cs}=5.28+1.163\dot V_{bl},\qquad
 q_{cs}=G_{cs}(T_c-T_s).
-\]
+\label{eq:q1-core-skin-heat-transfer}
+\end{equation}
 其中，$5.28$ 表示组织基础导热，$1.163\dot V_{bl}$ 描述血液循环输热
 ~\cite{doherty1988,energyplus2022}。
 
@@ -402,10 +426,11 @@ q_{cs}=G_{cs}(T_c-T_s).
 等效热容量。人体组织热容 $0.97\,\mathrm{Wh/(kg\,K)}$ 换算为等效比热
 $c_b=3490\,\mathrm{J/(kg\,K)}$~\cite{doherty1988}。记皮肤节点所占的等效热学质量
 比例为 $\alpha_s$，则有~\cite{doherty1988,energyplus2022}
-\[
+\begin{equation}
 \alpha_s=0.0417737+
 \frac{0.7451832}{\dot V_{bl}+0.585417}.
-\]
+\label{eq:q1-thermal-partition}
+\end{equation}
 相应地，核心与皮肤节点的等效热容量分别为
 \[
 C_c=(1-\alpha_s)m_bc_b,\qquad
@@ -465,7 +490,7 @@ U_s=C_s(T_s-T_{\mathrm{ref}}).
 \frac{\mathrm dU_s}{\mathrm dt}=F_s+\dot H_m.
 \]
 对上述变热容量储能求导，可得温度方程
-\[
+\begin{equation}
 (\dot T_c,\dot T_s)=
 \begin{cases}
 \left(
@@ -477,8 +502,9 @@ U_s=C_s(T_s-T_{\mathrm{ref}}).
 \dfrac{F_s}{C_s}
 \right),&\dot\alpha_s<0.
 \end{cases}
-\]
-两个分支均使内部热流与质量交换焓流在人体总能量方程中相互抵消。
+\label{eq:q1-human-temperature-balance}
+\end{equation}
+
 
 \subsection{三层防护服传热模型}
 
@@ -493,23 +519,25 @@ h_{\mathrm{out}}=2.38|T_3-T_\infty|^{0.25}.
 
 将各层材料的平均温度取在层中心。根据一维导热热阻 $r=\delta/k$ 与对流热阻
 $r=1/h$，相邻温度节点之间仅经过各材料的半层厚度，且各段热阻串联，因此有
-\[
+\begin{equation}
 \begin{aligned}
 r_{s1}&=\frac{1}{h_{\mathrm{in}}}+\frac{\delta_1}{2k_1},&
 r_{12}&=\frac{\delta_1}{2k_1}+\frac{\delta_2}{2k_2},\\
 r_{23}&=\frac{\delta_2}{2k_2}+\frac{\delta_3}{2k_3},&
 r_{3\infty}&=\frac{\delta_3}{2k_3}+\frac{1}{h_{\mathrm{out}}}.
 \end{aligned}
-\]
+\label{eq:q1-thermal-resistances}
+\end{equation}
 相应热流密度依次为
-\[
+\begin{equation}
 \begin{aligned}
 q_{s1}&=\frac{T_s-T_1}{r_{s1}},&
 q_{12}&=\frac{T_1-T_2}{r_{12}},\\
 q_{23}&=\frac{T_2-T_3}{r_{23}},&
 q_{3\infty}&=\frac{T_3-T_\infty}{r_{3\infty}}.
 \end{aligned}
-\]
+\label{eq:q1-heat-fluxes}
+\end{equation}
 
 
 \subsubsection{PCM 表观热容模型}
@@ -552,7 +580,7 @@ L=\frac{60}{\beta}\int_{T_a}^{T_b}q_L(T)\,\mathrm dT
 \approx122.3\,\mathrm{kJ/kg}.
 \]
 
-为避免与 DSC 峰 $q_L(T)$ 混淆，将 PCM 层累计释放的潜热记为
+将 PCM 层累计释放的潜热记为
 $Q_{\mathrm{lat}}=m_2L\xi(T_2)$。在相变温区内，其释放功率为
 \[
 \dot Q_{\mathrm{lat}}
@@ -569,18 +597,18 @@ m_2c_2\dot T_2
 m_2\bigl[c_2+L\phi(T_2)\bigr]\dot T_2
 =A_h(q_{12}-q_{23}).
 \]
-因此定义表观比热
-\[
-c_{\mathrm{app}}(T)=c_2+L\phi(T).
-\]
-将 $L$ 换算为 $\mathrm{J/kg}$，并代入其 DSC 积分式，可进一步写成
-\[
+因此定义表观比热；将 $L$ 换算为 $\mathrm{J/kg}$ 并代入其 DSC 积分式，可写成
+\begin{equation}
 c_{\mathrm{app}}(T)
+=c_2+L\phi(T)
 =c_2+\frac{60000}{\beta}q_L(T).
-\]
+\label{eq:q1-apparent-heat-capacity}
+\end{equation}
 数据温区外 $\phi(T)=0$，故取
 $c_{\mathrm{app}}(T)=c_2=2400\,\mathrm{J/(kg\,K)}$。
-DSC 基线分离、潜热峰及由此得到的 PCM 表观比热曲线见图~\ref{fig:q1-pcm-characteristics}。
+
+图中左图展示了原始 DSC 信号经显热基线分离后得到的潜热峰，右图展示了该潜热峰
+换算得到的温度相关表观比热，可以看出PCM 的潜热主要集中在相变温区内释放。
 
 \begin{figure}[H]
     \centering
@@ -589,19 +617,17 @@ DSC 基线分离、潜热峰及由此得到的 PCM 表观比热曲线见图~\ref
     \label{fig:q1-pcm-characteristics}
 \end{figure}
 
-\textbf{由于相变潜热已包含在 $c_{\mathrm{app}}(T)$ 中，后续能量方程不再重复设置
-PCM 放热源项。}
-
 \subsubsection{三层材料能量平衡}
 
-各服装节点均满足流入热量减去流出热量等于储能变化，因此三层材料的能量方程为
-\[
+各服装节点满足流入热量减去流出热量等于储能变化，因此三层材料的能量方程为
+\begin{equation}
 \begin{aligned}
 m_1c_1\dot T_1&=A_h(q_{s1}-q_{12}),\\
 m_2c_{\mathrm{app}}(T_2)\dot T_2&=A_h(q_{12}-q_{23}),\\
 m_3c_3\dot T_3&=A_h(q_{23}-q_{3\infty}).
 \end{aligned}
-\]
+\label{eq:q1-clothing-energy-balance}
+\end{equation}
 
 \subsection{六状态耦合模型}
 
@@ -609,7 +635,9 @@ m_3c_3\dot T_3&=A_h(q_{23}-q_{3\infty}).
 \[
 \bm x(t)=[T_c,T_s,T_1,T_2,T_3,\dot V_{bl}]^{\mathsf T},
 \]
-模型联立后得到
+联立式\eqref{eq:q1-blood-flow-equilibrium}--\eqref{eq:q1-blood-flow-dynamics}、
+式\eqref{eq:q1-human-temperature-balance}以及式\eqref{eq:q1-thermal-resistances}--
+\eqref{eq:q1-clothing-energy-balance}，得到六状态耦合模型
 \begin{equation}
 \left\{
 \begin{aligned}
@@ -638,21 +666,18 @@ m_3c_3\dot T_3&=A_h(q_{23}-q_{3\infty}).
 
 \subsection{初始与边界条件}
 
-环境温度在 $t=0$ 时阶跃至 $T_\infty=-40\,^{\circ}\mathrm C$。测试初始人体温度为
+实验者在 \(t=0\) 时进入低温环境，外界温度变为
+ $T_\infty=-40\,^{\circ}\mathrm C$。测试初始人体温度为
 $37\,^{\circ}\mathrm C$，故取
 \[
 T_c(0)=T_s(0)=37\,^{\circ}\mathrm C.
 \]
-假设实验者进入低温环境前已经穿着防护服并达到近似热平衡，则
+服装三层节点初温与人体相同，取
 \[
 T_1(0)=T_2(0)=T_3(0)=37\,^{\circ}\mathrm C.
 \]
 此时皮肤冷信号为零，目标皮肤血流为中性值
-$6.3\,\mathrm{L/(m^2h)}$~\cite{doherty1988,energyplus2022}。假设实际血流已经达到
-目标值，得到
-\[
-\dot V_{bl}(0)=6.3\,\mathrm{L/(m^2h)}.
-\]
+$6.3\,\mathrm{L/(m^2h)}$~\cite{doherty1988,energyplus2022}。
 因此初始状态向量为
 \[
 \bm x(0)=[37,37,37,37,37,6.3]^{\mathsf T}.
@@ -675,10 +700,11 @@ $\mathrm{rtol}=10^{-7}$、$\mathrm{atol}=10^{-9}$、
 
 \textbf{Step 3：定位阈值事件并复核精度。}
 定义下降方向事件
-\[
+\begin{equation}
 g_{15}(t,\bm x)=T_s-15,\qquad
 g_{10}(t,\bm x)=T_s-10.
-\]
+\label{eq:q1-threshold-events}
+\end{equation}
 由求解器连续延拓得到两个事件的首次过零时刻；检测到 $10\,^{\circ}\mathrm C$
 事件后终止积分。加严计算仍采用 RK45 方法，
 $\mathrm{rtol}=10^{-9}$、$\mathrm{atol}=10^{-11}$，
@@ -686,12 +712,21 @@ $\mathrm{rtol}=10^{-9}$、$\mathrm{atol}=10^{-11}$，
 
 \subsection{结果与分析}
 
-六状态主模型的阈值事件结果见表~\ref{tab:q1-six-state-results}。
+\subsubsection{温度响应与阈值时间}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/problem1_temperature_response.pdf}
+    \caption{极寒环境下人体与防护服各节点温度响应}
+    \label{fig:q1-temperature-response}
+\end{figure}
+
 
 \begin{table}[H]
     \centering
     \small
-    \caption{六状态主模型的阈值事件结果}
+    \caption{人体低温阈值}
     \label{tab:q1-six-state-results}
     \begin{tabular}{cccccc}
         \toprule[1.5pt]
@@ -708,38 +743,80 @@ $\mathrm{rtol}=10^{-9}$、$\mathrm{atol}=10^{-11}$，
 平均皮肤温度约在 $678.62\,\mathrm{min}$，即 $11.31\,\mathrm h$ 后降至
 $15\,^{\circ}\mathrm C$，此后正常工作开始受到影响；约在
 $1000.17\,\mathrm{min}$，即 $16.67\,\mathrm h$ 后降至
-$10\,^{\circ}\mathrm C$，达到危险阈值。皮肤降温使目标血流下降，实际血流经过
-$\tau_{bl}=173\,\mathrm s$ 的迟滞过程逐渐收缩。到 $15\,^{\circ}\mathrm C$ 时，
-实际血流仍略高于该温度对应的目标值 $0.6087\,\mathrm{L/(m^2h)}$，体现了有限响应时间；
-到 $10\,^{\circ}\mathrm C$ 时，实际血流已接近下限
-$0.5\,\mathrm{L/(m^2h)}$。
+$10\,^{\circ}\mathrm C$，达到危险阈值。
 
-血流下降同时降低核心--皮肤传热系数，并使皮肤等效质量比例由初始 0.15 增至
-0.7283。核心向外周的供热减弱，但外周热容量随之增大，两条作用路径共同决定
-皮肤后期降温速度。两个阈值时 PCM 温度分别为
-$-19.379\,^{\circ}\mathrm C$ 和 $-21.021\,^{\circ}\mathrm C$，均已低于 DSC 有效
-温区，说明 $55.8\,\mathrm{kJ}$ 潜热主要用于缓冲暴露初期的热冲击，长期耐寒时间
-主要受人体产热和内、外侧换热控制。
+皮肤温度在进入低温环境后立即下降，
+核心温度则先在约 $48.3\,\mathrm{min}$ 时小幅升至 $37.370\,^{\circ}\mathrm C$，随后缓慢
+降低。外界冷负荷首先作用于皮肤，人体核心依靠自身热容量
+和代谢产热延缓降温，因此皮肤温度与核心温度存在时间尺度的差异。冷扰动由外层向内层传播，因此
+三层服装节点在暴露初期迅速降温，并在全时程保持
+$T_1>T_2>T_3$，对应。
+
+\subsubsection{血流收缩与热容量重分配}
+
+随着皮肤降温，目标皮肤血流迅速下降，而实际血流受
+$\tau_{bl}=173\,\mathrm s$ 的动态响应限制，在暴露初期表现出明显滞后，随后逐渐趋近
+目标值。当皮肤温度降至
+$15\,^{\circ}\mathrm C$ 和 $10\,^{\circ}\mathrm C$ 时，实际血流分别降至
+$0.6101\,\mathrm{L/(m^2h)}$ 和 $0.5000\,\mathrm{L/(m^2h)}$。
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\textwidth]{figures/problem1_blood_flow_regulation.pdf}
+    \caption{皮肤血流动态调节与等效质量比例演化}
+    \label{fig:q1-blood-flow-regulation}
+\end{figure}
+
+与此同时，皮肤等效质量比例 $\alpha_s$ 随血流收缩由初始 $0.15$ 增至 $0.7283$。
+因此，血流收缩一方面降低核心--皮肤传热能力，减少核心向外周的热量输送；
+另一方面改变核心与皮肤的等效热容量分配，从而形成对低温暴露的动态调节。
+
+\subsubsection{PCM 相变热容与潜热释放过程}
+
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.82\textwidth]{figures/problem1_pcm_time_process.pdf}
+    \caption{PCM 表观比热与累计潜热释放的时间过程}
+    \label{fig:q1-pcm-time-process}
+\end{figure}
+
+PCM 在低温暴露初期存在潜热释放过程，其表观比热与累计潜热随时间发生变化。
+PCM 约在 $60\,\mathrm s$ 时进入主要相变区间，并于约 $225\,\mathrm s$ 时基本完成。
+相变过程中，表观比热先升高后降低，在约 $130\,\mathrm s$ 时达到峰值
+$22.680\,\mathrm{kJ/(kg\cdot K)}$；与此同时，累计潜热持续增加，最终稳定在约
+$55.8\,\mathrm{kJ}$。由此可见，PCM 的主要作用集中在进入极寒环境后的最初数分钟，
+通过释放有限潜热缓冲初始冷冲击；相变结束后，长期耐寒过程主要由人体产热及防护服
+隔热性能共同决定。
+
+\Needspace{8\baselineskip}
+\subsubsection{逐级传热路径的时间演化}
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.98\textwidth]{figures/problem1_heat_flux_pathways.pdf}
+    \caption{人体--防护服逐级传热路径的热流密度时间演化}
+    \label{fig:q1-heat-flux-pathways}
+\end{figure}
+
+热量由人体经皮肤及三层服装向环境传递，
+在 $t=0$ 时，人体与服装各节点均为 $37\,^{\circ}\mathrm C$，内部温差为零，
+而外层与环境存在 $77\,\mathrm K$ 温差，使 $q_{3\infty}$ 瞬时升至
+$532.184\,\mathrm{W/m^2}$。随后冷扰动由外向内传播，各段热流依次建立。除初始时刻外，
+前 $10\,\mathrm{min}$ 内总体满足
+$q_{3\infty}>q_{23}>q_{12}>q_{s1}>q_{cs}$，其中 $q_{12}$ 的阶段性变化反映了 PCM
+相变潜热对热流传递的缓冲作用。
+
+约 $30\,\mathrm{min}$ 后，$q_{s1}$、$q_{12}$、$q_{23}$ 和 $q_{3\infty}$ 均接近
+$133\,\mathrm{W/m^2}$，表明服装传热链逐渐进入准稳态；此时 $q_{cs}$ 约为
+$51.1\,\mathrm{W/m^2}$，仍受核心--皮肤温差及动态血流调节影响。总体来看，外界冷冲击
+首先消耗服装与 PCM 储热；服装侧进入准稳态后，环境散热逐渐转由人体显热储备和
+代谢产热经皮肤与服装持续补给。
 
 \subsection{模型检验与敏感性分析}
 
-\subsubsection{能量守恒与数值收敛}
-
-令 $U_{\mathrm{tot}}$ 为人体、内层、PCM 层和外层储能之和。理论累计能量平衡为
-\begin{equation}
-R_E(t)
-=U_{\mathrm{tot}}(t)-U_{\mathrm{tot}}(0)
--\int_0^t A_h
-\left[M_0-q_{\mathrm{res}}-q_{3\infty}\right]
-\,\mathrm d\tau.
-\label{eq:q1-energy-audit}
-\end{equation}
-基准计算中式~\eqref{eq:q1-energy-audit} 的最大绝对残差为
-$0.795\,\mathrm J$，相对误差为 $1.50\times10^{-7}$。加严 RK45 计算的最大残差
-降至 $7.71\times10^{-3}\,\mathrm J$，相对误差为 $1.46\times10^{-9}$。
-加严前后 $t_{15}$ 与 $t_{10}$ 均只变化约
-$2.94\times10^{-4}\,\mathrm s$，表明质量迁移焓、相变焓与各段热流在数值上保持平衡，
-阈值时刻也已收敛。
 
 \subsubsection{血流迟滞的结构检验}
 
@@ -1125,16 +1202,15 @@ $56.86\%$。该结论适用于本文给定参数和集总传热假设，不应�
 \clearpage
 \section{问题三模型的建立与求解}
 
-\subsection{问题分析}
+\subsection{问题三分析}
 
-问题三在问题一的 $-40\,^{\circ}\mathrm C$、静止、无风情况上进行优化。
-根据附件的制造约束，只增加最外层涂层，且每层厚度固定为
-$0.3\,\mathrm{mm}$，因此决策变量是外层涂层的整数层数。
-
-外层增厚同时产生三种效应：一是增加导热热阻，降低人体向环境的散热；
-二是增加服装显热热容，延缓各材料节点的降温；三是增加质量和成本，
-从而降低站立时间。因此，本问实质上是一个以动态传热方程为约束、
-以外层层数为决策变量的离散优化问题。
+问题三旨在确定承重与成本约束下外层涂层的最优厚度，需要同时衡量增厚产生的保温
+收益与新增质量造成的站立时间损失。首先，沿用问题一静止、无风工况下的人体--防护服
+耦合传热模型，将厚度固定为 $0.3\,\mathrm{mm}$ 的外层总层数作为整数决策变量，并按层
+设置温度节点，使外层热阻和热容量随层数同步变化。之后计算各方案的总质量与总成本，利用
+$100\,\mathrm{kg}$ 承重上限和原支出 $1.5$ 倍的成本上限筛选可行层数。最后求解各可行
+方案的传热过程，确定皮肤温度首次降至 $15\,^{\circ}\mathrm C$ 的时刻，
+同时将新增质量按题目给出的承重关系折算为等效时间代价，并与传热时长综合评价，以确定最优涂层厚度。
 
 \subsection{多外层涂层传热模型}
 
