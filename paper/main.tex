@@ -1561,42 +1561,30 @@ $\lambda_{\rm out}$ 的敏感度为 $+8.58$，表明外界散热增强同样会�
 
 
 \section{模型评价}
-\subsection {模型优点}
+\subsection{模型优点}
 \begin{enumerate}
-    \item 人体核心、皮肤与多层服装之间的传热路径由统一能量方程连接，动态皮肤血流
-    同时调节核心--皮肤传热系数和等效热容量分区，并通过质量交换焓流补偿分区变化。
-    问题一至问题三基准计算的相对能量守恒误差均处于 $10^{-7}$ 量级。
-    \item PCM 的显热与潜热由 DSC 数据构造的温度相关表观比热统一描述，服装外侧采用
-    温差相关的自然对流或风速相关的强制对流边界，使相变放热、环境散热和人体产热能够
-    在同一非线性状态方程中耦合计算。
-    \item 三个问题沿用同一人体--服装模型并逐步增加风速、运动和外层厚度变量。
-    问题三在 $N=1$ 时与问题一结果完全一致，严格积分与基准积分所得阈值时间仅相差
-    $10^{-3}\,\mathrm s$ 以内，说明模型扩展和数值求解具有良好一致性。
+    \item 本文将人体热调节与多层防护服传热过程相结合，引入动态皮肤血流和 PCM
+    相变放热机制，并根据环境风速与人体运动状态修正边界换热和代谢产热条件，较为完整地
+    描述了低温环境下人体--防护服系统的动态传热过程。
+    \item 针对防护服结构与材料性能优化，本文进一步引入外层厚度、服装质量、材料成本
+    和 PCM 放热能力等因素，在满足承重与资金约束的条件下，分别完成外层结构参数优化
+    和 PCM 最小放热倍率反演，使性能预测模型能够直接服务于防护服设计。
 \end{enumerate}
 
-\subsection {模型缺点}
-\begin{enumerate}
-    \item 人体和各层服装均采用温度均匀的集中参数节点，只描述沿服装厚度方向的平均
-    传热，未区分头部、躯干和四肢，也未考虑服装褶皱、局部接触热阻及空气层厚度差异，
-    因而难以刻画局部低温区域的温度响应。
-    \item 人体热调节仅保留基础代谢、呼吸散热和皮肤血流收缩，未计入颤抖产热、个体
-    体脂差异及长时间暴露下的代谢调整。这些简化会影响核心与皮肤之间的热量分配及阈值
-    时间估计。
-    \item 内侧换热系数、基础代谢率和外侧换热强度对阈值时间较敏感，而现有参数主要
-    来自经验公式和典型取值；服装初温及 DSC 扫描速率也缺少针对本实验条件的直接测量，
-    因此参数不确定性仍会传递至最终结果。
-\end{enumerate}
+\subsection{模型缺点}
+本文将人体及各层防护服简化为温度均匀的集中参数节点，只描述沿服装厚度方向的平均
+传热；部分人体热调节与边界换热参数采用经验公式或典型取值，尚未利用实际低温试验
+进行个体化标定。因此，模型难以反映人体不同部位、局部服装结构及个体生理差异，
+在复杂低温环境中的预测精度仍有进一步提升空间。
 
 \subsection{模型改进与推广}
 \begin{enumerate}
-    \item 可将人体划分为躯干与四肢等多个热学分区，并对每层服装增加有限体积节点，
-    进一步加入局部接触热阻、含湿和结霜过程，以获得人体不同部位及材料内部的温度分布。
-    \item 可开展低温舱实验，连续测量核心温度、皮肤温度、服装各层温度和热流密度，
-    据此联合标定 $h_{\mathrm{in}}$、$h_{\mathrm{out}}$、$\tau_{bl}$ 与代谢率，并通过多名
-    实验者的数据建立个体参数分布和结果区间。
-    \item 现有状态方程和变层数结构可继续用于时变风速、交替活动强度及不同环境温度，
-    重新标定边界换热和人体产热参数后，还可将保温时间、服装质量、成本与活动灵活性
-    纳入多目标优化，比较不同材料组合和穿着方案。
+    \item 在人体热调节方面，可进一步将人体划分为躯干、四肢等多个热学区域，并引入
+    颤抖产热、个体体脂差异及长时间暴露下的代谢调节机制，以提高核心温度和局部皮肤
+    温度的预测精度。
+    \item 在防护服传热方面，可将各材料层进一步离散为多个温度节点，并考虑层间接触
+    热阻、服装褶皱、含湿及结霜等因素。重新标定不同工况下的边界换热参数后，该模型
+    可推广至时变风速、交替活动强度及其他极寒作业场景。
 \end{enumerate}
 \newpage
 \begin{thebibliography}{99}
@@ -1625,11 +1613,6 @@ $\lambda_{\rm out}$ 的敏感度为 $+8.58$，表明外界散热增强同样会�
     flow regulation in response to different local skin temperature perturbations[J].
     Microvascular Research, 2017, 111: 96--102.
 
-    \bibitem{pandolf1977}
-    Pandolf K B, Givoni B, Goldman R F. Predicting energy expenditure with loads while
-    standing or walking very slowly[J]. Journal of Applied Physiology, 1977,
-    43(4): 577--581.
-        
 \end{thebibliography}
 
 
@@ -1637,29 +1620,36 @@ $\lambda_{\rm out}$ 的敏感度为 $+8.58$，表明外界散热增强同样会�
 \newpage
 \begin{appendices}
 
+\section{问题一核心传热模型源代码}
+\lstinputlisting[
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    showstringspaces=false
+]{../src/问题一/model.py}
 
-\section{问题一源代码}
-\begin{lstlisting}[language=lingo]
+\section{问题二有风轻微运动模型源代码}
+\lstinputlisting[
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    showstringspaces=false
+]{../src/问题二/model.py}
 
+\section{问题三多外层传热模型源代码}
+\lstinputlisting[
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    showstringspaces=false
+]{../src/问题三/model.py}
 
-\end{lstlisting}
-
-
-\section{问题二源代码}
-\begin{lstlisting}[language=lingo]
-
-  
-\end{lstlisting}
-
-\section{问题三源代码}
-\begin{lstlisting}[language=lingo]
-
-\end{lstlisting}
-
-\begin{lstlisting}[language=python]
-
-
-
-\end{lstlisting}
+\section{问题四放热倍率反演源代码}
+\lstinputlisting[
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    showstringspaces=false
+]{../src/问题一/problem4/solver.py}
 \end{appendices}
 \end{document}
