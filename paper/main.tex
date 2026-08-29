@@ -1594,8 +1594,79 @@ $$
 $$
 
 \subsection{模型求解与结果分析}
-\subsubsection{}
+在正式反演前，本文先对若干低倍率候选值进行事件求解，以检查放热倍率增加时 $t_{15}$ 的变化方向。相邻粗搜索点的 $t_{15}$ 增量均为正，其中最小增量为 $30.950405\,\mathrm s$。这说明在已检查区间内，提高 PCM 潜热会延后皮肤温度达到 $15\,{}^\circ\mathrm C$ 的时刻，支持继续向更高倍率扩展根区间并采用单调约束下的标量反演。
 
+Brent 反演得到满足问题三目标的最小 PCM 放热倍率为
+$$
+\lambda_{\rm pcm}^*=28.352528,
+$$
+这表示改进材料的纯相变放热能力约为原材料的 $28.352528$ 倍。按照提高百分比的定义，所需新增比例为
+$$
+\eta=(28.352528-1)\times100\%=2735.253\%.
+$$
+
+因此，在本文模型及固定其他物性的假设下，中间功能层的放热能力至少需要比原先提高约 $2735.25\%$。
+
+原材料的单位质量潜热为 $122.312883\,\mathrm{kJ/kg}$。由潜热与倍率的线性关系，改进后的单位质量潜热为
+
+$$
+L_{\lambda^*}=28.352528\times122.312883=3467.879499\,\mathrm{kJ/kg}.
+$$
+\subsubsection{反演曲线与最优倍率分析}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/problem4/problem4_lambda_t15_inverse.pdf}
+    \caption{PCM 放热倍率与皮肤温度阈值时间的反演关系}
+    \label{fig:q4-lambda-t15-inverse}
+\end{figure}
+
+由图\ref{fig:q4-lambda-t15-inverse}可见，在已采样范围内，$t_{15}$ 随
+$\lambda_{\rm pcm}$ 增大而持续上升，未出现反向变化；目标水平线与响应曲线在
+$\lambda_{\rm pcm}^*=28.353$ 处相交，因此该交点给出了满足时间约束的最小可行
+倍率。原材料在 $\lambda_{\rm pcm}=1$ 时的 $t_{15}$ 为
+$678.621\,\mathrm{min}$，要达到 $734.815\,\mathrm{min}$ 的目标，需要将纯相变
+放热能力提高约 $2735.25\%$。这表明在不增加 PCM 质量、厚度且不改变其他物性的
+条件下，仅依靠提高潜热来补偿约 $56.19\,\mathrm{min}$ 的坚持时间差，需要很高的
+
+原 PCM 层的总潜热为 $55.802491\,\mathrm{kJ}$。由于 PCM 层质量保持不变，
+最优倍率下整层总潜热增至 $1582.141699\,\mathrm{kJ}$。该数值表示 PCM
+在一次完整凝固过程中可释放的总能量上限，而不是瞬时放热功率。将最优倍率代回
+六状态模型，得到
+
+\begin{equation*}
+    t_{15}=734.814967561\,\mathrm{min},\qquad
+    t_{10}=1056.377241\,\mathrm{min}.
+\end{equation*}
+
+其中 $t_{15}$ 与目标值之差仅为 $7.09\times10^{-7}\,\mathrm s$，说明反演解准确
+落在约束边界上。达到 $15\,{}^\circ\mathrm C$ 皮肤阈值时，核心温度为
+$26.511699\,{}^\circ\mathrm C$，PCM 节点温度为
+$-19.379422\,{}^\circ\mathrm C$，实际皮肤血流量约为
+$0.610140\,\mathrm{L/(m^2h)}$，相变进度已经达到 $1$。这说明 PCM 潜热在皮肤达到
+阈值前已经全部释放，后续温度响应仍受人体产热、服装热阻与环境散热共同控制。
+
+
+\subsubsection{参数敏感性与设计稳健性}
+
+为判断材料指标对模型参数的依赖程度，本文对内侧换热系数 $h_{\rm in}$、基础代谢率
+$M_0$、外侧自然对流倍率 $\lambda_{\rm out}$ 和 DSC 扫描速率 $\beta_{\rm DSC}$
+分别施加上下扰动，并在每个情景下重新反演达到同一目标所需的最小放热倍率。
+图\ref{fig:q4-lambda-sensitivity}给出了最优倍率的归一化敏感度；正值表示参数增大
+会提高所需倍率，负值表示参数增大可降低所需倍率。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/problem4/problem4_lambda_sensitivity.pdf}
+    \caption{PCM 最优放热倍率的归一化敏感度}
+    \label{fig:q4-lambda-sensitivity}
+\end{figure}
+
+由图\ref{fig:q4-lambda-sensitivity}可见，$h_{\rm in}$ 的敏感度为 $+12.13$，绝对值
+最大，说明皮肤向服装的换热增强会显著增加 PCM 需要补偿的热量；$M_0$ 的敏感度为
+$-10.44$，代谢产热提高能够减缓人体降温，因而降低所需放热倍率；
+$\lambda_{\rm out}$ 的敏感度为 $+8.58$，表明外界散热增强同样会显著抬高材料
+性能要求；$\beta_{\rm DSC}$ 的敏感度为 $+1.00$，与 DSC 换算潜热随扫描速率
+反比变化、所需倍率近似同比补偿的关系一致。
 
 
 
