@@ -1073,16 +1073,6 @@ Q_{\rm PCM,max}=m_2L=55802.490579\,\mathrm J.
  \end{equation}
 两个阈值时刻的相变进度均为 $\xi=1$，说明 PCM 潜热在暴露早期已经全部释放。
 
-为直观比较两种工况，图~\ref{fig:q1-q2-skin-comparison} 给出了问题一与问题二的
-皮肤温度轨迹。问题二曲线在离开初始状态后始终低于问题一曲线，并更早到达两个阈值，
-说明运动代谢增加虽能补充热量，却未能抵消有风条件和衣内空气扰动造成的额外散热。
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.84\textwidth]{../results/figures/fig5_q1_q2_skin_temperature_comparison.pdf}
-    \caption{问题一与问题二的皮肤温度演化对比}
-    \label{fig:q1-q2-skin-comparison}
-\end{figure}
-
 \subsubsection{外界风、衣内换热与代谢的效应拆分}
 为识别问题二三项修正的独立作用，设置 Q1、W、I、M 和 Q2 五个工况。其中 Q1
 为问题一无风静止基线；W 仅加入外界风；I 仅将内侧对流换热系数提高至
@@ -1539,6 +1529,75 @@ $303$ 倍，四层方案才失去优势；子图（d）显示制造附加率达�
 只有当系数由题目值 $20\,\mathrm{s/kg}$ 增大至该量级时，四层方案才会失去优势，因此
 最优层数对重量惩罚具有很强稳健性。四层方案对未计入的制造附加费用更敏感：
 若对新增材料成本收取的附加率超过 $12.72\%$，四层方案将超过预算，此时应选择三层方案。
+
+
+\section{问题四模型的建立与求解}
+\subsection{问题分析}
+问题四要求在不追加材料资金的条件下，仅通过提高中间 PCM 的放热能力，使实验者的室外坚持时间不低于问题三最优方案。由于题目规定 PCM 在各温度下的放热能力同比例提高，因此保持原有相变温区和放热曲线形状不变，引入统一放热倍率对 PCM 相变放热能力进行调整，并以问题三的最长坚持时间作为目标，反演满足要求的最小放热倍率。
+
+\subsection{PCM 放热能力倍率反演模型的建立}
+\subsubsection{DSC潜热峰缩放}
+设 PCM 基线扣除后的原始放热能力为基准，定义无量纲放热倍率 $\lambda_{\rm pcm}$。
+将问题一已经建立的核心—皮肤传热、呼吸散热、层间导热、外侧自然对流和皮肤血流动态关系统一写入右端函数，可将问题四的初值问题概括为
+
+\begin{equation}
+\dot{\mathbf x}=\mathbf f\!\left(t,\mathbf x;\lambda_{\rm pcm}\right).
+\end{equation}
+
+扣除DSC基线后，改进后的潜热峰定义为
+
+\begin{equation}
+q_{L,\lambda}(T)=\lambda_{\rm pcm}q_{L,0}(T).
+\end{equation}
+
+
+\subsubsection{单位质量潜热与表观热容}
+
+DSC 曲线给出单位质量样品的热流，扫描速率 $\beta$ 将时间变化转换为温度变化。对改进后的纯相变峰在整个相变温区积分，并完成毫瓦每毫克、分钟和千克之间的单位换算，可得单位质量潜热：
+
+$$
+L_{\lambda}(\beta)=\frac{60000}{\beta}\int_{T_{\min}}^{T_{\max}}q_{L,\lambda}(T)\,dT.
+$$
+DSC 曲线给出单位质量样品的热流，扫描速率 $\beta$ 将时间变化转换为温度变化。对改进后的纯相变峰在整个相变温区积分，并完成毫瓦每毫克、分钟和千克之间的单位换算，可得单位质量潜热：
+
+$$
+L_{\lambda}(\beta)=\frac{60000}{\beta}\int_{T_{\min}}^{T_{\max}}q_{L,\lambda}(T)\,dT.
+$$
+
+式中，$60000$ 为单位换算系数，$\beta$ 的单位为 $\mathrm{K/min}$。该式把离散 DSC 放热数据转化为可进入材料能量平衡的单位质量潜热。将潜热峰缩放关系代入积分，并利用常数倍率可移出积分号的线性性质，可进一步得到
+
+\begin{equation}
+L_{\lambda}(\beta)=\lambda_{\rm pcm}L_0(\beta).
+\end{equation}
+在单调降温和单次凝固假设下，潜热释放可等效为相变温区内的附加热容量。将基础比热 $c_p$ 与 DSC 潜热贡献相加，得到改进材料的表观比热：
+
+$$
+c_{\rm eff,\lambda}(T)=c_p+\frac{60000}{\beta}q_{L,\lambda}(T).
+$$
+
+式中，$c_p$ 是不参与倍率缩放的基础显热比热；第二项只在相变温区内非零。该表观比热直接决定 PCM 温度节点在吸收或释放相同净热功率时的降温速率。
+
+把 $q_{L,\lambda}(T)=\lambda_{\rm pcm}q_{L,0}(T)$ 代入上式，可以整理成
+
+\begin{equation}
+c_{\rm eff,\lambda}(T)=c_p+\lambda_{\rm pcm}\left[c_{\rm eff,0}(T)-c_p\right].
+\end{equation}
+
+\subsubsection{阈值事件与最小倍率反演模型}
+题目以人体表面温度低于 $15\,{}^\circ\mathrm C$ 后工作困难作为比较标准，因此对于给定放热倍率，定义平均皮肤温度首次向下达到该阈值的时间为
+$$
+t_{15}(\lambda_{\rm pcm})=\inf\left\{t\ge0:T_s(t;\lambda_{\rm pcm})\le15\,{}^\circ\mathrm C\right\}.
+$$
+问题四没有增加服装质量，所以其比较量直接采用 $t_{15}(\lambda_{\rm pcm})$，不再减去重量惩罚。按照“达到问题三目标且放热倍率尽可能小”的要求，问题四的逆设计模型为
+$$
+\lambda_{\rm pcm}^*=\min_{\lambda_{\rm pcm}\ge1}\left\{\lambda_{\rm pcm}:t_{15}(\lambda_{\rm pcm})\ge J_3^*\right\}.
+$$
+
+\subsection{模型求解与结果分析}
+\subsubsection{}
+
+
+
 
 \section{模型评价}
 \subsection {模型优点}
