@@ -173,8 +173,6 @@
     \keywords{\textbf{人体热调节} \quad \textbf{相变材料} \quad \textbf{动态皮肤血流} \quad \textbf{多层传热} \quad \textbf{整数优化} \quad \textbf{敏感性分析}}
 \end{abstract}
 \thispagestyle{empty}
-\tableofcontents
-\thispagestyle{empty}
 \newpage
 \setcounter{page}{1} 
 
@@ -261,7 +259,7 @@ $50\%$。在负重与资金约束下优化外层涂层厚度，使室外站立�
     $q_{ij}$ & 节点 $i$ 到节点 $j$ 的热流密度 & $\mathrm{W/m^2}$\\
     $c_{\mathrm{app}}(T)$ & PCM 温度相关表观比热 & $\mathrm{J/(kg\,K)}$\\
     $v$ & 外界风速 & $\mathrm{m/s}$\\
-    $t_{15},t_{10},t_{c,35}$ & 三个温度阈值的首次到达时刻 & $\mathrm s$\\
+    $t_{15},t_{10}$ & 两个皮肤温度阈值的首次到达时刻 & $\mathrm s$\\
     $N$ & 外层涂层总层数 & --\\
     $\delta_{\mathrm{out}}(N)$ & 层数为 $N$ 时的外层总厚度 & $\mathrm m$\\
     $J(N)$ & 综合站立时间 & $\mathrm s$\\
@@ -875,8 +873,7 @@ $\pm10\%$ 扰动，得到表~\ref{tab:q1-six-sensitivity}。
 初始工况下内层和外层 Biot 数分别约为 0.031 和 0.040，均小于集中参数法常用判据
 $Bi<0.1$；三层材料的非相变热扩散特征时间约为
 $7.2\,\mathrm s$、$3.5\,\mathrm s$ 和 $2.8\,\mathrm s$。服装层厚度处于亚毫米量级，
-层内温度调整远快于人体降温过程，因此每层采用一个平均温度节点能够满足问题一的
-时间尺度要求。
+层内温度调整远快于人体降温过程，因此每层可以采用一个平均温度节点。
 \section{问题二模型的建立与求解}
 
 \subsection {问题分析}
@@ -1178,7 +1175,6 @@ $10^{-9}$、$10^{-11}$ 和 $1\,\mathrm s$。严格解与基准 RK45 的事件时
 $56.86\%$。该结论适用于本文给定参数和集总传热假设，不应外推为不考虑个体差异、
 局部风场及其他生理反应时的无条件医学安全时限。
 
-\clearpage
 \section{问题三模型的建立与求解}
 
 \subsection{问题三分析}
@@ -1190,6 +1186,14 @@ $56.86\%$。该结论适用于本文给定参数和集总传热假设，不应�
 $100\,\mathrm{kg}$ 承重上限和原支出 $1.5$ 倍的成本上限筛选可行层数。最后求解各可行
 方案的传热过程，确定皮肤温度首次降至 $15\,^{\circ}\mathrm C$ 的时刻，
 同时将新增质量按题目给出的承重关系折算为等效时间代价，并与传热时长综合评价，以确定最优涂层厚度。
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{figures/问题三流程图.pdf}
+    \caption{问题三建模与求解流程图}
+    \label{fig:question3-flowchart}
+\end{figure}
+
 
 \subsection{多外层涂层传热模型}
 
@@ -1343,21 +1347,18 @@ $\mathrm{rtol}=10^{-7}$、$\mathrm{atol}=10^{-9}$、最大步长 $5\,\mathrm s$�
 \par\noindent\textbf{Step 3：定位温度阈值事件。}
 定义下降方向事件函数
 \begin{equation}
-g_{15}(t,\bm x_N)=T_s-15,\qquad
-g_{10}(t,\bm x_N)=T_s-10,\qquad
-g_{c,35}(t,\bm x_N)=T_c-35.
+    g_{15}(t,\bm x_N)=T_s-15,\qquad
+    g_{10}(t,\bm x_N)=T_s-10.
 \label{eq:q3-events}
 \end{equation}
-求解器利用连续延拓定位式\eqref{eq:q3-events}中三个事件的首次过零时刻，得到
-$t_{15}$、$t_{10}$ 和
-$t_{c,35}$，不从离散输出点插值反推。为检验数值精度，另以
+求解器利用连续延拓定位式\eqref{eq:q3-events}中两个事件的首次过零时刻，得到
+$t_{15}$ 和 $t_{10}$，不从离散输出点插值反推。为检验数值精度，另以
 $\mathrm{rtol}=10^{-9}$、$\mathrm{atol}=10^{-11}$ 和最大步长 $1\,\mathrm s$
 对最优候选方案加严复算。
 
 \par\noindent\textbf{Step 4：计算评分并选择最优方案。}
 在式\eqref{eq:q3-optimization}给出的可行域内，由式\eqref{eq:q3-objective}计算
-题意主指标 $J(N)$，并同步计算核心温度安全修正指标 $J_{\mathrm{safe}}(N)$。
-比较四个候选方案的评分，取
+$J(N)$。比较四个候选方案的评分，取
 $J(N)$ 最大者作为问题三的最优外层厚度。
 
 \subsection{结果分析}
@@ -1383,18 +1384,7 @@ $J(N)$ 最大者作为问题三的最优外层厚度。
     \end{tabular}
 \end{table}
 
-图\ref{fig:q3-candidate-overview}把表中结果转化为三组直观比较：左、中央子图分别显示
-题意主指标与安全修正指标，右侧子图显示成本和承重约束的利用率。两个时间指标均随
-层数单调增加；当 $N=4$ 时，成本已使用预算上限的 $96.24\%$，服装质量却只占承重
-上限的 $1.50\%$。因此，继续增厚首先受到预算限制，而不是承重限制。
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.98\textwidth]{figures/problem3_candidate_overview.pdf}
-    \caption{候选外层层数的评分与约束利用率}
-    \label{fig:q3-candidate-overview}
-\end{figure}
-
-由表\ref{tab:q3-candidates}和图\ref{fig:q3-candidate-overview}可知，外层每增加一层，
+由表\ref{tab:q3-candidates}可知，外层每增加一层，
 $t_{15}$ 增加约 $18$--$19\,\mathrm{min}$，而重量惩罚仅增加 $3.717\,\mathrm{s}$。
 保温收益明显大于新增重量代价，因此预算可行域内的最优解为
 \begin{equation*}
@@ -1405,111 +1395,13 @@ $735.001\,\mathrm{min}$，新增重量惩罚为 $11.152\,\mathrm{s}$，所以重
 $734.815\,\mathrm{min}$。相对问题一基准值 $678.621\,\mathrm{min}$，净增益为
 $56.194\,\mathrm{min}$。
 
-\subsubsection{核心温度安全修正}
-
-按问题一皮肤阈值外推至 $t_{15}$ 时，四层方案的核心温度已降至
-$26.34\,^{\circ}\mathrm C$，因此 $t_{15}$ 应解释为与问题一一致的数学比较指标。
-参考意外低体温指南\cite{wms2019}，本文另设核心温度 $35\,^{\circ}\mathrm C$ 事件，定义
-\begin{equation}
-    t_{\mathrm{safe}}(N)=\min\left\{t_{15}(N),t_{c,35}(N)\right\},\qquad
-    J_{\mathrm{safe}}(N)=t_{\mathrm{safe}}(N)-20\Delta m(N).
-    \label{eq:q3-safe-objective}
-\end{equation}
-按式\eqref{eq:q3-safe-objective}得到的安全修正结果见表\ref{tab:q3-safe}。
-\begin{table}[H]
-    \centering
-    \small
-    \caption{核心温度安全修正结果}
-    \label{tab:q3-safe}
-    \begin{tabular}{cccc}
-        \toprule[1.5pt]
-        $N$ & $t_{c,35}$/min & 新增重量惩罚/s & $J_{\mathrm{safe}}$/min\\
-        \midrule[1pt]
-        1 & 252.246 & 0     & 252.246\\
-        2 & 258.417 & 3.717 & 258.355\\
-        3 & 264.741 & 7.434 & 264.617\\
-        4 & 271.223 & 11.152& \textbf{271.037}\\
-        \bottomrule[1.5pt]
-    \end{tabular}
-\end{table}
-图\ref{fig:q3-temperature-comparison}比较了四个候选方案的核心与皮肤温度轨迹。
-左图中曲线与 $35\,^{\circ}\mathrm C$ 虚线的交点表示核心温度安全事件，右图中曲线与
-$15\,^{\circ}\mathrm C$ 虚线的交点表示题意规定的皮肤温度事件。层数越多，曲线整体
-越靠上、交点越靠右，说明增厚在整个暴露阶段都减缓降温，而不是只改善某一瞬间的温度。
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.98\textwidth]{figures/problem3_temperature_comparison.pdf}
-    \caption{不同外层总层数下的人体温度响应}
-    \label{fig:q3-temperature-comparison}
-\end{figure}
-
-可见，安全修正使时间指标从约 $12.25\,\mathrm h$ 降为约 $4.52\,\mathrm h$，
-但四层方案仍为最优，说明最优厚度结论不依赖于单一温度截止口径。
-
-四层最优方案在安全截止前的节点温度场如图\ref{fig:q3-optimal-temperature-field}所示。
-横轴为暴露时间，纵轴按人体核心、皮肤、内层、PCM 层和四个外层节点排列；橙色表示
-较高温度，蓝绿色表示较低温度。图中外层和 PCM 节点在开始暴露后迅速降温，人体核心
-与皮肤则缓慢降温，并在各层之间形成持续的温度梯度。这说明逐层设置温度节点保留了
-外层热惯性和层间温差，不能把四层涂层简单视为没有热容的一段等效热阻。
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.88\textwidth]{figures/problem3_optimal_temperature_field.pdf}
-    \caption{四层最优方案的节点温度场}
-    \label{fig:q3-optimal-temperature-field}
-\end{figure}
-
 \subsection{模型检验与敏感性分析}
 
-\subsubsection{退化一致性、能量守恒与数值收敛}
-
-当 $N=1$ 时，问题三变维模型严格退化为问题一六状态模型，二者的 $t_{15}$
-均为 $40717.233313\,\mathrm s$，差值为 0，验证了模型结构的一致性。
-四个候选方案基准计算的相对能量守恒误差均不超过
-$1.47\times10^{-7}$；四层最优方案在加严容差下的相对误差进一步降至
-$1.34\times10^{-9}$。
-
-将相对容差由 $10^{-7}$ 收紧至 $10^{-9}$、绝对容差由 $10^{-9}$ 收紧至
-$10^{-11}$，并把最大步长由 $5\,\mathrm s$ 减小为 $1\,\mathrm s$ 后，
-四层方案的 $t_{15}$ 仅变化 $5.11\times10^{-4}\,\mathrm s$，
-核心 $35\,^{\circ}\mathrm C$ 事件仅变化 $5.61\times10^{-4}\,\mathrm s$。
-因此，候选方案排序和最优层数结论不依赖于离散误差或事件定位精度。
-
-\subsubsection{敏感性分析}
-
-以四层方案的 $t_{c,35}$ 为输出，对主要热学参数进行单因素扰动，结果见
-表\ref{tab:q3-sensitivity}。
-\begin{table}[H]
-    \centering
-    \small
-    \caption{问题三最优方案的热学敏感性}
-    \label{tab:q3-sensitivity}
-    \begin{tabular}{ccccc}
-        \toprule[1.5pt]
-        参数 & 扰动幅度 & 低水平 $t_{c,35}$/min
-        & 高水平 $t_{c,35}$/min & 相对变化\\
-        \midrule[1pt]
-        $M_0$ & $\pm10\%$ & 231.813 & 320.457 & $-14.53\%/ +18.15\%$\\
-        $h_{\mathrm{in}}$ & $\pm10\%$ & 297.989 & 251.040 & $+9.87\%/ -7.44\%$\\
-        $\lambda_{\mathrm{out}}$ & $\pm10\%$ & 284.222 & 260.869 & $+4.79\%/ -3.82\%$\\
-        $k_3$ & $\pm10\%$ & 273.085 & 269.707 & $+0.69\%/ -0.56\%$\\
-        $\tau_{bl}$ & $\pm20\%$ & 271.498 & 270.944 & $+0.10\%/ -0.10\%$\\
-        \bottomrule[1.5pt]
-    \end{tabular}
-\end{table}
-
-图\ref{fig:q3-sensitivity-robustness}从四个角度检验结论是否稳定。子图（a）中条形越长，
-表示安全修正时长对该参数越敏感，代谢率 $M_0$ 和内侧换热系数 $h_{\mathrm{in}}$ 的影响
-最明显；子图（b）表明服装初温从 $37\,^{\circ}\mathrm C$ 降至 $20\,^{\circ}\mathrm C$
-时，$t_{c,35}$ 仅下降 $2.32\%$。子图（c）显示只有把重量惩罚系数提高到题设值的约
-$303$ 倍，四层方案才失去优势；子图（d）显示制造附加率达到约 $12.72\%$ 时，四层
-方案首先触及预算上限。由此可见，最优层数对热学参数和重量惩罚较稳健，但对额外制造
-费用更敏感。
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.98\textwidth]{figures/problem3_sensitivity_robustness.pdf}
-    \caption{问题三的敏感性与稳健性分析}
-    \label{fig:q3-sensitivity-robustness}
-\end{figure}
+当 $N=1$ 时，问题三变维模型退化为问题一六状态模型，两者所得
+$t_{15}=40717.233\,\mathrm s$ 完全一致。对四层最优方案加严积分容差并将最大步长
+由 $5\,\mathrm s$ 减小至 $1\,\mathrm s$ 后，$t_{15}$ 仅改变
+$5.11\times10^{-4}\,\mathrm s$；基准求解的相对能量守恒误差为
+$1.05\times10^{-7}$，说明层数扩展和事件定位具有良好的数值一致性。
 
 对目标函数的重量惩罚系数扩展分析表明，四层与一层方案发生优劣切换的临界系数约为
 \begin{equation*}
@@ -1660,19 +1552,31 @@ $\lambda_{\rm out}$ 的敏感度为 $+8.58$，表明外界散热增强同样会�
 
 
 \section{模型评价}
-\subsection {模型优点}
+\subsection{模型优点}
+\begin{enumerate}
+    \item 本文将人体热调节与多层防护服传热过程相结合，引入动态皮肤血流和 PCM
+    相变放热机制，并根据环境风速与人体运动状态修正边界换热和代谢产热条件，较为完整地
+    描述了低温环境下人体--防护服系统的动态传热过程。
+    \item 针对防护服结构与材料性能优化，本文进一步引入外层厚度、服装质量、材料成本
+    和 PCM 放热能力等因素，在满足承重与资金约束的条件下，分别完成外层结构参数优化
+    和 PCM 最小放热倍率反演，使性能预测模型能够直接服务于防护服设计。
+\end{enumerate}
 
+\subsection{模型缺点}
+本文将人体及各层防护服简化为温度均匀的集中参数节点，只描述沿服装厚度方向的平均
+传热；部分人体热调节与边界换热参数采用经验公式或典型取值，尚未利用实际低温试验
+进行个体化标定。因此，模型难以反映人体不同部位、局部服装结构及个体生理差异，
+在复杂低温环境中的预测精度仍有进一步提升空间。
 
-\subsection {模型缺点}
-
-
-\subsection{模型评价}
-
-
-
-
-
-
+\subsection{模型改进与推广}
+\begin{enumerate}
+    \item 在人体热调节方面，可进一步将人体划分为躯干、四肢等多个热学区域，并引入
+    颤抖产热、个体体脂差异及长时间暴露下的代谢调节机制，以提高核心温度和局部皮肤
+    温度的预测精度。
+    \item 在防护服传热方面，可将各材料层进一步离散为多个温度节点，并考虑层间接触
+    热阻、服装褶皱、含湿及结霜等因素。重新标定不同工况下的边界换热参数后，该模型
+    可推广至时变风速、交替活动强度及其他极寒作业场景。
+\end{enumerate}
 \newpage
 \begin{thebibliography}{99}
     \bibitem{ashrae55addendumg}
@@ -1700,17 +1604,6 @@ $\lambda_{\rm out}$ 的敏感度为 $+8.58$，表明外界散热增强同样会�
     flow regulation in response to different local skin temperature perturbations[J].
     Microvascular Research, 2017, 111: 96--102.
 
-    \bibitem{wms2019}
-    Dow J, Giesbrecht G G, Danzl D F, et al. Wilderness Medical Society clinical
-    practice guidelines for the out-of-hospital evaluation and treatment of accidental
-    hypothermia: 2019 update[J]. Wilderness \& Environmental Medicine, 2019,
-    30(4S): S47--S69.
-
-    \bibitem{pandolf1977}
-    Pandolf K B, Givoni B, Goldman R F. Predicting energy expenditure with loads while
-    standing or walking very slowly[J]. Journal of Applied Physiology, 1977,
-    43(4): 577--581.
-        
 \end{thebibliography}
 
 
@@ -1718,29 +1611,36 @@ $\lambda_{\rm out}$ 的敏感度为 $+8.58$，表明外界散热增强同样会�
 \newpage
 \begin{appendices}
 
+\section{问题一核心传热模型源代码}
+\lstinputlisting[
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    showstringspaces=false
+]{../src/问题一/model.py}
 
-\section{问题一源代码}
-\begin{lstlisting}[language=lingo]
+\section{问题二有风轻微运动模型源代码}
+\lstinputlisting[
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    showstringspaces=false
+]{../src/问题二/model.py}
 
+\section{问题三多外层传热模型源代码}
+\lstinputlisting[
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    showstringspaces=false
+]{../src/问题三/model.py}
 
-\end{lstlisting}
-
-
-\section{问题二源代码}
-\begin{lstlisting}[language=lingo]
-
-  
-\end{lstlisting}
-
-\section{问题三源代码}
-\begin{lstlisting}[language=lingo]
-
-\end{lstlisting}
-
-\begin{lstlisting}[language=python]
-
-
-
-\end{lstlisting}
+\section{问题四放热倍率反演源代码}
+\lstinputlisting[
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    showstringspaces=false
+]{../src/问题一/problem4/solver.py}
 \end{appendices}
 \end{document}
