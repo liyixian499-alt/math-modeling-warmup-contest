@@ -220,17 +220,20 @@ def load_problem3_results(result_dir: Path) -> dict[str, pd.DataFrame]:
     }
 
 
-def _panel_label(ax: plt.Axes, label: str) -> None:
+def _panel_caption(ax: plt.Axes, caption: str, y: float = -0.27) -> None:
+    """Place a concise panel caption below the axes and outside all data lines."""
+
     ax.text(
-        -0.12,
-        1.06,
-        label,
+        0.5,
+        y,
+        caption,
         transform=ax.transAxes,
-        ha="left",
-        va="bottom",
-        fontsize=18.0,
+        ha="center",
+        va="top",
+        fontsize=17.0,
         color="black",
         fontfamily=REQUIRED_FONT_FAMILY,
+        clip_on=False,
     )
 
 
@@ -299,12 +302,19 @@ def plot_candidate_overview(
         * 100.0
     )
 
-    fig, axes = plt.subplots(1, 3, figsize=(17.0, 5.5), layout="constrained")
+    fig, axes = plt.subplots(1, 3, figsize=(17.0, 6.2))
+    fig.subplots_adjust(
+        left=0.065,
+        right=0.99,
+        top=0.95,
+        bottom=0.22,
+        wspace=0.30,
+    )
     panels = [
-        (axes[0], main_score, "题意主指标", r"$J$ / min", "(a)"),
-        (axes[1], safe_score, "安全修正指标", r"$J_{safe}$ / min", "(b)"),
+        (axes[0], main_score, r"$J$ / min", "(a) 题意主指标"),
+        (axes[1], safe_score, r"$J_{safe}$ / min", "(b) 安全修正指标"),
     ]
-    for ax, values, title, ylabel, panel in panels:
+    for ax, values, ylabel, panel_caption in panels:
         ax.plot(
             n,
             values,
@@ -334,14 +344,13 @@ def plot_candidate_overview(
             fontsize=11.5,
             color="black",
         )
-        ax.set_title(title)
-        _panel_label(ax, panel)
         ax.set_xlabel(r"外层总层数 $N$")
         ax.set_ylabel(ylabel)
         ax.set_xticks(n)
         span = float(values.max() - values.min())
         ax.set_ylim(values.min() - 0.16 * span, values.max() + 0.18 * span)
         _style_grid(ax)
+        _panel_caption(ax, panel_caption)
 
     axes[2].plot(
         n,
@@ -366,14 +375,13 @@ def plot_candidate_overview(
         zorder=3,
     )
     axes[2].axhline(100.0, color="black", linewidth=1.7, linestyle="--", zorder=2)
-    axes[2].set_title("约束利用率")
-    _panel_label(axes[2], "(c)")
     axes[2].set_xlabel(r"外层总层数 $N$")
     axes[2].set_ylabel("约束利用率 / %")
     axes[2].set_xticks(n)
     axes[2].set_ylim(0.0, 108.0)
     axes[2].legend(loc="center right")
     _style_grid(axes[2])
+    _panel_caption(axes[2], "(c) 成本与承重约束利用率")
     return save_figure(fig, output_dir, "problem3_candidate_overview", formats)
 
 
@@ -385,7 +393,14 @@ def plot_temperature_comparison(
 ) -> list[Path]:
     """Compare core and skin trajectories for all four feasible layer counts."""
 
-    fig, axes = plt.subplots(1, 2, figsize=(14.8, 6.1), layout="constrained")
+    fig, axes = plt.subplots(1, 2, figsize=(14.8, 6.8))
+    fig.subplots_adjust(
+        left=0.075,
+        right=0.99,
+        top=0.84,
+        bottom=0.22,
+        wspace=0.22,
+    )
     for layer_count in range(1, 5):
         subset = timeseries.loc[
             timeseries["outer_layer_count"].astype(int) == layer_count
@@ -427,16 +442,15 @@ def plot_temperature_comparison(
             zorder=5,
         )
 
-    for ax, title, panel, ylabel in [
-        (axes[0], "核心温度", "(a)", r"$T_c$ / ℃"),
-        (axes[1], "皮肤温度", "(b)", r"$T_s$ / ℃"),
+    for ax, panel_caption, ylabel in [
+        (axes[0], "(a) 核心温度与 35 ℃ 阈值", r"$T_c$ / ℃"),
+        (axes[1], "(b) 皮肤温度与 15 ℃ 阈值", r"$T_s$ / ℃"),
     ]:
-        ax.set_title(title)
-        _panel_label(ax, panel)
         ax.set_xlabel(r"时间 $t$ / h")
         ax.set_ylabel(ylabel)
         ax.set_xlim(0.0, 12.6)
         _style_grid(ax)
+        _panel_caption(ax, panel_caption)
 
     axes[0].axhline(35.0, color="black", linewidth=1.6, linestyle="--", zorder=1)
     axes[0].text(0.25, 35.18, r"$T_c=35$ ℃", fontsize=11.5)
@@ -448,7 +462,8 @@ def plot_temperature_comparison(
     fig.legend(
         handles,
         labels,
-        loc="outside lower center",
+        loc="upper center",
+        bbox_to_anchor=(0.5, 0.985),
         ncol=4,
         handlelength=2.8,
         columnspacing=1.8,
@@ -545,7 +560,15 @@ def plot_sensitivity_and_robustness(
         "blood_flow_time_constant_s": r"$\tau_{bl}$",
     }
 
-    fig, axes = plt.subplots(2, 2, figsize=(15.8, 11.2), layout="constrained")
+    fig, axes = plt.subplots(2, 2, figsize=(15.8, 12.8))
+    fig.subplots_adjust(
+        left=0.075,
+        right=0.985,
+        top=0.965,
+        bottom=0.12,
+        hspace=0.66,
+        wspace=0.28,
+    )
     ax_thermal, ax_initial, ax_weight, ax_cost = axes.flat
 
     low_values: list[float] = []
@@ -584,10 +607,9 @@ def plot_sensitivity_and_robustness(
     ax_thermal.invert_yaxis()
     ax_thermal.set_xlim(-18.5, 21.0)
     ax_thermal.set_xlabel(r"$t_{c,35}$ 相对变化 / %")
-    ax_thermal.set_title("热学参数敏感性")
-    _panel_label(ax_thermal, "(a)")
     ax_thermal.legend(loc="lower right")
     _style_grid(ax_thermal, axis="x")
+    _panel_caption(ax_thermal, "(a) 热学参数单因素敏感性", y=-0.23)
 
     initial_x = initial_temperature["clothing_initial_temperature_C"].to_numpy(dtype=float)
     initial_y = initial_temperature["t_core_35_min"].to_numpy(dtype=float)
@@ -612,11 +634,10 @@ def plot_sensitivity_and_robustness(
     )
     ax_initial.set_xlabel(r"服装初始温度 / ℃")
     ax_initial.set_ylabel(r"$t_{c,35}$ / min")
-    ax_initial.set_title("服装初始温度")
-    _panel_label(ax_initial, "(b)")
     ax_initial.set_xticks(initial_x)
     ax_initial.set_ylim(262.0, 273.5)
     _style_grid(ax_initial)
+    _panel_caption(ax_initial, "(b) 服装初始温度影响", y=-0.23)
 
     penalty_values = np.sort(
         weight_penalty["weight_penalty_s_per_kg"].unique().astype(float)
@@ -657,10 +678,8 @@ def plot_sensitivity_and_robustness(
     ax_weight.set_xlim(-0.1, float(penalty_values.max()) / 1000.0 + 0.15)
     ax_weight.set_xlabel(r"重量惩罚系数 $\lambda_m$ / (10³ s/kg)")
     ax_weight.set_ylabel(r"$J$ / min")
-    ax_weight.set_title("重量惩罚稳健性")
-    _panel_label(ax_weight, "(c)")
-    ax_weight.legend(loc="lower left", ncol=2)
     _style_grid(ax_weight)
+    _panel_caption(ax_weight, "(c) 重量惩罚系数下的方案评分", y=-0.23)
 
     maximum_cost = float(manufacturing_cost["maximum_total_cost_yuan"].iloc[0])
     overhead_values = np.sort(
@@ -686,10 +705,19 @@ def plot_sensitivity_and_robustness(
     ax_cost.set_xlim(-0.4, float(overhead_values.max()) * 100.0 + 0.4)
     ax_cost.set_xlabel("制造附加率 / %")
     ax_cost.set_ylabel("总成本 / 元")
-    ax_cost.set_title("制造附加成本")
-    _panel_label(ax_cost, "(d)")
-    ax_cost.legend(loc="upper left", ncol=2)
     _style_grid(ax_cost)
+    _panel_caption(ax_cost, "(d) 制造附加率下的总成本", y=-0.23)
+
+    handles, labels = ax_weight.get_legend_handles_labels()
+    fig.legend(
+        handles,
+        labels,
+        loc="center",
+        bbox_to_anchor=(0.5, 0.505),
+        ncol=4,
+        handlelength=2.6,
+        columnspacing=1.7,
+    )
 
     return save_figure(fig, output_dir, "problem3_sensitivity_robustness", formats)
 

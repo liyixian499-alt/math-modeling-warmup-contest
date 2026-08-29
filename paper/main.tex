@@ -1218,9 +1218,10 @@ $100\,\mathrm{kg}$ 承重上限和原支出 $1.5$ 倍的成本上限筛选可行
 
 设外层涂层总层数为 $N\in\mathbb Z_+$，原防护服已有一层，则新增层数为
 $N-1$，外层总厚度为
-\begin{equation*}
+\begin{equation}
     \delta_{\mathrm{out}}(N)=N\delta_3=0.3N\ \mathrm{mm}.
-\end{equation*}
+    \label{eq:q3-thickness}
+\end{equation}
 
 为同时表示外层总热阻和总热容，对每层涂层分别设置一个平均温度节点。
 问题三的状态向量扩展为
@@ -1229,7 +1230,7 @@ $N-1$，外层总厚度为
     \left(T_c,T_s,T_1,T_2,T_{3,1},\ldots,T_{3,N},\dot V_{bl}\right)^{\mathsf T},
     \label{eq:q3-state}
 \end{equation}
-其维数为 $N+5$。当 $N=1$ 时，式\eqref{eq:q3-state}即为问题一的六状态模型。
+其维数为 $N+5$。
 
 \subsubsection{外层节点的能量平衡}
 
@@ -1242,6 +1243,7 @@ PCM 层中心与第一个外层节点之间的单位面积热阻为
     r_{3_j,3_{j+1}}=\frac{\delta_3}{k_3},
     \qquad j=1,2,\ldots,N-1.
 \end{equation*}
+
 因此，相邻外层节点之间的热流密度为
 \begin{equation*}
     q_{3_j,3_{j+1}}
@@ -1250,10 +1252,11 @@ PCM 层中心与第一个外层节点之间的单位面积热阻为
 
 设单层涂层质量为 $m_3$，显热热容为 $C_3=m_3c_3$，则第 $j$ 个
 外层节点满足
-\begin{equation*}
+\begin{equation}
     C_3\frac{\mathrm dT_{3,j}}{\mathrm dt}
     =A_h\left(q_{\mathrm{in},j}-q_{\mathrm{out},j}\right).
-\end{equation*}
+    \label{eq:q3-outer-balance}
+\end{equation}
 最外节点与环境之间继续采用问题一的自然对流边界：
 \begin{equation*}
     h_{\mathrm{out}}
@@ -1265,9 +1268,6 @@ PCM 层中心与第一个外层节点之间的单位面积热阻为
     =\frac{T_{3,N}-T_{\infty}}
     {\delta_3/(2k_3)+1/h_{\mathrm{out}}}.
 \end{equation*}
-人体动态血流、核心—皮肤质量交换焓流、呼吸散热和 PCM 表观比热
-均与问题一保持一致。
-
 \subsection{质量、成本与承重约束}
 
 服装材料面积为 $A_m=1.25A_h=2.065125\,\mathrm{m^2}$。由外层密度
@@ -1275,6 +1275,7 @@ $\rho_3=300\,\mathrm{kg/m^3}$ 和单层厚度 $\delta_3=0.3\,\mathrm{mm}$，得�
 \begin{equation*}
     m_3=\rho_3A_m\delta_3=0.18586125\,\mathrm{kg}.
 \end{equation*}
+
 外层材料单价为 $300$ 元/kg，因此每新增一层的直接材料费为
 \begin{equation*}
     \Delta C_3=300m_3=55.758375\,\text{元}.
@@ -1284,10 +1285,12 @@ $\rho_3=300\,\mathrm{kg/m^3}$ 和单层厚度 $\delta_3=0.3\,\mathrm{mm}$，得�
 \begin{equation*}
     C_{\max}=1.5C_0=565.6377375\,\text{元}.
 \end{equation*}
+
 层数为 $N$ 时，总质量和总成本分别为
-\begin{equation*}
+\begin{equation}
     m(N)=m_1+m_2+Nm_3,
-\end{equation*}
+    \label{eq:q3-mass}
+\end{equation}
 \begin{equation}
     C(N)=C_0+(N-1)\Delta C_3.
     \label{eq:q3-cost}
@@ -1297,11 +1300,11 @@ $\rho_3=300\,\mathrm{kg/m^3}$ 和单层厚度 $\delta_3=0.3\,\mathrm{mm}$，得�
 \begin{equation*}
     m(N)\leq 100\,\mathrm{kg}.
 \end{equation*}
+
 将式\eqref{eq:q3-cost}代入成本约束，可得预算可行的整数集合为
 \begin{equation*}
     N\in\{1,2,3,4\}.
 \end{equation*}
-由于 $m(4)=1.500355\,\mathrm{kg}\ll100\,\mathrm{kg}$，当前参数下预算约束先于承重约束起作用。
 
 \subsection{重量惩罚与优化模型}
 
@@ -1312,27 +1315,30 @@ $t_0=t_{15}(1)$，增厚带来的纯传热时长增益为 $t_{15}(N)-t_0$。
 \begin{equation*}
     \lambda_m=\frac{10}{0.5}=20\,\mathrm{s/kg}.
 \end{equation*}
+
 时间惩罚以问题一为基准，只计入新增质量
 \begin{equation*}
     \Delta m(N)=m(N)-m(1),
 \end{equation*}
-而不对原防护服质量重复惩罚。因此，问题三的综合站立时间为
-\begin{align}
-    J(N)
-    &=t_0+\left[t_{15}(N)-t_0\right]-\lambda_m\Delta m(N)\notag\\
-    &=t_{15}(N)-20\left[m(N)-m(1)\right].
+因此，问题三的综合站立时间为
+\begin{equation}
+    J(N)=t_0+\left[t_{15}(N)-t_0\right]-\lambda_m\Delta m(N)
+    =t_{15}(N)-20\left[m(N)-m(1)\right].
     \label{eq:q3-objective}
-\end{align}
+\end{equation}
 最终离散优化模型为
-\begin{equation*}
+\begin{equation}
+    \max_N J(N),\qquad
+    \mathrm{s.t.}\quad
+    \left\{
     \begin{aligned}
-        \max_{N\in\mathbb Z_+}\quad &J(N),\\
-        \mathrm{s.t.}\quad
+        &N\in\{1,2,3,4\},\\
         &C(N)\leq1.5C_0,\\
-        &m(N)\leq100\,\mathrm{kg},\\
-        &N\geq1.
+        &m(N)\leq100\,\mathrm{kg}.
     \end{aligned}
-\end{equation*}
+    \right.
+    \label{eq:q3-optimization}
+\end{equation}
 
 \subsection{模型求解}
 
@@ -1340,14 +1346,16 @@ $t_0=t_{15}(1)$，增厚带来的纯传热时长增益为 $t_{15}(N)-t_0$。
 对每个可行方案分别积分，再比较目标函数值。
 
 \par\noindent\textbf{Step 1：生成可行方案并设置初始状态。}
-由成本约束得到候选集合 $N\in\{1,2,3,4\}$，逐一计算总质量与总成本，
+由式\eqref{eq:q3-thickness}、式\eqref{eq:q3-mass}和式\eqref{eq:q3-cost}
+得到候选集合 $N\in\{1,2,3,4\}$，逐一计算总厚度、总质量与总成本，
 筛除不满足预算或承重约束的方案。各方案的核心、皮肤和全部服装节点初温均设为
-$37\,^{\circ}\mathrm C$，实际皮肤血流初值沿用问题一的
+$37\,^{\circ}\mathrm C$，实际皮肤血流初值为
 $6.3\,\mathrm{L/(m^2h)}$。
 
 \par\noindent\textbf{Step 2：建立并积分变维状态方程。}
-对给定 $N$，按式\eqref{eq:q3-state}构造 $N+5$ 维状态向量，更新外层节点数、
-层间热阻和总显热热容。每次计算方程右端时，先由当前皮肤温度更新目标血流和实际
+对给定 $N$，按式\eqref{eq:q3-state}构造 $N+5$ 维状态向量，并按
+式\eqref{eq:q3-outer-balance}更新外层节点数、层间热阻和总显热热容。每次计算方程
+右端时，先由当前皮肤温度更新目标血流和实际
 血流变化率，再计算人体两节点、内层、PCM 层及 $N$ 个外层节点的温度导数。
 基准计算采用自适应 RK45 方法，设置
 $\mathrm{rtol}=10^{-7}$、$\mathrm{atol}=10^{-9}$、最大步长 $5\,\mathrm s$，
@@ -1355,19 +1363,22 @@ $\mathrm{rtol}=10^{-7}$、$\mathrm{atol}=10^{-9}$、最大步长 $5\,\mathrm s$�
 
 \par\noindent\textbf{Step 3：定位温度阈值事件。}
 定义下降方向事件函数
-\[
+\begin{equation}
 g_{15}(t,\bm x_N)=T_s-15,\qquad
 g_{10}(t,\bm x_N)=T_s-10,\qquad
 g_{c,35}(t,\bm x_N)=T_c-35.
-\]
-求解器利用连续延拓分别定位三个事件的首次过零时刻，得到 $t_{15}$、$t_{10}$ 和
+\label{eq:q3-events}
+\end{equation}
+求解器利用连续延拓定位式\eqref{eq:q3-events}中三个事件的首次过零时刻，得到
+$t_{15}$、$t_{10}$ 和
 $t_{c,35}$，不从离散输出点插值反推。为检验数值精度，另以
 $\mathrm{rtol}=10^{-9}$、$\mathrm{atol}=10^{-11}$ 和最大步长 $1\,\mathrm s$
 对最优候选方案加严复算。
 
 \par\noindent\textbf{Step 4：计算评分并选择最优方案。}
-对每个可行方案，由式\eqref{eq:q3-objective}计算题意主指标 $J(N)$，并同步计算
-核心温度安全修正指标 $J_{\mathrm{safe}}(N)$。比较四个候选方案的评分，取
+在式\eqref{eq:q3-optimization}给出的可行域内，由式\eqref{eq:q3-objective}计算
+题意主指标 $J(N)$，并同步计算核心温度安全修正指标 $J_{\mathrm{safe}}(N)$。
+比较四个候选方案的评分，取
 $J(N)$ 最大者作为问题三的最优外层厚度。
 
 \subsection{结果分析}
@@ -1393,20 +1404,20 @@ $J(N)$ 最大者作为问题三的最优外层厚度。
     \end{tabular}
 \end{table}
 
-图\ref{fig:q3-candidate-overview}进一步给出了两类时间指标及硬约束的变化。
-题意主指标和安全修正指标均随层数单调增加；四层方案的总成本达到预算上限的
-$96.24\%$，而服装质量仅占承重上限的 $1.50\%$，直观说明当前设计由预算约束主导。
+图\ref{fig:q3-candidate-overview}把表中结果转化为三组直观比较：左、中央子图分别显示
+题意主指标与安全修正指标，右侧子图显示成本和承重约束的利用率。两个时间指标均随
+层数单调增加；当 $N=4$ 时，成本已使用预算上限的 $96.24\%$，服装质量却只占承重
+上限的 $1.50\%$。因此，继续增厚首先受到预算限制，而不是承重限制。
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.98\textwidth]{figures/problem3_candidate_overview.pdf}
-    \caption{候选外层层数的时间指标与约束利用率：（a）题意主指标；
-    （b）核心温度安全修正指标；（c）成本与承重约束利用率}
+    \caption{候选外层层数的评分与约束利用率}
     \label{fig:q3-candidate-overview}
 \end{figure}
 
-由表\ref{tab:q3-candidates}可知，外层每增加一层，$t_{15}$ 增加约 $18$--$19\,\mathrm{min}$，
-而每层新增质量只对应 $3.717\,\mathrm{s}$ 的时间惩罚，因此保温收益远大于重量代价。
-在预算可行域内，目标值随层数增大，最优解为
+由表\ref{tab:q3-candidates}和图\ref{fig:q3-candidate-overview}可知，外层每增加一层，
+$t_{15}$ 增加约 $18$--$19\,\mathrm{min}$，而重量惩罚仅增加 $3.717\,\mathrm{s}$。
+保温收益明显大于新增重量代价，因此预算可行域内的最优解为
 \begin{equation*}
     N^*=4,\qquad \delta_{\mathrm{out}}^*=1.2\,\mathrm{mm}.
 \end{equation*}
@@ -1418,17 +1429,14 @@ $56.194\,\mathrm{min}$。
 \subsubsection{核心温度安全修正}
 
 按问题一皮肤阈值外推至 $t_{15}$ 时，四层方案的核心温度已降至
-$26.34\,^{\circ}\mathrm C$，因此 $t_{15}$ 应解释为与问题一一致的数学比较指标，不宜直接称为医学安全时间。
+$26.34\,^{\circ}\mathrm C$，因此 $t_{15}$ 应解释为与问题一一致的数学比较指标。
 参考意外低体温指南\cite{wms2019}，本文另设核心温度 $35\,^{\circ}\mathrm C$ 事件，定义
-\begin{equation*}
-    t_{\mathrm{safe}}(N)
-    =\min\left\{t_{15}(N),t_{c,35}(N)\right\},
-\end{equation*}
-\begin{equation*}
-    J_{\mathrm{safe}}(N)
-    =t_{\mathrm{safe}}(N)-20\Delta m(N).
-\end{equation*}
-安全修正结果见表\ref{tab:q3-safe}。
+\begin{equation}
+    t_{\mathrm{safe}}(N)=\min\left\{t_{15}(N),t_{c,35}(N)\right\},\qquad
+    J_{\mathrm{safe}}(N)=t_{\mathrm{safe}}(N)-20\Delta m(N).
+    \label{eq:q3-safe-objective}
+\end{equation}
+按式\eqref{eq:q3-safe-objective}得到的安全修正结果见表\ref{tab:q3-safe}。
 \begin{table}[H]
     \centering
     \small
@@ -1446,13 +1454,13 @@ $26.34\,^{\circ}\mathrm C$，因此 $t_{15}$ 应解释为与问题一一致的�
     \end{tabular}
 \end{table}
 图\ref{fig:q3-temperature-comparison}比较了四个候选方案的核心与皮肤温度轨迹。
-随着外层层数增加，两类阈值事件均稳定向后移动，且曲线未出现交叉反转，
-说明增厚在整个暴露阶段持续发挥保温作用，而非仅改变某一时刻的局部温度。
+左图中曲线与 $35\,^{\circ}\mathrm C$ 虚线的交点表示核心温度安全事件，右图中曲线与
+$15\,^{\circ}\mathrm C$ 虚线的交点表示题意规定的皮肤温度事件。层数越多，曲线整体
+越靠上、交点越靠右，说明增厚在整个暴露阶段都减缓降温，而不是只改善某一瞬间的温度。
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.98\textwidth]{figures/problem3_temperature_comparison.pdf}
-    \caption{不同外层总层数下的人体温度响应：（a）核心温度及 $35\,^{\circ}\mathrm C$ 事件；
-    （b）皮肤温度及 $15\,^{\circ}\mathrm C$ 事件}
+    \caption{不同外层总层数下的人体温度响应}
     \label{fig:q3-temperature-comparison}
 \end{figure}
 
@@ -1460,13 +1468,14 @@ $26.34\,^{\circ}\mathrm C$，因此 $t_{15}$ 应解释为与问题一一致的�
 但四层方案仍为最优，说明最优厚度结论不依赖于单一温度截止口径。
 
 四层最优方案在安全截止前的节点温度场如图\ref{fig:q3-optimal-temperature-field}所示。
-外层和 PCM 节点在暴露初期迅速降温，随后形成稳定的径向温度梯度；核心和皮肤节点
-则因人体热容与动态血流调节而缓慢降温。该特征说明逐层设置温度节点能够保留
-增厚外层的热惯性及层间温差，不宜将四层涂层简单合并为无热容的等效热阻。
+横轴为暴露时间，纵轴按人体核心、皮肤、内层、PCM 层和四个外层节点排列；橙色表示
+较高温度，蓝绿色表示较低温度。图中外层和 PCM 节点在开始暴露后迅速降温，人体核心
+与皮肤则缓慢降温，并在各层之间形成持续的温度梯度。这说明逐层设置温度节点保留了
+外层热惯性和层间温差，不能把四层涂层简单视为没有热容的一段等效热阻。
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.88\textwidth]{figures/problem3_optimal_temperature_field.pdf}
-    \caption{四层最优方案在核心温度降至 $35\,^{\circ}\mathrm C$ 前的节点温度场}
+    \caption{四层最优方案的节点温度场}
     \label{fig:q3-optimal-temperature-field}
 \end{figure}
 
@@ -1509,32 +1518,19 @@ $10^{-11}$，并把最大步长由 $5\,\mathrm s$ 减小为 $1\,\mathrm s$ 后�
     \end{tabular}
 \end{table}
 
-图\ref{fig:q3-sensitivity-robustness}从局部参数、初始条件及优化系数三个层面汇总了
-敏感性与稳健性证据。服装初始温度由 $37\,^{\circ}\mathrm C$ 降至
-$20\,^{\circ}\mathrm C$ 时，$t_{c,35}$ 仅下降 $2.32\%$；相比之下，代谢率和内侧换热
-系数对安全修正时长的影响更大。重量惩罚系数接近 $6.067\times10^3\,\mathrm{s/kg}$
-时最优层数才发生切换，而制造附加率达到 $12.72\%$ 左右时四层方案即触及预算上限。
+图\ref{fig:q3-sensitivity-robustness}从四个角度检验结论是否稳定。子图（a）中条形越长，
+表示安全修正时长对该参数越敏感，代谢率 $M_0$ 和内侧换热系数 $h_{\mathrm{in}}$ 的影响
+最明显；子图（b）表明服装初温从 $37\,^{\circ}\mathrm C$ 降至 $20\,^{\circ}\mathrm C$
+时，$t_{c,35}$ 仅下降 $2.32\%$。子图（c）显示只有把重量惩罚系数提高到题设值的约
+$303$ 倍，四层方案才失去优势；子图（d）显示制造附加率达到约 $12.72\%$ 时，四层
+方案首先触及预算上限。由此可见，最优层数对热学参数和重量惩罚较稳健，但对额外制造
+费用更敏感。
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.98\textwidth]{figures/problem3_sensitivity_robustness.pdf}
-    \caption{问题三的敏感性与稳健性分析：（a）热学参数单因素敏感性；
-    （b）服装初始温度影响；（c）重量惩罚系数下的方案评分；
-    （d）制造附加率下的总成本}
+    \caption{问题三的敏感性与稳健性分析}
     \label{fig:q3-sensitivity-robustness}
 \end{figure}
-
-时长对代谢率最敏感，对内侧换热系数和外侧对流修正次之，对外层导热率
-和血流响应时常相对不敏感。若负重导致代谢产热增加，可设
-\begin{equation*}
-    M(N)=M_0+\frac{\kappa_M\Delta m(N)}{A_h};
-\end{equation*}
-若压迫改变衣内接触换热，可设
-\begin{equation*}
-    h_{\mathrm{in}}(N)=h_{\mathrm{in},0}
-    \left[1+\gamma_h\Delta m(N)\right].
-\end{equation*}
-相关负重研究表明外部负重会影响站立能耗\cite{pandolf1977}，但本题新增质量不足
-$0.56\,\mathrm{kg}$，且缺少 $\kappa_M$、$\gamma_h$ 的实验标定，故两者仅作情景分析，不直接写入主模型。
 
 对目标函数的重量惩罚系数扩展分析表明，四层与一层方案发生优劣切换的临界系数约为
 \begin{equation*}
